@@ -161,6 +161,27 @@ def test_visualizer_state_initialization(argon_weights):
     assert state.env_trained.step_count == 1
 
 
+def test_visualizer_state_with_astra(argon_weights):
+    """Verify VisualizerState with Astra 3-way configuration."""
+    from visualize_comparison import ASTRA_REFERENCE_PATH
+
+    state = VisualizerState(
+        argon_weights_path=ARGON_WEIGHTS_PATH,
+        trained_weights_path=ARGON_WEIGHTS_PATH,
+        astra_weights_path=ASTRA_REFERENCE_PATH,
+        initial_seed=42,
+    )
+    assert state.has_astra is True
+    assert state.env_argon.step_count == 0
+    assert state.env_trained.step_count == 0
+    assert state.env_astra.step_count == 0
+
+    argon_done, trained_done, astra_done = state.step()
+    assert state.env_argon.step_count == 1
+    assert state.env_trained.step_count == 1
+    assert state.env_astra.step_count == 1
+
+
 def test_argon_evaluation_reproducibility(argon_weights):
     """Verify deterministic reproducibility of Argon evaluation with fixed seeds."""
     from evaluation.evaluate import PolicyEvaluator
@@ -175,3 +196,4 @@ def test_argon_evaluation_reproducibility(argon_weights):
     assert sum1.mean_score == sum2.mean_score
     assert sum1.mean_length == sum2.mean_length
     assert sum1.total_bricks_destroyed == sum2.total_bricks_destroyed
+

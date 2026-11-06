@@ -49,6 +49,8 @@ experiments/strict_replication/generation_001/
 | **Raw DOCX** | `output/argon_response_original.docx` | `2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7` |
 | **Raw Response Text** | `output/raw_response.txt` | `6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac` |
 | **Argon Weights NPZ** | `output/argon_weights.npz` | `455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5` |
+| **Astra Reference NPZ** | `experiments/reference/hand.npz` | `6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a` |
+| **Trained PPO Actor NPZ** | `experiments/trained_baseline/trained_actor_weights.npz` | `9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86` |
 
 ---
 
@@ -103,7 +105,7 @@ Outputs:
 - `experiments/strict_replication/generation_001/analysis/cumulative_survival_curves.png`
 
 ### 5. Launch Interactive Visual Comparison Application
-To launch the side-by-side Tkinter visualizer rendering Gemini Argon vs. the 10M-step Trained PPO model:
+To launch the 3-way side-by-side Tkinter visualizer rendering Gemini Argon vs. Astra Reference vs. 10M-step Trained PPO model:
 ```bash
 python visualize_comparison.py
 ```
@@ -111,10 +113,13 @@ python visualize_comparison.py
 ```bash
 python visualize_comparison.py \
     --argon experiments/strict_replication/generation_001/output/argon_weights.npz \
+    --astra experiments/reference/hand.npz \
     --trained experiments/trained_baseline/trained_actor_weights.npz \
     --seed 42 \
     --fps 15
 ```
+
+If `--astra ""` is passed or the reference artifact is missing, the application automatically falls back to the 2-model view (Argon vs Trained).
 
 #### Visualizer Controls:
 - **`Space`**: Play / Pause simulation.
@@ -140,3 +145,4 @@ python visualize_comparison.py \
 | **Cohen's d Effect Size** | **1.184** (Large effect) | — | — |
 
 For complete mechanistic analysis of the policy and root-cause tracing of failure modes, see [ARGON_AUDIT_REPORT.md](ARGON_AUDIT_REPORT.md).
+

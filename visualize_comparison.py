@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""Side-by-side Visual Comparison Application: Gemini Argon vs Trained Baseline.
+"""Side-by-side Visual Comparison Application: Gemini Argon vs Astra Reference vs Trained Baseline.
 
 Renders live, independent MinAtar Breakout environments for:
-  1. Gemini Argon's generated neural-network weights
-  2. PPO model trained from scratch
+  1. Gemini Argon's generated neural-network weights (Zero-Shot)
+  2. Astra's original reference weights (Original Experiment 5 hand.npz, if verified)
+  3. PPO model trained from scratch (10M steps)
 
 Usage:
   python visualize_comparison.py
-  python visualize_comparison.py --argon path/to/argon.npz --trained path/to/trained.npz --seed 42 --fps 15
+  python visualize_comparison.py --argon path/to/argon.npz --astra path/to/hand.npz --trained path/to/trained.npz
+  python visualize_comparison.py --headless-test
 """
 
 import argparse
 import os
 import sys
 import time
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 import numpy as np
 
@@ -25,35 +27,50 @@ from environment.actions import ACTION_NAMES
 from environment.breakout import MinAtarBreakoutEnv
 from network.architecture import MinAtarNetworkNumPy
 from network.inference import PolicyAgent
-from network.weight_loader import load_weights_npz
+from network.weight_loader import load_weights_npz, compute_file_sha256
+
+# Standard verified reference path and hash
+ASTRA_REFERENCE_PATH = "experiments/reference/hand.npz"
+ASTRA_EXPECTED_SHA256 = "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
 
 
 class VisualizerState:
-    """Manages the two independent game simulations and policies."""
+    """Manages the independent game simulations and policies for Argon, Trained, and optional Astra."""
 
     def __init__(
         self,
         argon_weights_path: str,
         trained_weights_path: str,
+        astra_weights_path: Optional[str] = None,
         initial_seed: int = 42,
     ):
         self.argon_weights_path = argon_weights_path
         self.trained_weights_path = trained_weights_path
+        self.astra_weights_path = astra_weights_path
         self.current_seed = initial_seed
 
-        # Load Argon policy
+        # 1. Load Argon policy
         if not os.path.exists(argon_weights_path):
             raise FileNotFoundError(f"Argon weights not found at {argon_weights_path}")
         argon_weights = load_weights_npz(argon_weights_path)
         self.argon_net = MinAtarNetworkNumPy(argon_weights)
         self.argon_agent = PolicyAgent(self.argon_net)
 
-        # Load Trained policy
+        # 2. Load Trained policy
         if not os.path.exists(trained_weights_path):
             raise FileNotFoundError(f"Trained model weights not found at {trained_weights_path}")
         trained_weights = load_weights_npz(trained_weights_path)
         self.trained_net = MinAtarNetworkNumPy(trained_weights)
         self.trained_agent = PolicyAgent(self.trained_net)
+
+        # 3. Optional Astra Reference policy
+        self.has_astra = False
+        if astra_weights_path is not None and os.path.exists(astra_weights_path):
+            astra_weights = load_weights_npz(astra_weights_path)
+            self.astra_net = MinAtarNetworkNumPy(astra_weights)
+            self.astra_agent = PolicyAgent(self.astra_net)
+            self.env_astra = MinAtarBreakoutEnv(sticky_action_prob=0.1)
+            self.has_astra = True
 
         # Environment instances
         self.env_argon = MinAtarBreakoutEnv(sticky_action_prob=0.1)
@@ -84,6 +101,15 @@ class VisualizerState:
         self._update_argon_policy()
         self._update_trained_policy()
 
+        if self.has_astra:
+            self.astra_agent.rng = np.random.RandomState(seed)
+            self.obs_astra = self.env_astra.reset(seed=seed)
+            self.astra_done = False
+            self.astra_info = {}
+            self.astra_action = 0
+            self.astra_probs = np.zeros(6, dtype=np.float32)
+            self._update_astra_policy()
+
     def _update_argon_policy(self):
         if not self.argon_done:
             self.argon_action, self.argon_probs, _ = self.argon_agent.get_action(self.obs_argon)
@@ -92,8 +118,12 @@ class VisualizerState:
         if not self.trained_done:
             self.trained_action, self.trained_probs, _ = self.trained_agent.get_action(self.obs_trained)
 
-    def step(self) -> Tuple[bool, bool]:
-        """Advance both environments by 1 frame if not terminal."""
+    def _update_astra_policy(self):
+        if self.has_astra and not self.astra_done:
+            self.astra_action, self.astra_probs, _ = self.astra_agent.get_action(self.obs_astra)
+
+    def step(self) -> Union[Tuple[bool, bool], Tuple[bool, bool, bool]]:
+        """Advance environments by 1 frame if not terminal."""
         # Step Argon
         if not self.argon_done:
             self.obs_argon, _, self.argon_done, self.argon_info = self.env_argon.step(self.argon_action)
@@ -104,7 +134,20 @@ class VisualizerState:
             self.obs_trained, _, self.trained_done, self.trained_info = self.env_trained.step(self.trained_action)
             self._update_trained_policy()
 
+        # Step Astra if enabled
+        if self.has_astra:
+            if not self.astra_done:
+                self.obs_astra, _, self.astra_done, self.astra_info = self.env_astra.step(self.astra_action)
+                self._update_astra_policy()
+            return self.argon_done, self.trained_done, self.astra_done
+
         return self.argon_done, self.trained_done
+
+    @property
+    def all_done(self) -> bool:
+        if self.has_astra:
+            return self.argon_done and self.trained_done and self.astra_done
+        return self.argon_done and self.trained_done
 
 
 def run_gui(state: VisualizerState, initial_fps: int = 15):
@@ -113,25 +156,31 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
     from tkinter import ttk
 
     root = tk.Tk()
-    root.title("MinAtar Breakout: Gemini Argon vs. Trained Model (PPO)")
-    root.geometry("980x760")
+    if state.has_astra:
+        root.title("MinAtar Breakout: Gemini Argon vs. Astra Reference vs. Trained PPO")
+        root.geometry("1240x760")
+        CELL_SIZE = 26
+    else:
+        root.title("MinAtar Breakout: Gemini Argon vs. Trained Model (PPO)")
+        root.geometry("980x760")
+        CELL_SIZE = 30
+
     root.configure(bg="#141419")
 
     # Styling colors
     COLOR_BG = "#141419"
     COLOR_PANEL = "#1e1e26"
     COLOR_BOARD_BG = "#0a0a0f"
-    COLOR_PADDLE_ARGON = "#00e5ff"  # Cyan
+    COLOR_PADDLE_ARGON = "#00e5ff"    # Cyan
+    COLOR_PADDLE_ASTRA = "#ffd700"    # Gold / Yellow-Amber
     COLOR_PADDLE_TRAINED = "#00e676"  # Bright Green
-    COLOR_BALL = "#ffff00"  # Bright Yellow
-    COLOR_TRAIL = "#ff9100"  # Orange
-    COLOR_BRICK_ROW1 = "#ff5252"  # Red
-    COLOR_BRICK_ROW2 = "#ff9800"  # Amber
-    COLOR_BRICK_ROW3 = "#4caf50"  # Green
+    COLOR_BALL = "#ffff00"            # Bright Yellow
+    COLOR_TRAIL = "#ff9100"           # Orange
+    COLOR_BRICK_ROW1 = "#ff5252"      # Red
+    COLOR_BRICK_ROW2 = "#ff9800"      # Amber
+    COLOR_BRICK_ROW3 = "#4caf50"      # Green
     COLOR_TEXT = "#e0e0e0"
-    COLOR_ACCENT = "#7c4dff"
 
-    CELL_SIZE = 30
     BOARD_PIXELS = 10 * CELL_SIZE
 
     is_running = tk.BooleanVar(value=True)
@@ -142,10 +191,15 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
     header = tk.Frame(root, bg=COLOR_PANEL, pady=10, padx=20)
     header.pack(fill=tk.X, side=tk.TOP)
 
+    header_title = (
+        "BREAKOUT THREE-WAY POLICY COMPARISON LAB"
+        if state.has_astra
+        else "BREAKOUT TWO-WAY POLICY COMPARISON LAB"
+    )
     title_label = tk.Label(
         header,
-        text="BREAKOUT POLICY COMPARISON LAB",
-        font=("Helvetica", 16, "bold"),
+        text=header_title,
+        font=("Helvetica", 15, "bold"),
         fg="#ffffff",
         bg=COLOR_PANEL,
     )
@@ -154,24 +208,24 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
     seed_label = tk.Label(
         header,
         text=f"Seed: {state.current_seed}",
-        font=("Helvetica", 13),
+        font=("Helvetica", 13, "bold"),
         fg="#00e5ff",
         bg=COLOR_PANEL,
     )
     seed_label.pack(side=tk.RIGHT)
 
     # Main Arena Frame (Side by Side)
-    arena = tk.Frame(root, bg=COLOR_BG, padx=20, pady=15)
+    arena = tk.Frame(root, bg=COLOR_BG, padx=15, pady=12)
     arena.pack(fill=tk.BOTH, expand=True)
 
-    # --- LEFT SIDE: GEMINI ARGON ---
-    frame_argon = tk.Frame(arena, bg=COLOR_PANEL, padx=15, pady=15, relief=tk.RIDGE, bd=2)
-    frame_argon.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
+    # --- 1. LEFT SIDE: GEMINI ARGON ---
+    frame_argon = tk.Frame(arena, bg=COLOR_PANEL, padx=12, pady=12, relief=tk.RIDGE, bd=2)
+    frame_argon.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=6)
 
     label_argon_title = tk.Label(
         frame_argon,
         text="GEMINI ARGON (Zero-Shot)",
-        font=("Helvetica", 13, "bold"),
+        font=("Helvetica", 12, "bold"),
         fg=COLOR_PADDLE_ARGON,
         bg=COLOR_PANEL,
     )
@@ -180,11 +234,11 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
     argon_stats_label = tk.Label(
         frame_argon,
         text="Score: 0   Steps: 0   Status: Running",
-        font=("Helvetica", 11),
+        font=("Helvetica", 10),
         fg=COLOR_TEXT,
         bg=COLOR_PANEL,
     )
-    argon_stats_label.pack(anchor=tk.W, pady=(4, 8))
+    argon_stats_label.pack(anchor=tk.W, pady=(4, 6))
 
     canvas_argon = tk.Canvas(
         frame_argon,
@@ -194,7 +248,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         highlightthickness=1,
         highlightbackground="#333344",
     )
-    canvas_argon.pack(pady=5)
+    canvas_argon.pack(pady=4)
 
     argon_action_label = tk.Label(
         frame_argon,
@@ -203,20 +257,64 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         fg=COLOR_PADDLE_ARGON,
         bg=COLOR_PANEL,
     )
-    argon_action_label.pack(anchor=tk.W, pady=(8, 2))
+    argon_action_label.pack(anchor=tk.W, pady=(6, 2))
 
-    # Probability bars for Argon
     canvas_probs_argon = tk.Canvas(frame_argon, width=BOARD_PIXELS, height=65, bg=COLOR_PANEL, highlightthickness=0)
     canvas_probs_argon.pack(fill=tk.X, pady=2)
 
-    # --- RIGHT SIDE: TRAINED MODEL ---
-    frame_trained = tk.Frame(arena, bg=COLOR_PANEL, padx=15, pady=15, relief=tk.RIDGE, bd=2)
-    frame_trained.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
+    # --- 2. CENTER: ASTRA REFERENCE (if enabled) ---
+    if state.has_astra:
+        frame_astra = tk.Frame(arena, bg=COLOR_PANEL, padx=12, pady=12, relief=tk.RIDGE, bd=2)
+        frame_astra.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=6)
+
+        label_astra_title = tk.Label(
+            frame_astra,
+            text="ASTRA REFERENCE (Original)",
+            font=("Helvetica", 12, "bold"),
+            fg=COLOR_PADDLE_ASTRA,
+            bg=COLOR_PANEL,
+        )
+        label_astra_title.pack(anchor=tk.W)
+
+        astra_stats_label = tk.Label(
+            frame_astra,
+            text="Score: 0   Steps: 0   Status: Running",
+            font=("Helvetica", 10),
+            fg=COLOR_TEXT,
+            bg=COLOR_PANEL,
+        )
+        astra_stats_label.pack(anchor=tk.W, pady=(4, 6))
+
+        canvas_astra = tk.Canvas(
+            frame_astra,
+            width=BOARD_PIXELS,
+            height=BOARD_PIXELS,
+            bg=COLOR_BOARD_BG,
+            highlightthickness=1,
+            highlightbackground="#333344",
+        )
+        canvas_astra.pack(pady=4)
+
+        astra_action_label = tk.Label(
+            frame_astra,
+            text="Action: None",
+            font=("Helvetica", 11, "bold"),
+            fg=COLOR_PADDLE_ASTRA,
+            bg=COLOR_PANEL,
+        )
+        astra_action_label.pack(anchor=tk.W, pady=(6, 2))
+
+        canvas_probs_astra = tk.Canvas(frame_astra, width=BOARD_PIXELS, height=65, bg=COLOR_PANEL, highlightthickness=0)
+        canvas_probs_astra.pack(fill=tk.X, pady=2)
+
+    # --- 3. RIGHT SIDE: TRAINED MODEL ---
+    frame_trained = tk.Frame(arena, bg=COLOR_PANEL, padx=12, pady=12, relief=tk.RIDGE, bd=2)
+    frame_trained.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=6)
 
     label_trained_title = tk.Label(
         frame_trained,
         text="TRAINED BASELINE (PPO)",
-        font=("Helvetica", 13, "bold"),
+        font=("Helvetica", 12, "bold"),
         fg=COLOR_PADDLE_TRAINED,
         bg=COLOR_PANEL,
     )
@@ -225,11 +323,11 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
     trained_stats_label = tk.Label(
         frame_trained,
         text="Score: 0   Steps: 0   Status: Running",
-        font=("Helvetica", 11),
+        font=("Helvetica", 10),
         fg=COLOR_TEXT,
         bg=COLOR_PANEL,
     )
-    trained_stats_label.pack(anchor=tk.W, pady=(4, 8))
+    trained_stats_label.pack(anchor=tk.W, pady=(4, 6))
 
     canvas_trained = tk.Canvas(
         frame_trained,
@@ -239,7 +337,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         highlightthickness=1,
         highlightbackground="#333344",
     )
-    canvas_trained.pack(pady=5)
+    canvas_trained.pack(pady=4)
 
     trained_action_label = tk.Label(
         frame_trained,
@@ -248,14 +346,13 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         fg=COLOR_PADDLE_TRAINED,
         bg=COLOR_PANEL,
     )
-    trained_action_label.pack(anchor=tk.W, pady=(8, 2))
+    trained_action_label.pack(anchor=tk.W, pady=(6, 2))
 
-    # Probability bars for Trained
     canvas_probs_trained = tk.Canvas(frame_trained, width=BOARD_PIXELS, height=65, bg=COLOR_PANEL, highlightthickness=0)
     canvas_probs_trained.pack(fill=tk.X, pady=2)
 
     # --- CONTROL BAR ---
-    ctrl_frame = tk.Frame(root, bg=COLOR_PANEL, pady=12, padx=20)
+    ctrl_frame = tk.Frame(root, bg=COLOR_PANEL, pady=10, padx=20)
     ctrl_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
     def toggle_play():
@@ -295,7 +392,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         bg="#333344",
         fg="#ffffff",
         padx=10,
-        pady=4,
+        pady=3,
     )
     btn_play.pack(side=tk.LEFT, padx=5)
 
@@ -307,7 +404,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         bg="#333344",
         fg="#ffffff",
         padx=8,
-        pady=4,
+        pady=3,
     )
     btn_step.pack(side=tk.LEFT, padx=5)
 
@@ -319,7 +416,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         bg="#333344",
         fg="#ffffff",
         padx=8,
-        pady=4,
+        pady=3,
     )
     btn_reset.pack(side=tk.LEFT, padx=5)
 
@@ -331,7 +428,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         bg="#333344",
         fg="#ffffff",
         padx=8,
-        pady=4,
+        pady=3,
     )
     btn_prev.pack(side=tk.LEFT, padx=5)
 
@@ -343,7 +440,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         bg="#333344",
         fg="#ffffff",
         padx=8,
-        pady=4,
+        pady=3,
     )
     btn_next.pack(side=tk.LEFT, padx=5)
 
@@ -361,7 +458,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         fg="#ffffff",
         troughcolor="#333344",
         highlightthickness=0,
-        length=120,
+        length=110,
     )
     slider_speed.pack(side=tk.LEFT, padx=5)
 
@@ -397,13 +494,13 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         lx, ly = internal.last_x, internal.last_y
         if 0 <= lx < 10 and 0 <= ly < 10 and not (lx == internal.ball_x and ly == internal.ball_y):
             cx, cy = lx * CELL_SIZE + CELL_SIZE // 2, ly * CELL_SIZE + CELL_SIZE // 2
-            canvas.create_oval(cx - 5, cy - 5, cx + 5, cy + 5, fill=COLOR_TRAIL, outline="")
+            canvas.create_oval(cx - 4, cy - 4, cx + 4, cy + 4, fill=COLOR_TRAIL, outline="")
 
         # Ball
         bx, by = internal.ball_x, internal.ball_y
         if 0 <= bx < 10 and 0 <= by < 10:
             cx, cy = bx * CELL_SIZE + CELL_SIZE // 2, by * CELL_SIZE + CELL_SIZE // 2
-            canvas.create_oval(cx - 8, cy - 8, cx + 8, cy + 8, fill=COLOR_BALL, outline="#ffffff")
+            canvas.create_oval(cx - 7, cy - 7, cx + 7, cy + 7, fill=COLOR_BALL, outline="#ffffff")
 
         # Paddle (Row 9)
         pos = internal.pos
@@ -415,10 +512,10 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
 
     def draw_probs(canvas: tk.Canvas, probs: np.ndarray, chosen_act: int, primary_color: str):
         canvas.delete("all")
-        # Show Action 0 (No-Op), 1 (Left), 3 (Right)
         actions_to_show = [(0, "No-Op"), (1, "Left"), (3, "Right")]
         bar_height = 14
         start_y = 4
+        track_w = BOARD_PIXELS - 100
 
         for idx, (a, label) in enumerate(actions_to_show):
             prob = probs[a]
@@ -433,20 +530,20 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
                 anchor=tk.E,
             )
             # Background track
-            canvas.create_rectangle(45, y, 240, y + bar_height, fill="#252530", outline="")
+            canvas.create_rectangle(42, y, 42 + track_w, y + bar_height, fill="#252530", outline="")
             # Filled bar
-            bar_w = int(195 * prob)
+            bar_w = int(track_w * prob)
             canvas.create_rectangle(
-                45,
+                42,
                 y,
-                45 + bar_w,
+                42 + bar_w,
                 y + bar_height,
                 fill=primary_color if a == chosen_act else "#555566",
                 outline="",
             )
             # Percent text
             canvas.create_text(
-                270,
+                46 + track_w,
                 y + bar_height // 2,
                 text=f"{prob * 100:.1f}%",
                 fill=COLOR_TEXT,
@@ -455,11 +552,8 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
             )
 
     def redraw():
-        # Draw Boards
+        # Draw Argon
         draw_board(canvas_argon, state.env_argon, COLOR_PADDLE_ARGON)
-        draw_board(canvas_trained, state.env_trained, COLOR_PADDLE_TRAINED)
-
-        # Update Argon Labels
         argon_status = "LOST BALL" if state.argon_done else "PLAYING"
         argon_stats_label.config(
             text=f"Score: {int(state.env_argon.total_reward)}   "
@@ -471,7 +565,22 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
         )
         draw_probs(canvas_probs_argon, state.argon_probs, state.argon_action, COLOR_PADDLE_ARGON)
 
-        # Update Trained Labels
+        # Draw Astra (if enabled)
+        if state.has_astra:
+            draw_board(canvas_astra, state.env_astra, COLOR_PADDLE_ASTRA)
+            astra_status = "LOST BALL" if state.astra_done else "PLAYING"
+            astra_stats_label.config(
+                text=f"Score: {int(state.env_astra.total_reward)}   "
+                f"Steps: {state.env_astra.step_count}   "
+                f"Status: {astra_status}"
+            )
+            astra_action_label.config(
+                text=f"Action: {ACTION_NAMES.get(state.astra_action, 'Unknown')} ({state.astra_action})"
+            )
+            draw_probs(canvas_probs_astra, state.astra_probs, state.astra_action, COLOR_PADDLE_ASTRA)
+
+        # Draw Trained
+        draw_board(canvas_trained, state.env_trained, COLOR_PADDLE_TRAINED)
         trained_status = "LOST BALL" if state.trained_done else "PLAYING"
         trained_stats_label.config(
             text=f"Score: {int(state.env_trained.total_reward)}   "
@@ -485,8 +594,7 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
 
     def game_loop():
         if is_running.get():
-            # If both done, automatically wait 1.5s then advance to next episode
-            if state.argon_done and state.trained_done:
+            if state.all_done:
                 time.sleep(0.5)
                 next_episode()
             else:
@@ -502,27 +610,36 @@ def run_gui(state: VisualizerState, initial_fps: int = 15):
 
 
 def run_headless_verification(state: VisualizerState, steps: int = 50) -> bool:
-    """Run non-GUI simulation to verify models step in lockstep without errors."""
+    """Run non-GUI simulation to verify all active models step in lockstep without errors."""
     print(f"Running headless visualizer verification for {steps} steps...")
     for s in range(steps):
         state.step()
         if (s + 1) % 10 == 0:
-            print(
+            msg = (
                 f"  [Step {s + 1}/{steps}] "
                 f"Argon score={state.env_argon.total_reward} (done={state.argon_done}) | "
                 f"Trained score={state.env_trained.total_reward} (done={state.trained_done})"
             )
+            if state.has_astra:
+                msg += f" | Astra score={state.env_astra.total_reward} (done={state.astra_done})"
+            print(msg)
     print("Headless verification PASSED cleanly.")
     return True
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MinAtar Breakout Policy Visualizer")
+    parser = argparse.ArgumentParser(description="MinAtar Breakout Policy Visualizer (Argon, Astra, Trained)")
     parser.add_argument(
         "--argon",
         type=str,
         default="experiments/strict_replication/generation_001/output/argon_weights.npz",
         help="Path to Argon weights .npz",
+    )
+    parser.add_argument(
+        "--astra",
+        type=str,
+        default=ASTRA_REFERENCE_PATH if os.path.exists(ASTRA_REFERENCE_PATH) else None,
+        help="Path to Astra reference weights .npz (optional, default: experiments/reference/hand.npz)",
     )
     parser.add_argument(
         "--trained",
@@ -539,9 +656,24 @@ def main():
     )
     args = parser.parse_args()
 
+    # Provenance check for Astra if supplied
+    astra_path = args.astra
+    if astra_path is not None:
+        if not os.path.exists(astra_path):
+            print(f"[Warning] Astra weights file not found at {astra_path}; falling back to 2-model visualizer.")
+            astra_path = None
+        else:
+            actual_hash = compute_file_sha256(astra_path)
+            if actual_hash != ASTRA_EXPECTED_SHA256:
+                print(f"[Warning] Astra SHA-256 mismatch ({actual_hash} != {ASTRA_EXPECTED_SHA256}); excluding Astra.")
+                astra_path = None
+            else:
+                print(f"[Verified] Astra reference weights verified ({actual_hash[:16]}...). Enabling 3-way visualizer.")
+
     state = VisualizerState(
         argon_weights_path=args.argon,
         trained_weights_path=args.trained,
+        astra_weights_path=astra_path,
         initial_seed=args.seed,
     )
 

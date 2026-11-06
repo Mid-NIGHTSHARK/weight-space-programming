@@ -37,7 +37,7 @@ This report presents the empirical verification and behavioral audit of neural-n
 | **Argon Response (.txt)** | `experiments/strict_replication/generation_001/output/raw_response.txt` | `6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac` |
 | **Parsed Argon Weights** | `experiments/strict_replication/generation_001/output/argon_weights.npz` | `455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5` |
 | **Trained PPO Weights** | `experiments/trained_baseline/trained_actor_weights.npz` | `9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86` |
-| **Reference Astra Weights**| `network/reference_weights.npz` | `e97b1029c5fcb41c0b39678e72251ee2bc083ebca7f4333621434c4fca4bf7c5` |
+| **Reference Astra Weights**| `experiments/reference/hand.npz` | `6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a` |
 
 ### 1.2 Model Execution Parameters
 - **Model:** Gemini Argon 4 Medium (`gemini-argon-4-medium`)
@@ -245,3 +245,4 @@ Its performance gap relative to Astra (57.87 vs. 508.06) is explained entirely b
 ---
 *Report certified by Independent Replication Engineering Laboratory.*  
 *Date: 2026-11-06*
+
