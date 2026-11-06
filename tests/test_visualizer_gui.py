@@ -390,9 +390,8 @@ def test_visualizer_gui_7way_performance_ranking():
         assert "LUNA" in app.gpt6_luna_panel["title_label"].cget("text")
         assert "#6" in app.gpt6_luna_panel["title_label"].cget("text")
 
-        # Verify panels are ordered strictly descending by benchmark mean score:
-        # #1 Astra (508.062) > #2 Argon (57.866) > #3 Sonnet 5.5 (10.957) >
-        # #4 Trained (5.757) > #5 GPT-6 (2.493) > #6 GPT-6 Luna (1.253) > #7 DeepSeek (0.484)
+        # Corrected dataset ranks include controls, so the displayed panels can have rank gaps.
+        # Zero-shot order remains Argon > Sonnet > GPT-6 > Luna > DeepSeek.
         expected_order = [
             "astra",
             "argon",
@@ -421,7 +420,7 @@ def test_visualizer_gui_7way_performance_ranking():
 
 
 def test_visualizer_gui_with_deepseek_corrected():
-    """Verify BreakoutVisualizerGUI constructs layout with DeepSeek Corrected placed at rank #4."""
+    """Show the DeepSeek researcher intervention without assigning it a primary rank or score."""
     state = VisualizerState(
         argon_weights_path=ARGON_WEIGHTS,
         trained_weights_path=TRAINED_WEIGHTS,
@@ -443,21 +442,21 @@ def test_visualizer_gui_with_deepseek_corrected():
         assert app.deepseek_corrected_panel["canvas_board"] is not None
         assert app.deepseek_corrected_panel["canvas_probs"] is not None
         assert "CORRECTED" in app.deepseek_corrected_panel["title_label"].cget("text")
-        assert "#4" in app.deepseek_corrected_panel["title_label"].cget("text")
+        intervention_title = app.deepseek_corrected_panel["title_label"].cget("text")
+        assert "[Intervention]" in intervention_title
+        assert "#4" not in intervention_title
 
-        # Verify panels are ordered strictly descending by benchmark mean score:
-        # #1 Astra (508.062) > #2 Argon (57.866) > #3 Sonnet 5.5 (10.957) >
-        # #4 DeepSeek Corrected (6.575) > #5 Trained (5.757) > #6 GPT-6 (2.493) >
-        # #7 GPT-6 Luna (1.253) > #8 DeepSeek (0.484)
+        # Ranked panels follow only hash-matched primary/reference/trained artifacts;
+        # controls create numeric rank gaps and the intervention is placed after them.
         expected_order = [
             "astra",
             "argon",
             "sonnet55",
-            "deepseek_corrected",
             "trained",
             "gpt6",
             "gpt6_luna",
             "deepseek",
+            "deepseek_corrected",
         ]
         assert list(app.panels.keys()) == expected_order
 
