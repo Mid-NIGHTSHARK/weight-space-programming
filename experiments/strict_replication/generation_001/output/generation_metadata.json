@@ -1,0 +1,27 @@
+{
+  "experiment_id": "breakout_gemini_argon_generation_001",
+  "model_name": "Gemini Argon 4 Medium",
+  "model_identifier": "gemini-argon-4-medium",
+  "interface": "Official Gemini Web Interface (https://gemini.google.com/)",
+  "timestamp_recorded_utc": "2026-11-06T13:30:00Z",
+  "tools_enabled": false,
+  "search_grounding_enabled": false,
+  "deep_research_enabled": false,
+  "code_interpreter_enabled": false,
+  "one_shot": true,
+  "raw_artifacts": {
+    "original_docx": "experiments/strict_replication/generation_001/output/argon_response_original.docx",
+    "original_docx_sha256": "2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7",
+    "raw_response_text": "experiments/strict_replication/generation_001/output/raw_response.txt",
+    "raw_response_sha256": "6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac"
+  },
+  "parsed_weights": {
+    "file": "experiments/strict_replication/generation_001/output/argon_weights.npz",
+    "sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5",
+    "total_parameters": 20486,
+    "nonzero_parameters": 817,
+    "statements_total": 86,
+    "statements_applied": 86,
+    "errors": []
+  }
+}

@@ -76,15 +76,30 @@ class ParseReport:
 
 
 def extract_last_edits_block(text: str) -> Optional[str]:
-    """Extract the last ```edits ... ``` block from a markdown response.
+    """Extract the last ```edits ... ``` block from a markdown or HTML response.
     
     Per prompt instructions: 'Only the LAST edits block of your reply is read'.
+    Supports both standard markdown code fences (```edits ... ```) and HTML <pre> blocks
+    commonly produced when saving responses from official web interfaces.
     """
     pattern = r"```(?:edits|python)?\s*\n(.*?)\n```"
     matches = re.findall(pattern, text, re.DOTALL | re.IGNORECASE)
-    if not matches:
-        return None
-    return matches[-1].strip()
+    if matches:
+        return matches[-1].strip()
+
+    # Also check for HTML <pre> code tags (from web export / docx)
+    pattern_pre = r"<pre(?:.*?)>(.*?)</pre>"
+    matches_pre = re.findall(pattern_pre, text, re.DOTALL | re.IGNORECASE)
+    if matches_pre:
+        import html
+        # Return the last block that sets weights
+        for block in reversed(matches_pre):
+            candidate = html.unescape(block).strip()
+            if any(t in candidate for t in ("W1", "W2", "W3", "b1", "b2", "b3")):
+                return candidate
+        return html.unescape(matches_pre[-1]).strip()
+
+    return None
 
 
 class SafeASTWeightParser:

@@ -1,0 +1,22 @@
+{
+  "exp_name": "ppo_breakout",
+  "seed": 42,
+  "torch_deterministic": true,
+  "cuda": false,
+  "device": "cpu",
+  "learning_rate": 0.0005,
+  "total_timesteps": 10000000,
+  "num_envs": 16,
+  "num_steps": 128,
+  "anneal_lr": true,
+  "gamma": 0.99,
+  "gae_lambda": 0.95,
+  "num_minibatches": 4,
+  "update_epochs": 4,
+  "clip_coef": 0.2,
+  "ent_coef": 0.01,
+  "vf_coef": 0.5,
+  "max_grad_norm": 0.5,
+  "output_dir": "experiments/trained_baseline",
+  "checkpoint_interval_steps": 2500000
+}
