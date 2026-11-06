@@ -1,0 +1,808 @@
+{
+  "analysis_method": {
+    "bootstrap_resamples": 9999,
+    "condition_ci": "two-sided Student-t interval for the episode mean; sample standard deviation uses ddof=1",
+    "effect_size": "paired Cohen dz: mean within-pair score difference divided by its sample standard deviation",
+    "equivalence_testing": "omitted; no independently justified, pre-registered margin",
+    "p_value_correction": "Holm step-down family-wise correction across every pairwise condition comparison",
+    "paired_ci": "percentile paired bootstrap interval for the mean score difference, resampling matched episode pairs",
+    "paired_test": "two-sided paired sign-flip permutation test of the mean difference under within-pair exchangeability",
+    "permutation_resamples": 19999,
+    "random_seed": 20261106
+  },
+  "conditions": {
+    "astra_local_reference": {
+      "cutoff_count": 1484,
+      "cutoff_percentage": 49.46666666666666,
+      "episode_trajectory_set_sha256": "521092cdc7881d5679fbe3abbc2294bae7cf9a69d119c5099de05a9a588417b8",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 10939360,
+          "name": "no_op",
+          "proportion": 0.5064900730934788
+        },
+        "1": {
+          "count": 5328606,
+          "name": "left",
+          "proportion": 0.24671333994185674
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 5330404,
+          "name": "right",
+          "proportion": 0.24679658696466447
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 10000,
+      "maximum_score": 824.0,
+      "mean_episode_length": 7199.456666666667,
+      "mean_score": 504.8523333333333,
+      "median_episode_length": 9821.0,
+      "median_score": 642.0,
+      "metadata": {
+        "condition_class": "reference",
+        "episode_scores_sha256": "95739181a6b781ce3ef3318aef4a6660645038a91aec31b33e11bc69ceb56872",
+        "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 243.57454310177403,
+      "score_mean_ci_95": [
+        496.13277131300697,
+        513.5718953536597
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 10938851,
+          "name": "no_op",
+          "proportion": 0.506466506500259
+        },
+        "1": {
+          "count": 5328333,
+          "name": "left",
+          "proportion": 0.24670070009912784
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 5331186,
+          "name": "right",
+          "proportion": 0.2468327934006131
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 4.447042389695199
+    },
+    "claude_sonnet_55": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "47cabcd8e5b2294c0b7d4fe178f6932f193b38bf0ca2da2f2cce7420a609a778",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 33548,
+          "name": "no_op",
+          "proportion": 0.08987259030657622
+        },
+        "1": {
+          "count": 169167,
+          "name": "left",
+          "proportion": 0.4531857781206802
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 170569,
+          "name": "right",
+          "proportion": 0.45694163157274353
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 1096,
+      "maximum_score": 91.0,
+      "mean_episode_length": 124.428,
+      "mean_score": 10.586666666666666,
+      "median_episode_length": 70.0,
+      "median_score": 6.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "86d5a91027649e8d07f898d8ad3e145494880e5fc06e4fc6671efb0c8b7fc3db",
+        "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 11.283450756567374,
+      "score_mean_ci_95": [
+        10.18273796614529,
+        10.990595367188043
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 33165,
+          "name": "no_op",
+          "proportion": 0.08884656186710387
+        },
+        "1": {
+          "count": 169425,
+          "name": "left",
+          "proportion": 0.4538769408814736
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 170694,
+          "name": "right",
+          "proportion": 0.4572764972514225
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 0.2060066835290228
+    },
+    "deepseek_original": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "e879eb43e972a68ea8431f44fc403175b21bd55f67ee72e2b6c2e2edaf20f635",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 339,
+          "name": "no_op",
+          "proportion": 0.010341671751067724
+        },
+        "1": {
+          "count": 0,
+          "name": "left",
+          "proportion": 0.0
+        },
+        "2": {
+          "count": 10844,
+          "name": "up",
+          "proportion": 0.33081147040878583
+        },
+        "3": {
+          "count": 0,
+          "name": "right",
+          "proportion": 0.0
+        },
+        "4": {
+          "count": 10717,
+          "name": "down",
+          "proportion": 0.3269371568029286
+        },
+        "5": {
+          "count": 10880,
+          "name": "fire",
+          "proportion": 0.33190970103721784
+        }
+      },
+      "maximum_episode_length": 16,
+      "maximum_score": 1.0,
+      "mean_episode_length": 10.926666666666666,
+      "mean_score": 0.49266666666666664,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "80211f3504025b24197768fc648991342ae54747621afb0b89454b139795a6a8",
+        "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.5000295645366306,
+      "score_mean_ci_95": [
+        0.474766443004327,
+        0.5105668903290063
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 0,
+          "name": "no_op",
+          "proportion": 0.0
+        },
+        "1": {
+          "count": 0,
+          "name": "left",
+          "proportion": 0.0
+        },
+        "2": {
+          "count": 10976,
+          "name": "up",
+          "proportion": 0.3348383160463697
+        },
+        "3": {
+          "count": 0,
+          "name": "right",
+          "proportion": 0.0
+        },
+        "4": {
+          "count": 10900,
+          "name": "down",
+          "proportion": 0.3325198291641245
+        },
+        "5": {
+          "count": 10904,
+          "name": "fire",
+          "proportion": 0.3326418547895058
+        }
+      },
+      "standard_error_score": 0.00912924906387326
+    },
+    "gemini_argon_4_medium": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "e454ccc848b4f76f7f694f9b6d9523d8867cf2571bb6d2c7978c37d482d97963",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 282619,
+          "name": "no_op",
+          "proportion": 0.1029749976316614
+        },
+        "1": {
+          "count": 1230422,
+          "name": "left",
+          "proportion": 0.44831629344079515
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 1231499,
+          "name": "right",
+          "proportion": 0.4487087089275434
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7910,
+      "maximum_score": 475.0,
+      "mean_episode_length": 914.8466666666667,
+      "mean_score": 60.322,
+      "median_episode_length": 558.0,
+      "median_score": 38.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "382d63a7df6f412624aabb1d0391c2ae9c076e6f316dab1e7e0dd0612912e466",
+        "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 65.45762407478983,
+      "score_mean_ci_95": [
+        57.97872633291217,
+        62.66527366708784
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 282620,
+          "name": "no_op",
+          "proportion": 0.10297536199144483
+        },
+        "1": {
+          "count": 1230328,
+          "name": "left",
+          "proportion": 0.44828204362115326
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 1231592,
+          "name": "right",
+          "proportion": 0.4487425943874019
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 1.1950872422151873
+    },
+    "gpt6_luna_extra_high": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "be863a95f8b2104c6a1d5697668931bba75dd88f3aff403f4509e139e661f105",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 14499,
+          "name": "no_op",
+          "proportion": 0.258578256527322
+        },
+        "1": {
+          "count": 20077,
+          "name": "left",
+          "proportion": 0.35805749750321014
+        },
+        "2": {
+          "count": 4,
+          "name": "up",
+          "proportion": 7.133685261806249e-05
+        },
+        "3": {
+          "count": 21469,
+          "name": "right",
+          "proportion": 0.3828827222142959
+        },
+        "4": {
+          "count": 5,
+          "name": "down",
+          "proportion": 8.917106577257812e-05
+        },
+        "5": {
+          "count": 18,
+          "name": "fire",
+          "proportion": 0.0003210158367812812
+        }
+      },
+      "maximum_episode_length": 104,
+      "maximum_score": 9.0,
+      "mean_episode_length": 18.690666666666665,
+      "mean_score": 1.23,
+      "median_episode_length": 16.0,
+      "median_score": 1.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "205e8fd0085e4e6e3d8a83b4fc102a65a220743ca6a695c15ad073ef3a8e8788",
+        "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 1.270027948641332,
+      "score_mean_ci_95": [
+        1.1845351196200382,
+        1.2754648803799618
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 14328,
+          "name": "no_op",
+          "proportion": 0.25552860607789984
+        },
+        "1": {
+          "count": 20141,
+          "name": "left",
+          "proportion": 0.3591988871450992
+        },
+        "2": {
+          "count": 3,
+          "name": "up",
+          "proportion": 5.350263946354687e-05
+        },
+        "3": {
+          "count": 21580,
+          "name": "right",
+          "proportion": 0.38486231987444713
+        },
+        "4": {
+          "count": 6,
+          "name": "down",
+          "proportion": 0.00010700527892709374
+        },
+        "5": {
+          "count": 14,
+          "name": "fire",
+          "proportion": 0.0002496789841632187
+        }
+      },
+      "standard_error_score": 0.02318743187109567
+    },
+    "gpt6_original": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "199668720a3cae99e6d7d1d1c72bbdcb2f6869188c3d99a5b5fa96d48fdbef7f",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 58764,
+          "name": "no_op",
+          "proportion": 0.5986796527975875
+        },
+        "1": {
+          "count": 18980,
+          "name": "left",
+          "proportion": 0.1933656628224459
+        },
+        "2": {
+          "count": 2,
+          "name": "up",
+          "proportion": 2.0375728432291456e-05
+        },
+        "3": {
+          "count": 20406,
+          "name": "right",
+          "proportion": 0.2078935571946697
+        },
+        "4": {
+          "count": 1,
+          "name": "down",
+          "proportion": 1.0187864216145728e-05
+        },
+        "5": {
+          "count": 3,
+          "name": "fire",
+          "proportion": 3.056359264843718e-05
+        }
+      },
+      "maximum_episode_length": 178,
+      "maximum_score": 17.0,
+      "mean_episode_length": 32.718666666666664,
+      "mean_score": 2.516,
+      "median_episode_length": 28.0,
+      "median_score": 2.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "300413380b0d284fb10968ff000f7eb9272ec816feda06729bd4e71a6e208002",
+        "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 1.9799959919259131,
+      "score_mean_ci_95": [
+        2.4451194488892796,
+        2.5868805511107205
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 58614,
+          "name": "no_op",
+          "proportion": 0.5971514731651657
+        },
+        "1": {
+          "count": 19096,
+          "name": "left",
+          "proportion": 0.1945474550715188
+        },
+        "2": {
+          "count": 2,
+          "name": "up",
+          "proportion": 2.0375728432291456e-05
+        },
+        "3": {
+          "count": 20440,
+          "name": "right",
+          "proportion": 0.20823994457801867
+        },
+        "4": {
+          "count": 1,
+          "name": "down",
+          "proportion": 1.0187864216145728e-05
+        },
+        "5": {
+          "count": 3,
+          "name": "fire",
+          "proportion": 3.056359264843718e-05
+        }
+      },
+      "standard_error_score": 0.036149615618254645
+    },
+    "ppo_trained_baseline": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "0a7932b3b8ccaebb6fdf46451374399fe66da0f51d4f52be738bc722093b04b8",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 35592,
+          "name": "no_op",
+          "proportion": 0.17506271211450494
+        },
+        "1": {
+          "count": 22044,
+          "name": "left",
+          "proportion": 0.10842555703113473
+        },
+        "2": {
+          "count": 35053,
+          "name": "up",
+          "proportion": 0.17241158821504107
+        },
+        "3": {
+          "count": 23522,
+          "name": "right",
+          "proportion": 0.11569524371649206
+        },
+        "4": {
+          "count": 41602,
+          "name": "down",
+          "proportion": 0.20462348138310954
+        },
+        "5": {
+          "count": 45497,
+          "name": "fire",
+          "proportion": 0.22378141753971767
+        }
+      },
+      "maximum_episode_length": 80,
+      "maximum_score": 7.0,
+      "mean_episode_length": 67.77,
+      "mean_score": 5.797,
+      "median_episode_length": 70.0,
+      "median_score": 6.0,
+      "metadata": {
+        "condition_class": "trained_baseline",
+        "episode_scores_sha256": "8076f8fedce248fbe865f084b8ff7dd287f2d158db0588b2b7ba8e75b67c59a1",
+        "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.9543381233877489,
+      "score_mean_ci_95": [
+        5.762836288352332,
+        5.831163711647667
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 35307,
+          "name": "no_op",
+          "proportion": 0.17366091190792385
+        },
+        "1": {
+          "count": 22127,
+          "name": "left",
+          "proportion": 0.10883380060006886
+        },
+        "2": {
+          "count": 35119,
+          "name": "up",
+          "proportion": 0.17273621563130195
+        },
+        "3": {
+          "count": 23601,
+          "name": "right",
+          "proportion": 0.1160838128965619
+        },
+        "4": {
+          "count": 41591,
+          "name": "down",
+          "proportion": 0.20456937681373272
+        },
+        "5": {
+          "count": 45565,
+          "name": "fire",
+          "proportion": 0.2241158821504107
+        }
+      },
+      "standard_error_score": 0.017423750588887288
+    },
+    "random_action_control": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "637f01360dbade47d10ace401eade731853d10be6531b121801da71d7fd15bba",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 5832,
+          "name": "no_op",
+          "proportion": 0.1765133171912833
+        },
+        "1": {
+          "count": 5585,
+          "name": "left",
+          "proportion": 0.16903753026634383
+        },
+        "2": {
+          "count": 5326,
+          "name": "up",
+          "proportion": 0.16119854721549637
+        },
+        "3": {
+          "count": 5476,
+          "name": "right",
+          "proportion": 0.16573849878934624
+        },
+        "4": {
+          "count": 5488,
+          "name": "down",
+          "proportion": 0.16610169491525423
+        },
+        "5": {
+          "count": 5333,
+          "name": "fire",
+          "proportion": 0.16141041162227604
+        }
+      },
+      "maximum_episode_length": 80,
+      "maximum_score": 7.0,
+      "mean_episode_length": 11.013333333333334,
+      "mean_score": 0.49166666666666664,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "random_control",
+        "episode_scores_sha256": "c47a86dbed6b1addf32ba7838a4c93ec6c3966c2f12170a65928bd284ce8cdcc",
+        "weight_sha256": null
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.7207198030906865,
+      "score_mean_ci_95": [
+        0.46586610088380964,
+        0.5174672324495236
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 5497,
+          "name": "no_op",
+          "proportion": 0.16637409200968523
+        },
+        "1": {
+          "count": 5641,
+          "name": "left",
+          "proportion": 0.17073244552058112
+        },
+        "2": {
+          "count": 5421,
+          "name": "up",
+          "proportion": 0.1640738498789346
+        },
+        "3": {
+          "count": 5524,
+          "name": "right",
+          "proportion": 0.16719128329297822
+        },
+        "4": {
+          "count": 5538,
+          "name": "down",
+          "proportion": 0.16761501210653754
+        },
+        "5": {
+          "count": 5419,
+          "name": "fire",
+          "proportion": 0.1640133171912833
+        }
+      },
+      "standard_error_score": 0.01315848312644835
+    },
+    "zero_weight_control": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "c191ce0ccc4a7c4c545e58c202108f4eac58b03f8a2cb7716817a06f20c9d5a6",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 5903,
+          "name": "no_op",
+          "proportion": 0.17430461229551764
+        },
+        "1": {
+          "count": 5544,
+          "name": "left",
+          "proportion": 0.16370400992145515
+        },
+        "2": {
+          "count": 5589,
+          "name": "up",
+          "proportion": 0.16503277623575266
+        },
+        "3": {
+          "count": 5489,
+          "name": "right",
+          "proportion": 0.16207996220398038
+        },
+        "4": {
+          "count": 5828,
+          "name": "down",
+          "proportion": 0.17209000177168843
+        },
+        "5": {
+          "count": 5513,
+          "name": "fire",
+          "proportion": 0.16278863757160575
+        }
+      },
+      "maximum_episode_length": 60,
+      "maximum_score": 5.0,
+      "mean_episode_length": 11.288666666666666,
+      "mean_score": 0.518,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "zero_weight_control",
+        "episode_scores_sha256": "bd42aa85035b89085001a46d7842e879dcb747ac9d644c631ffb0d977871fbbe",
+        "weight_sha256": "in-memory-zero-tensors"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.7553362458411665,
+      "score_mean_ci_95": [
+        0.49096022335527656,
+        0.5450397766447235
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 5602,
+          "name": "no_op",
+          "proportion": 0.16541664205988307
+        },
+        "1": {
+          "count": 5617,
+          "name": "left",
+          "proportion": 0.16585956416464892
+        },
+        "2": {
+          "count": 5706,
+          "name": "up",
+          "proportion": 0.16848756865292625
+        },
+        "3": {
+          "count": 5572,
+          "name": "right",
+          "proportion": 0.16453079785035138
+        },
+        "4": {
+          "count": 5845,
+          "name": "down",
+          "proportion": 0.1725919801570897
+        },
+        "5": {
+          "count": 5524,
+          "name": "fire",
+          "proportion": 0.1631134471151007
+        }
+      },
+      "standard_error_score": 0.01379049001161582
+    }
+  },
+  "dataset": "phase2_corrected_full"
+}

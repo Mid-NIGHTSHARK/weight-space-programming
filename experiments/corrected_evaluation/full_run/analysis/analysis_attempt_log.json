@@ -1,0 +1,15 @@
+{
+  "attempts": [
+    {
+      "analysis_code_commit": "b8be6dc0134b80d6fefb69005ff364f799d1d793",
+      "attempt": 1,
+      "corrective_action": "Correct the registry key and rerun analysis on the unchanged full_run episode CSVs; no episodes were resumed or regenerated.",
+      "error_message": "'condition_id'",
+      "error_type": "KeyError",
+      "evaluation_csvs_modified": false,
+      "status": "failed_before_artifact_generation",
+      "timestamp_utc": "2026-11-06T15:34:17.525559+00:00",
+      "traceback": "scripts/analyze_corrected_evaluation.py -> evaluation/corrected_analysis.py: analyze_run; the excluded-condition list referenced item[\"condition_id\"] while the condition registry records item[\"id\"]."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+2026-11-06 20:49:19,388 INFO gemini_argon_4_medium episode 1/10
+2026-11-06 20:49:19,567 INFO Completed gemini_argon_4_medium (10 episodes)
+2026-11-06 20:49:19,568 INFO gpt6_original episode 1/10
+2026-11-06 20:49:19,580 INFO Completed gpt6_original (10 episodes)
+2026-11-06 20:49:19,586 INFO claude_sonnet_55 episode 1/10
+2026-11-06 20:49:19,634 INFO Completed claude_sonnet_55 (10 episodes)
+2026-11-06 20:49:19,635 INFO deepseek_original episode 1/10
+2026-11-06 20:49:19,642 INFO Completed deepseek_original (10 episodes)
+2026-11-06 20:49:19,643 INFO gpt6_luna_extra_high episode 1/10
+2026-11-06 20:49:19,652 INFO Completed gpt6_luna_extra_high (10 episodes)
+2026-11-06 20:49:20,266 INFO astra_local_reference episode 1/10
+2026-11-06 20:49:21,888 INFO Completed astra_local_reference (10 episodes)
+2026-11-06 20:49:21,893 INFO ppo_trained_baseline episode 1/10
+2026-11-06 20:49:21,918 INFO Completed ppo_trained_baseline (10 episodes)
+2026-11-06 20:49:21,920 INFO random_action_control episode 1/10
+2026-11-06 20:49:21,924 INFO Completed random_action_control (10 episodes)
+2026-11-06 20:49:21,925 INFO zero_weight_control episode 1/10
+2026-11-06 20:49:21,931 INFO Completed zero_weight_control (10 episodes)

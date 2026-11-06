@@ -1,0 +1,304 @@
+{
+  "completed_at_utc": "2026-11-06T15:05:19.292819+00:00",
+  "condition_csv_sha256": {
+    "astra_local_reference": "b7bbc44c0be82463f0a2da744dae083d860b08da42cc585acb68e811f5a33519",
+    "claude_sonnet_55": "4c7421acfed8aeed99d8aa62a9118d727115449c69de8d0b2200b9a9230c8b40",
+    "deepseek_original": "89165f0f59a83018e34967f3ea2b97f5d2463cbee5e24308ba0cd445a31f079f",
+    "gemini_argon_4_medium": "9476fce5fad5a10ba7bc83e5d7111ee1c9a4f9bc123fb92be5a04fd052570c0f",
+    "gpt6_luna_extra_high": "a62085b4719bf80b6c62d70cf0d51a7e465af82ab989dbea72c5c6b283085f08",
+    "gpt6_original": "d16f8231e02ab3798bf312f41b92172d4196b9d1652dfd8d5ba08182e0bd2420",
+    "ppo_trained_baseline": "d904cf562d78c57eb71abd2ddda868cd417e847fc5a1e543d360233842b76b96",
+    "random_action_control": "3dea5372133e35c6e9e189f18b808f6cb12a3dcaa04c8ed63d5bdbdf0597f098",
+    "zero_weight_control": "9e91ae1bb108a29c09568ada59834e42e1fb3d49b6bfb1024abb6d4e13e65402"
+  },
+  "condition_registry_sha256": "03106c926e23d874f5b224eba612da259e844979871a8658039ff1ac175b3d9b",
+  "conditions": [
+    {
+      "class": "primary_zero_shot",
+      "id": "gemini_argon_4_medium",
+      "label": "Gemini Argon 4 Medium",
+      "weight_path": "experiments/strict_replication/generation_001/output/argon_weights.npz",
+      "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "gpt6_original",
+      "label": "GPT-6 Original",
+      "weight_path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz",
+      "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "claude_sonnet_55",
+      "label": "Claude Sonnet 5.5",
+      "weight_path": "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz",
+      "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "deepseek_original",
+      "label": "DeepSeek Original",
+      "weight_path": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz",
+      "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "gpt6_luna_extra_high",
+      "label": "GPT-6 Luna Extra High",
+      "weight_path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz",
+      "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+    },
+    {
+      "class": "reference",
+      "id": "astra_local_reference",
+      "label": "Astra reference (local reevaluation)",
+      "weight_path": "experiments/reference/hand.npz",
+      "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+    },
+    {
+      "class": "trained_baseline",
+      "id": "ppo_trained_baseline",
+      "label": "Trained PPO baseline",
+      "weight_path": "experiments/trained_baseline/trained_actor_weights.npz",
+      "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+    },
+    {
+      "class": "random_control",
+      "id": "random_action_control",
+      "label": "Random-action control",
+      "weight_path": null,
+      "weight_sha256": null
+    },
+    {
+      "class": "zero_weight_control",
+      "id": "zero_weight_control",
+      "label": "Zero-weight control",
+      "weight_path": null,
+      "weight_sha256": "in-memory-zero-tensors"
+    }
+  ],
+  "dataset": "phase2_corrected_pilot",
+  "episode_count_per_condition": 10,
+  "episode_seeds_file": "episode_seeds.csv",
+  "evaluation_config": {
+    "action_distribution": "categorical softmax sampling, temperature 1.0",
+    "environment_rng": "MinAtar 1.0.15 RandomState seeded by environment_seed",
+    "max_episode_steps": 10000,
+    "minatar_version": "1.0.15",
+    "policy_rng": "separate numpy.random.RandomState(policy_seed); np.random.choice(p=softmax, temperature=1.0)",
+    "rng_protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "sticky_action_probability": 0.1
+  },
+  "failure_policy": "failed run is retained; no implicit resume; reruns require a new output directory",
+  "pilot_is_software_validation_only": true,
+  "replay_checks": [
+    {
+      "base_seed": 1608637543,
+      "condition_id": "gemini_argon_4_medium",
+      "seed_group": 42,
+      "trajectory_sha256": "2802289f34f73bc1b47d32500d0eff45e8b956ae0202d9ab40f4f29a8aa225ff",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "gemini_argon_4_medium",
+      "seed_group": 100,
+      "trajectory_sha256": "ed24186faf28ed79dbb57ff261ff74fecb75c8dba1696bb81f3e7331da81ac52",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "gemini_argon_4_medium",
+      "seed_group": 200,
+      "trajectory_sha256": "e5a95920a7530e4c4d79a6e7b0eaa7514a0cc584ddfd42b762315317dd668dbe",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "gpt6_original",
+      "seed_group": 42,
+      "trajectory_sha256": "4cc385ccffacc69c11f6e1cadfa1d0a2ec605ff3ee8ec507e6869776f8b74562",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "gpt6_original",
+      "seed_group": 100,
+      "trajectory_sha256": "f15521bf25ad67ff0024c1292048827e58ea78a28113cfe5f0fa3d53e3911588",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "gpt6_original",
+      "seed_group": 200,
+      "trajectory_sha256": "7a0320cc157719092cd31dc2c23b9b29fdf6244853b97f0c28af789872cb9e0c",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "claude_sonnet_55",
+      "seed_group": 42,
+      "trajectory_sha256": "2bbc787893f039a35192116a44b3d3ff3c7616ecc247f64b97df1c7c27f4d0ce",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "claude_sonnet_55",
+      "seed_group": 100,
+      "trajectory_sha256": "c13b358369d76a9f15928d3bf287b162479aa7d475371bf0c47e420e11dd91c9",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "claude_sonnet_55",
+      "seed_group": 200,
+      "trajectory_sha256": "e5a95920a7530e4c4d79a6e7b0eaa7514a0cc584ddfd42b762315317dd668dbe",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "deepseek_original",
+      "seed_group": 42,
+      "trajectory_sha256": "a5d4572e41df86a3c5a55835e7a5f5e72f2eb12e628ddf80188cbf78e8cc95cc",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "deepseek_original",
+      "seed_group": 100,
+      "trajectory_sha256": "0a81d127d5a211c51264d9bea89fb2bbd3f6b52a64764289f586a752f61d3bef",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "deepseek_original",
+      "seed_group": 200,
+      "trajectory_sha256": "984c3c30207fff8f162ad46e061e2a3458947a49a328a93356364c9addf6185c",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "gpt6_luna_extra_high",
+      "seed_group": 42,
+      "trajectory_sha256": "4cc385ccffacc69c11f6e1cadfa1d0a2ec605ff3ee8ec507e6869776f8b74562",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "gpt6_luna_extra_high",
+      "seed_group": 100,
+      "trajectory_sha256": "4845c059348a0893774c5a5ad43b33ae056d2784b22b1a195312cbbe66227fdc",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "gpt6_luna_extra_high",
+      "seed_group": 200,
+      "trajectory_sha256": "4aaa58b8dd106ff7d9e734debbc059254053e1231ee8aeaec2129133ddddb2e5",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "astra_local_reference",
+      "seed_group": 42,
+      "trajectory_sha256": "95b03647b687b660e39bfd83aa22c1c4ec0b14518325fb350bdcaee9fe254488",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "astra_local_reference",
+      "seed_group": 100,
+      "trajectory_sha256": "7042e06daacc155b328454fd5decdc1e34ae3f4c6c1f298f19edc177c0b10246",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "astra_local_reference",
+      "seed_group": 200,
+      "trajectory_sha256": "aa46c3c646342d72743f4ee9ebf1b1c674467cf8ff15127ccfa7623ec19e7cef",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "ppo_trained_baseline",
+      "seed_group": 42,
+      "trajectory_sha256": "e31712853b17e137e4363a4089fad1d3bca18875422208843dfa684369a225a3",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "ppo_trained_baseline",
+      "seed_group": 100,
+      "trajectory_sha256": "43ab14dc3db8869d6f014494c6b283ec19ab7ac555a87661068a269e1d013bb3",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "ppo_trained_baseline",
+      "seed_group": 200,
+      "trajectory_sha256": "bceb3514b27cef56da29ee79e6de2b4d42c25354fcd2c55366eb5d6ab549063b",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "random_action_control",
+      "seed_group": 42,
+      "trajectory_sha256": "7df1f641a9178ce8e4da1d6270802cc672c9287ca491eb2cf0f361121b04269c",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "random_action_control",
+      "seed_group": 100,
+      "trajectory_sha256": "115f48df992cf2b595e90cd1a025707fb007876d4a99c10d10d217dc596af87b",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "random_action_control",
+      "seed_group": 200,
+      "trajectory_sha256": "4d829c8c904df02d734a4e4fca18740fe800df6bc106d74a73eb93637103c0a4",
+      "verified": true
+    },
+    {
+      "base_seed": 1608637543,
+      "condition_id": "zero_weight_control",
+      "seed_group": 42,
+      "trajectory_sha256": "e49d9f266cd752ef28134903d5cb537f931aa08d45c49325b1f140d7f0d0bdac",
+      "verified": true
+    },
+    {
+      "base_seed": 186422793,
+      "condition_id": "zero_weight_control",
+      "seed_group": 100,
+      "trajectory_sha256": "05ad047eb4ceae9674e242765324fb21bf026d7856dd25c83f50b88a87ab1736",
+      "verified": true
+    },
+    {
+      "base_seed": 1922565915,
+      "condition_id": "zero_weight_control",
+      "seed_group": 200,
+      "trajectory_sha256": "c30811a46924493dea178a8eb97b067752d98853fdf80e795c78549b4b594747",
+      "verified": true
+    }
+  ],
+  "run_kind": "pilot",
+  "runtime_versions": {
+    "minatar": "1.0.15",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pytest": "9.2.0",
+    "python": "3.12.15 (main, Oct  3 2026, 00:54:33) [Clang 22.1.3 ]",
+    "scipy": "1.18.1",
+    "torch": "2.15.0"
+  },
+  "schema_version": 1,
+  "seed_groups": [
+    42,
+    100,
+    200
+  ],
+  "source_commit": "c1c5f7e23edd11a859f33ee7bc2bcbfdab35a891",
+  "started_at_utc": "2026-11-06T15:05:16.730972+00:00",
+  "status": "pilot_complete"
+}

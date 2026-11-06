@@ -1,0 +1,110 @@
+[
+  {
+    "condition_class": "reference",
+    "condition_id": "astra_local_reference",
+    "cutoff_percentage": 49.46666666666666,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 504.8523333333333,
+    "model": "Astra reference (local reevaluation)",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 4.447042389695199,
+    "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+  },
+  {
+    "condition_class": "primary_zero_shot",
+    "condition_id": "gemini_argon_4_medium",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 60.322,
+    "model": "Gemini Argon 4 Medium",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 1.1950872422151873,
+    "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+  },
+  {
+    "condition_class": "primary_zero_shot",
+    "condition_id": "claude_sonnet_55",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 10.586666666666666,
+    "model": "Claude Sonnet 5.5",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.2060066835290228,
+    "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+  },
+  {
+    "condition_class": "trained_baseline",
+    "condition_id": "ppo_trained_baseline",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 5.797,
+    "model": "Trained PPO baseline",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.017423750588887288,
+    "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+  },
+  {
+    "condition_class": "primary_zero_shot",
+    "condition_id": "gpt6_original",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 2.516,
+    "model": "GPT-6 Original",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.036149615618254645,
+    "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+  },
+  {
+    "condition_class": "primary_zero_shot",
+    "condition_id": "gpt6_luna_extra_high",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 1.23,
+    "model": "GPT-6 Luna Extra High",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.02318743187109567,
+    "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+  },
+  {
+    "condition_class": "zero_weight_control",
+    "condition_id": "zero_weight_control",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 0.518,
+    "model": "Zero-weight control",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.01379049001161582,
+    "weight_sha256": "in-memory-zero-tensors"
+  },
+  {
+    "condition_class": "primary_zero_shot",
+    "condition_id": "deepseek_original",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 0.49266666666666664,
+    "model": "DeepSeek Original",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.00912924906387326,
+    "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+  },
+  {
+    "condition_class": "random_control",
+    "condition_id": "random_action_control",
+    "cutoff_percentage": 0.0,
+    "dataset": "phase2_corrected_full",
+    "episodes": 3000,
+    "mean_score": 0.49166666666666664,
+    "model": "Random-action control",
+    "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+    "se_score": 0.01315848312644835,
+    "weight_sha256": null
+  }
+]

@@ -1,0 +1,196 @@
+{
+  "analysis_artifact_sha256": {
+    "analysis.json": "e29234d5b446e259ff1d3abd346ea3b64f7d81a239f26a9e52e403c3067c9bc1",
+    "analysis_attempt_log.json": "f948cc0d6b35019bfb231a126fa959a33a37ca70cf028cd1b003f9f4c1456126",
+    "analysis_report.md": "3f5bce90f1654308424ccbe9ac71c22195acc6d943eac601e28d441f5aa5d546",
+    "comparative_metrics.json": "0e9ceb29ce82f45a8496300528968c04bd6f9ef4bd4ad37479575d6430a05d9d",
+    "condition_metrics.json": "bfe30618860f004091c22ef9b7e21e69e4729967d363c952bef7b8a234757ad1",
+    "corrected_vs_original.json": "5d374c26298017db837e354bdaa5b1d4821b7db1a7bb5ed907ee28ceca89bddb",
+    "paired_comparisons.json": "f49e8a57858e185f87c735521b58e5527ea1e2534c58ac43317b11ccaafb46e9"
+  },
+  "analysis_completed_at_utc": "2026-11-06T15:35:11.550252+00:00",
+  "analysis_method": {
+    "bootstrap_resamples": 9999,
+    "condition_ci": "two-sided Student-t interval for the episode mean; sample standard deviation uses ddof=1",
+    "effect_size": "paired Cohen dz: mean within-pair score difference divided by its sample standard deviation",
+    "equivalence_testing": "omitted; no independently justified, pre-registered margin",
+    "p_value_correction": "Holm step-down family-wise correction across every pairwise condition comparison",
+    "paired_ci": "percentile paired bootstrap interval for the mean score difference, resampling matched episode pairs",
+    "paired_test": "two-sided paired sign-flip permutation test of the mean difference under within-pair exchangeability",
+    "permutation_resamples": 19999,
+    "random_seed": 20261106
+  },
+  "analysis_source_commit": "3fa7ba5c786454f6bd71f375e7bf952edd9870a6",
+  "completed_at_utc": "2026-11-06T15:32:36.161008+00:00",
+  "condition_csv_sha256": {
+    "astra_local_reference": "95739181a6b781ce3ef3318aef4a6660645038a91aec31b33e11bc69ceb56872",
+    "claude_sonnet_55": "86d5a91027649e8d07f898d8ad3e145494880e5fc06e4fc6671efb0c8b7fc3db",
+    "deepseek_original": "80211f3504025b24197768fc648991342ae54747621afb0b89454b139795a6a8",
+    "gemini_argon_4_medium": "382d63a7df6f412624aabb1d0391c2ae9c076e6f316dab1e7e0dd0612912e466",
+    "gpt6_luna_extra_high": "205e8fd0085e4e6e3d8a83b4fc102a65a220743ca6a695c15ad073ef3a8e8788",
+    "gpt6_original": "300413380b0d284fb10968ff000f7eb9272ec816feda06729bd4e71a6e208002",
+    "ppo_trained_baseline": "8076f8fedce248fbe865f084b8ff7dd287f2d158db0588b2b7ba8e75b67c59a1",
+    "random_action_control": "c47a86dbed6b1addf32ba7838a4c93ec6c3966c2f12170a65928bd284ce8cdcc",
+    "zero_weight_control": "bd42aa85035b89085001a46d7842e879dcb747ac9d644c631ffb0d977871fbbe"
+  },
+  "condition_registry_sha256": "03106c926e23d874f5b224eba612da259e844979871a8658039ff1ac175b3d9b",
+  "conditions": [
+    {
+      "class": "primary_zero_shot",
+      "id": "gemini_argon_4_medium",
+      "label": "Gemini Argon 4 Medium",
+      "weight_path": "experiments/strict_replication/generation_001/output/argon_weights.npz",
+      "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "gpt6_original",
+      "label": "GPT-6 Original",
+      "weight_path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz",
+      "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "claude_sonnet_55",
+      "label": "Claude Sonnet 5.5",
+      "weight_path": "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz",
+      "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "deepseek_original",
+      "label": "DeepSeek Original",
+      "weight_path": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz",
+      "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+    },
+    {
+      "class": "primary_zero_shot",
+      "id": "gpt6_luna_extra_high",
+      "label": "GPT-6 Luna Extra High",
+      "weight_path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz",
+      "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+    },
+    {
+      "class": "reference",
+      "id": "astra_local_reference",
+      "label": "Astra reference (local reevaluation)",
+      "weight_path": "experiments/reference/hand.npz",
+      "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+    },
+    {
+      "class": "trained_baseline",
+      "id": "ppo_trained_baseline",
+      "label": "Trained PPO baseline",
+      "weight_path": "experiments/trained_baseline/trained_actor_weights.npz",
+      "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+    },
+    {
+      "class": "random_control",
+      "id": "random_action_control",
+      "label": "Random-action control",
+      "weight_path": null,
+      "weight_sha256": null
+    },
+    {
+      "class": "zero_weight_control",
+      "id": "zero_weight_control",
+      "label": "Zero-weight control",
+      "weight_path": null,
+      "weight_sha256": "in-memory-zero-tensors"
+    }
+  ],
+  "dataset": "phase2_corrected_full",
+  "episode_count_per_condition": 3000,
+  "episode_seeds_file": "episode_seeds.csv",
+  "evaluation_config": {
+    "base_episode_seed_generation": "numpy.random.RandomState(seed_group).randint(1, 2**31 - 1, size=episodes_per_seed_group)",
+    "comparison_condition_ids": [
+      "astra_local_reference",
+      "ppo_trained_baseline",
+      "random_action_control",
+      "zero_weight_control"
+    ],
+    "conditions_registry": "condition_registry.json",
+    "dataset_id": "phase2_corrected_evaluation",
+    "environment": {
+      "maximum_episode_steps": 10000,
+      "name": "MinAtar Breakout",
+      "reset_last_action": 0,
+      "sticky_action_probability": 0.1,
+      "version": "1.0.15"
+    },
+    "episode_rng_derivation": "numpy.random.SeedSequence(base_episode_seed).spawn(2); child 0 derives environment_seed, child 1 derives policy_seed as uint32",
+    "episodes_per_seed_group": 1000,
+    "excluded_researcher_intervention_ids": [
+      "deepseek_corrected"
+    ],
+    "matching": "same base episode seed vector and derived seed triplets for every condition",
+    "pilot_episodes_by_seed_group": {
+      "100": 3,
+      "200": 3,
+      "42": 4
+    },
+    "pilot_episodes_per_condition": 10,
+    "policy": {
+      "action_selection": "categorical sampling from stable softmax probabilities",
+      "sampler": "numpy.random.RandomState(policy_seed).choice(action_count, p=probabilities)",
+      "temperature": 1.0
+    },
+    "primary_zero_shot_condition_ids": [
+      "gemini_argon_4_medium",
+      "gpt6_original",
+      "claude_sonnet_55",
+      "deepseek_original",
+      "gpt6_luna_extra_high"
+    ],
+    "rng_implementation": {
+      "action_distribution": "categorical softmax sampling, temperature 1.0",
+      "environment_rng": "MinAtar 1.0.15 RandomState seeded by environment_seed",
+      "max_episode_steps": 10000,
+      "minatar_version": "1.0.15",
+      "policy_rng": "separate numpy.random.RandomState(policy_seed); np.random.choice(p=softmax, temperature=1.0)",
+      "rng_protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "sticky_action_probability": 0.1
+    },
+    "schema_version": 1,
+    "seed_groups": [
+      42,
+      100,
+      200
+    ]
+  },
+  "evaluation_config_sha256": "50292561321d3de7faf18cb6ba28ec02c294442be73ff80ae4744da474cc030b",
+  "failure_policy": "failed run is retained; no implicit resume; reruns require a new output directory",
+  "pilot_is_software_validation_only": false,
+  "primary_zero_shot_ranking": [
+    "gemini_argon_4_medium",
+    "claude_sonnet_55",
+    "gpt6_original",
+    "gpt6_luna_extra_high",
+    "deepseek_original"
+  ],
+  "replay_checks": [],
+  "restarted_from": null,
+  "resumed": false,
+  "run_attempt": "fresh_start",
+  "run_kind": "full",
+  "runtime_versions": {
+    "matplotlib": "3.11.2",
+    "minatar": "1.0.15",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pytest": "9.2.0",
+    "python": "3.12.15 (main, Oct  3 2026, 00:54:33) [Clang 22.1.3 ]",
+    "scipy": "1.18.1",
+    "torch": "2.15.0"
+  },
+  "schema_version": 1,
+  "seed_groups": [
+    42,
+    100,
+    200
+  ],
+  "source_commit": "b8be6dc0134b80d6fefb69005ff364f799d1d793",
+  "started_at_utc": "2026-11-06T15:19:44.922072+00:00",
+  "status": "complete"
+}
