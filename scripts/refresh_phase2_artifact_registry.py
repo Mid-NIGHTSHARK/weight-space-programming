@@ -155,6 +155,7 @@ def main() -> None:
                 "tests/test_phase2_preservation.py",
                 "tests/test_legacy_trace_replay.py",
                 "tests/test_visualizer_data_integrity.py",
+                "tests/test_visualizer_gui.py",
                 "tests/test_deepseek_correction.py",
                 "visualize_comparison.py",
             ]
