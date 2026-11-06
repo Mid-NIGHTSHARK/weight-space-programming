@@ -414,7 +414,7 @@ def analyze_run(
             item for item in conditions if item["condition_class"] == "primary_zero_shot"
         ],
         "excluded_from_primary_zero_shot_ranking": [
-            item["condition_id"] for item in registry.values()
+            condition_id for condition_id, item in registry.items()
             if item["class"] != "primary_zero_shot"
         ],
     }
