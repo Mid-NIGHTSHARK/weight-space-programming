@@ -162,3 +162,4 @@ Why did Astra reach column 9 in the same scenario?
 The lower performance of Gemini Argon ($57.87$ vs. $508.06$) is **not** caused by environment bugs, evaluation harness errors, or sticky action bad luck. It is a **verified algorithmic limitation** of Gemini Argon's synthesized policy: Argon constructed a reactive proportional tracker that fails whenever a fast diagonal ricochet creates a displacement greater than $(9 - y)$ columns.
 
 **Status:** `VERIFIED DEFECT / EXPERIMENTAL LIMITATION` (in Gemini Argon's Policy)
+

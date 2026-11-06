@@ -117,3 +117,4 @@ The PPO training code is a verified, textbook implementation of clipped PPO with
 Its performance ($5.757 \pm 0.019$) is not an artifact of bugs or early stopping, but the true empirical capability of a shallow $600 \to 32 \to 32 \to 6$ feedforward MLP trained via gradient descent on MinAtar Breakout.
 
 **Status:** `VERIFIED CORRECT`
+

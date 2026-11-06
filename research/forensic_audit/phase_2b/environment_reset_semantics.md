@@ -138,3 +138,4 @@ The specification describes the physics of `minatar/environments/breakout.py`. I
 2. **Parity with continuous-leakage native object reuse:** **DIVERGENT BY DESIGN.** Our wrapper deliberately corrects native MinAtar's inter-episode leakage to preserve statistical independence across experimental seeds.
 
 **Status:** `VERIFIED CORRECT` (Mechanics Parity Confirmed; Reset Semantics Fully Characterized)
+
