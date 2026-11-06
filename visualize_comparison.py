@@ -1436,9 +1436,9 @@ terminal state; the last policy selection was Right. This does not support the p
 that a wall bounce caused a zero-velocity No-op.
 
 MINATAR PADDLE COLLISION
-The environment moves the paddle, then checks a descending ball's current horizontal
-coordinate and attempted next horizontal coordinate against the paddle position. A single
-target coordinate approximation can therefore miss the actual collision rule.
+The environment moves the paddle, computes and wall-clamps the ball's next horizontal
+coordinate, then checks both the ball's current x and clamped next x against the updated
+paddle position. A single target coordinate approximation can therefore miss the collision rule.
 
 DeepSeek's logits and selected-action distribution support a saturated, inert-action
 explanation for this particular policy in this environment. They do not establish a broader
