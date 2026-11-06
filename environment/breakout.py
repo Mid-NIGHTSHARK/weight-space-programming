@@ -92,9 +92,14 @@ class MinAtarBreakoutEnv:
         if self.terminal:
             raise RuntimeError("Cannot step in a terminal environment; please call reset()")
 
+        prev_action = self._minatar_env.last_action
         reward, done = self._minatar_env.act(action)
+        executed_action = self._minatar_env.last_action
+        sticky_override = (executed_action != action)
+
         self.step_count += 1
         self.total_reward += reward
+        self.last_action = executed_action
 
         # Check maximum step cutoff
         step_cutoff = self.step_count >= self.max_steps
@@ -111,6 +116,9 @@ class MinAtarBreakoutEnv:
             "ball_y": self._minatar_env.env.ball_y,
             "ball_dir": self._minatar_env.env.ball_dir,
             "bricks_remaining": int(np.count_nonzero(self._minatar_env.env.brick_map)),
+            "selected_action": action,
+            "executed_action": executed_action,
+            "sticky_override": sticky_override,
         }
         return obs, float(reward), self.terminal, info
 
