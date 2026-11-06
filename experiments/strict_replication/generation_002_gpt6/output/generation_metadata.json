@@ -1,0 +1,42 @@
+{
+  "experiment_id": "breakout_gpt6_generation_002",
+  "model_name": "GPT-6",
+  "model_identifier": "gpt-6-2026-11-06",
+  "interface": "ChatGPT Web Interface (https://chatgpt.com/)",
+  "timestamp_recorded_utc": "2026-11-06T15:56:00Z",
+  "tools_enabled": false,
+  "search_grounding_enabled": false,
+  "code_interpreter_enabled": false,
+  "one_shot": true,
+  "raw_artifacts": {
+    "original_rtf": "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt.rtf",
+    "original_rtf_sha256": "5b5526637c1f612db8ea9b4be439e92377199bae1561fda0d4e82b73c2280480",
+    "raw_response_text": "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt",
+    "raw_response_sha256": "b1fe5433c47c3ea433440622953b17c15bedc2fac65cd34d1c2aa6ada7a4fc7a"
+  },
+  "parsed_weights": {
+    "file": "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz",
+    "sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b",
+    "total_parameters": 20486,
+    "nonzero_parameters": 398,
+    "statements_total": 57,
+    "statements_applied": 51,
+    "errors": [
+      {
+        "line_number": 1,
+        "error_type": "RejectedNonAssignment",
+        "message": "Line does not start with an allowed tensor name ({'W1', 'W2', 'W3', 'b1', 'b2', 'b3'})"
+      },
+      {
+        "line_number": 2,
+        "error_type": "RejectedNonAssignment",
+        "message": "Line does not start with an allowed tensor name ({'W1', 'W2', 'W3', 'b1', 'b2', 'b3'})"
+      },
+      {
+        "line_number": 3,
+        "error_type": "RejectedNonAssignment",
+        "message": "Line does not start with an allowed tensor name ({'W1', 'W2', 'W3', 'b1', 'b2', 'b3'})"
+      }
+    ]
+  }
+}

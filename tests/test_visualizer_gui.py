@@ -218,3 +218,66 @@ def test_screenshot_capture_utility(tmp_path):
     assert res.returncode == 0, f"Screenshot subprocess failed with code {res.returncode}: {res.stderr}"
     assert os.path.exists(output_shot), f"Screenshot file was not created: {output_shot}"
     assert os.path.getsize(output_shot) > 1000, "Screenshot file is empty"
+
+
+def test_visualizer_state_with_gpt6():
+    """Verify VisualizerState correctly integrates GPT-6 alongside existing policies."""
+    from visualize_comparison import GPT6_DEFAULT_PATH
+
+    state = VisualizerState(
+        argon_weights_path=ARGON_WEIGHTS,
+        trained_weights_path=TRAINED_WEIGHTS,
+        astra_weights_path=ASTRA_REFERENCE_PATH,
+        gpt6_weights_path=GPT6_DEFAULT_PATH,
+        initial_seed=42,
+    )
+    assert state.has_gpt6 is True
+    assert state.has_astra is True
+    assert len(state.gpt6_probs) == NUM_ACTIONS
+    assert np.isclose(np.sum(state.gpt6_probs), 1.0, atol=1e-6)
+    assert (state.gpt6_probs >= 0.0).all()
+
+    # Step simulation
+    argon_done, trained_done, astra_done, gpt6_done = state.step()
+    assert state.env_gpt6.step_count == 1
+    assert state.env_argon.step_count == 1
+    assert state.env_astra.step_count == 1
+    assert state.env_trained.step_count == 1
+
+
+def test_visualizer_gui_4way():
+    """Verify that BreakoutVisualizerGUI constructs and renders the GPT-6 panel in 4-way mode."""
+    from visualize_comparison import GPT6_DEFAULT_PATH
+
+    state = VisualizerState(
+        argon_weights_path=ARGON_WEIGHTS,
+        trained_weights_path=TRAINED_WEIGHTS,
+        astra_weights_path=ASTRA_REFERENCE_PATH,
+        gpt6_weights_path=GPT6_DEFAULT_PATH,
+        initial_seed=42,
+    )
+    root = tk.Tk()
+    root.withdraw()
+    app = BreakoutVisualizerGUI(state, root, initial_fps=30)
+    app.is_running.set(False)
+
+    try:
+        assert hasattr(app, "gpt6_panel")
+        assert app.gpt6_panel["canvas_board"] is not None
+        assert app.gpt6_panel["canvas_probs"] is not None
+        assert "GPT-6" in app.gpt6_panel["title_label"].cget("text")
+
+        # Verify redraw executes cleanly with 4 panels
+        app.redraw()
+
+        # Step single frame via app
+        initial_steps = app.state.env_gpt6.step_count
+        app.btn_step.invoke()
+        assert app.state.env_gpt6.step_count == initial_steps + 1
+
+        # Verify benchmark window can open without errors
+        app.show_benchmark_summary()
+        app.show_argon_high_info()
+    finally:
+        root.destroy()
+

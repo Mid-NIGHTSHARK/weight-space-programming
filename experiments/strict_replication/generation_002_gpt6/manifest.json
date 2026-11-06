@@ -1,0 +1,36 @@
+{
+  "condition_id": "generation_002_gpt6",
+  "model_family": "GPT-6",
+  "model_version": "ChatGPT (November 6, 2026)",
+  "generation_date_utc": "2026-11-06T15:56:00Z",
+  "files": {
+    "prompt": {
+      "path": "experiments/strict_replication/generation_002_gpt6/input/experiment_5_prompt.txt",
+      "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+      "size_bytes": 9973
+    },
+    "raw_response_rtf": {
+      "path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt.rtf",
+      "sha256": "5b5526637c1f612db8ea9b4be439e92377199bae1561fda0d4e82b73c2280480",
+      "size_bytes": 5042
+    },
+    "raw_response_txt": {
+      "path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt",
+      "sha256": "b1fe5433c47c3ea433440622953b17c15bedc2fac65cd34d1c2aa6ada7a4fc7a",
+      "size_bytes": 4311
+    },
+    "parsed_weights_npz": {
+      "path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz",
+      "sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b",
+      "size_bytes": 83574
+    }
+  },
+  "parser_summary": {
+    "statements_total": 57,
+    "statements_applied": 51,
+    "entries_written": 246,
+    "nonzero_parameters": 398,
+    "total_parameters": 20486,
+    "rejected_lines": 3
+  }
+}

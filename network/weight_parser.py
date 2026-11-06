@@ -197,72 +197,7 @@ class SafeASTWeightParser:
         for stmt in statements:
             lineno = getattr(stmt, "lineno", 0)
             raw_line = ast.unparse(stmt) if hasattr(ast, "unparse") else str(stmt)
-
-            try:
-                if isinstance(stmt, ast.Assign):
-                    if len(stmt.targets) != 1:
-                        raise WeightParserSyntaxError("Chained or multiple assignments not allowed")
-                    target = stmt.targets[0]
-                    if not isinstance(target, ast.Subscript):
-                        raise WeightParserSyntaxError("Target must be a tensor subscript (e.g., W1[...])")
-                    if not isinstance(target.value, ast.Name) or target.value.id not in ALLOWED_TENSORS:
-                        raise WeightParserSecurityError(f"Target identifier must be one of {ALLOWED_TENSORS}")
-
-                    tensor_name = target.value.id
-                    slice_expr = self._parse_subscript_slice(target.slice)
-                    val = np.asarray(self._eval_literal_node(stmt.value), dtype=np.float32)
-
-                    # Apply assignment
-                    weights[tensor_name][slice_expr] = val
-                    touched_tensors.add(tensor_name)
-                    report.statements_applied += 1
-                    report.entries_written += int(val.size)
-
-                elif isinstance(stmt, ast.AugAssign):
-                    target = stmt.target
-                    if not isinstance(target, ast.Subscript):
-                        raise WeightParserSyntaxError("Target must be a tensor subscript")
-                    if not isinstance(target.value, ast.Name) or target.value.id not in ALLOWED_TENSORS:
-                        raise WeightParserSecurityError(f"Target identifier must be one of {ALLOWED_TENSORS}")
-
-                    tensor_name = target.value.id
-                    slice_expr = self._parse_subscript_slice(target.slice)
-                    val = np.asarray(self._eval_literal_node(stmt.value), dtype=np.float32)
-
-                    if isinstance(stmt.op, ast.Add):
-                        weights[tensor_name][slice_expr] += val
-                    elif isinstance(stmt.op, ast.Sub):
-                        weights[tensor_name][slice_expr] -= val
-                    elif isinstance(stmt.op, ast.Mult):
-                        weights[tensor_name][slice_expr] *= val
-                    elif isinstance(stmt.op, ast.Div):
-                        weights[tensor_name][slice_expr] /= val
-                    else:
-                        raise WeightParserSecurityError(f"Unsupported operator: {type(stmt.op).__name__}")
-
-                    touched_tensors.add(tensor_name)
-                    report.statements_applied += 1
-                    report.entries_written += int(val.size)
-
-                elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
-                    # Docstring / standalone comment literal, ignore safely
-                    pass
-
-                else:
-                    raise WeightParserSecurityError(
-                        f"Unauthorized statement construct: {type(stmt).__name__}"
-                    )
-
-            except Exception as exc:
-                err = ParseErrorRecord(
-                    line_number=lineno,
-                    raw_statement=raw_line,
-                    error_type=type(exc).__name__,
-                    message=str(exc),
-                )
-                report.errors.append(err)
-                if self.strict:
-                    raise
+            self._apply_statement(stmt, weights, touched_tensors, report, lineno, raw_line)
 
         # Finalize report metrics
         report.tensors_touched = list(touched_tensors)
@@ -274,6 +209,82 @@ class SafeASTWeightParser:
             report.max_abs[name] = float(np.max(np.abs(arr))) if arr.size > 0 else 0.0
 
         return weights, report
+
+    def _apply_statement(
+        self,
+        stmt: ast.AST,
+        weights: Dict[str, np.ndarray],
+        touched_tensors: set,
+        report: ParseReport,
+        lineno: int,
+        raw_line: str,
+    ) -> None:
+        """Validate and apply an individual AST assignment/augassign statement."""
+        try:
+            if isinstance(stmt, ast.Assign):
+                if len(stmt.targets) != 1:
+                    raise WeightParserSyntaxError("Chained or multiple assignments not allowed")
+                target = stmt.targets[0]
+                if not isinstance(target, ast.Subscript):
+                    raise WeightParserSyntaxError("Target must be a tensor subscript (e.g., W1[...])")
+                if not isinstance(target.value, ast.Name) or target.value.id not in ALLOWED_TENSORS:
+                    raise WeightParserSecurityError(f"Target identifier must be one of {ALLOWED_TENSORS}")
+
+                tensor_name = target.value.id
+                slice_expr = self._parse_subscript_slice(target.slice)
+                val = np.asarray(self._eval_literal_node(stmt.value), dtype=np.float32)
+
+                # Apply assignment
+                weights[tensor_name][slice_expr] = val
+                touched_tensors.add(tensor_name)
+                report.statements_applied += 1
+                report.entries_written += int(val.size)
+
+            elif isinstance(stmt, ast.AugAssign):
+                target = stmt.target
+                if not isinstance(target, ast.Subscript):
+                    raise WeightParserSyntaxError("Target must be a tensor subscript")
+                if not isinstance(target.value, ast.Name) or target.value.id not in ALLOWED_TENSORS:
+                    raise WeightParserSecurityError(f"Target identifier must be one of {ALLOWED_TENSORS}")
+
+                tensor_name = target.value.id
+                slice_expr = self._parse_subscript_slice(target.slice)
+                val = np.asarray(self._eval_literal_node(stmt.value), dtype=np.float32)
+
+                if isinstance(stmt.op, ast.Add):
+                    weights[tensor_name][slice_expr] += val
+                elif isinstance(stmt.op, ast.Sub):
+                    weights[tensor_name][slice_expr] -= val
+                elif isinstance(stmt.op, ast.Mult):
+                    weights[tensor_name][slice_expr] *= val
+                elif isinstance(stmt.op, ast.Div):
+                    weights[tensor_name][slice_expr] /= val
+                else:
+                    raise WeightParserSecurityError(f"Unsupported operator: {type(stmt.op).__name__}")
+
+                touched_tensors.add(tensor_name)
+                report.statements_applied += 1
+                report.entries_written += int(val.size)
+
+            elif isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Constant):
+                # Docstring / standalone comment literal, ignore safely
+                pass
+
+            else:
+                raise WeightParserSecurityError(
+                    f"Unauthorized statement construct: {type(stmt).__name__}"
+                )
+
+        except Exception as exc:
+            err = ParseErrorRecord(
+                line_number=lineno,
+                raw_statement=raw_line,
+                error_type=type(exc).__name__,
+                message=str(exc),
+            )
+            report.errors.append(err)
+            if self.strict:
+                raise
 
     def _parse_line_by_line(
         self,
@@ -292,6 +303,19 @@ class SafeASTWeightParser:
             if not stripped or stripped.startswith("#"):
                 continue
 
+            if not buffer:
+                # Must start with an allowed tensor target to begin a valid assignment
+                if not any(stripped.startswith(t) for t in ALLOWED_TENSORS):
+                    report.errors.append(
+                        ParseErrorRecord(
+                            line_number=idx,
+                            raw_statement=stripped,
+                            error_type="RejectedNonAssignment",
+                            message=f"Line does not start with an allowed tensor name ({ALLOWED_TENSORS})",
+                        )
+                    )
+                    continue
+
             buffer = f"{buffer} {stripped}" if buffer else stripped
 
             # Try parsing current buffer
@@ -300,16 +324,7 @@ class SafeASTWeightParser:
                 if not tree.body:
                     continue
                 stmt = tree.body[0]
-                # Process statement with same logic
-                if isinstance(stmt, ast.Assign):
-                    target = stmt.targets[0]
-                    tensor_name = target.value.id
-                    slice_expr = self._parse_subscript_slice(target.slice)
-                    val = np.asarray(self._eval_literal_node(stmt.value), dtype=np.float32)
-                    weights[tensor_name][slice_expr] = val
-                    touched.add(tensor_name)
-                    report.statements_applied += 1
-                    report.entries_written += int(val.size)
+                self._apply_statement(stmt, weights, touched, report, idx, buffer)
                 buffer = ""
             except SyntaxError:
                 # Incomplete statement (e.g. multiline list continuation)
@@ -324,6 +339,16 @@ class SafeASTWeightParser:
                     )
                 )
                 buffer = ""
+
+        if buffer:
+            report.errors.append(
+                ParseErrorRecord(
+                    line_number=len(lines),
+                    raw_statement=buffer,
+                    error_type="UnterminatedStatement",
+                    message="Statement buffer was not closed at end of input",
+                )
+            )
 
         report.tensors_touched = list(touched)
         report.nonzero_total = 0

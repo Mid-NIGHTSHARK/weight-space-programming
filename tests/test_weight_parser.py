@@ -145,3 +145,32 @@ def test_golden_astra_breakout_exact_reconstruction():
             f"Tensor {name} does not match reference: max diff = {np.max(np.abs(parsed - ref))}"
         )
 
+
+def test_mixed_prose_fallback_line_by_line():
+    """Verify parser successfully parses assignments amidst introductory prose without backticks."""
+    text = """The following network weights solve the task.
+Here is an explanation of why the parameters are chosen this way.
+Layer 1 performs feature projection.
+
+W1[0:6, 0] = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0]
+# Unit 1
+b1[0] = -1.5
+
+W2[0:2, 0:2] = [
+    [0.5, -0.5],
+    [0.5, 0.5]
+]
+W3[0, 1] = 10.0
+"""
+    parser = SafeASTWeightParser(strict=False)
+    weights, report = parser.parse_text(text)
+    assert report.statements_applied == 4
+    assert np.array_equal(weights["W1"][0:6, 0], [1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
+    assert weights["b1"][0] == -1.5
+    assert np.array_equal(weights["W2"][0:2, 0:2], [[0.5, -0.5], [0.5, 0.5]])
+    assert weights["W3"][0, 1] == 10.0
+    # The 3 introductory prose lines should be captured as rejected non-assignments in report.errors
+    rejected = [e for e in report.errors if e.error_type == "RejectedNonAssignment"]
+    assert len(rejected) == 3
+
+

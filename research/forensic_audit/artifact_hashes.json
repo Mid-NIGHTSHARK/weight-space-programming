@@ -128,5 +128,25 @@
     "sha256": "bc10c6f957af95cdd52ee4be085acd249046f6117dbdb8c735fd5ddb2195c47c",
     "size_bytes": 4693,
     "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt.rtf": {
+    "sha256": "5b5526637c1f612db8ea9b4be439e92377199bae1561fda0d4e82b73c2280480",
+    "size_bytes": 5042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt": {
+    "sha256": "b1fe5433c47c3ea433440622953b17c15bedc2fac65cd34d1c2aa6ada7a4fc7a",
+    "size_bytes": 4311,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz": {
+    "sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b",
+    "size_bytes": 83574,
+    "exists": true
   }
 }
