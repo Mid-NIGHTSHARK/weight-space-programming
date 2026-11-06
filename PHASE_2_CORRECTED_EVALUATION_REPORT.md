@@ -44,27 +44,27 @@ The corrected configuration is `experiments/corrected_evaluation/evaluation_conf
 
 Five primary zero-shot conditions were evaluated: Gemini Argon 4 Medium, GPT-6 Original, Claude Sonnet 5.5, DeepSeek Original, and GPT-6 Luna Extra High. Astra local reference weights, trained PPO, random-action, and zero-weight controls are separate comparison conditions. DeepSeek Corrected is a post-hoc researcher intervention and is excluded from this dataset and its primary ranking.
 
-Before the full run, the configuration-locked pilot ran 10 episodes per condition across the three groups for all nine conditions: 90 episodes total. It passed 27/27 recorded replay checks (one checked episode per condition and group). The pilot is software validation only and is not pooled with the full results. A first analysis attempt after the full run failed before writing analysis artifacts due to a condition-registry key mismatch; the failure is recorded in `analysis/analysis_attempt_log.json`. The CSVs were not edited, resumed, or regenerated; analysis succeeded after correcting the reader.
+Before the full run, the configuration-locked pilot ran 10 episodes per condition across the three groups for all nine conditions: 90 episodes total. It passed 27/27 recorded replay checks (one checked episode per condition and group). The pilot is software validation only and is not pooled with the full results. A first analysis attempt after the full run failed before writing analysis artifacts due to a condition-registry key mismatch; the failure is recorded in `experiments/corrected_evaluation/full_run/analysis/analysis_attempt_log.json`. The CSVs were not edited, resumed, or regenerated; analysis succeeded after correcting the reader.
 
 The final full run has 27,000 episodes and is stored separately under `experiments/corrected_evaluation/full_run/`. All nine conditions have 3,000 episodes. Run manifest status is `complete`, `resumed` is false, and the run is a fresh start. The evaluation source commit is `b8be6dc0134b80d6fefb69005ff364f799d1d793`; analysis source commit is `3fa7ba5c786454f6bd71f375e7bf952edd9870a6`. Python was 3.12.15; MinAtar 1.0.15; NumPy 2.5.4; pandas 3.1.1; SciPy 1.18.1; PyTorch 2.15.0; pytest 9.2.0; Matplotlib 3.11.2. The run manifest contains the exact configuration, registry, seed vectors, environment and policy seeds, run state, runtime versions, and hashes of the episode CSVs.
 
-Phase 2 work is on the dedicated local branch `phase-2-corrected-evaluation`, based on the requested baseline. The evaluation outputs were committed as `03517f3db42385237d0356d2387a3363d908ff83`; visualizer integrity changes were committed as `b76517f2a2db237c9d776a572708c09b2b033a8e`. Earlier implementation commits are `c1c5f7e` (independent RNG evaluator), `b8be6dc` (matched analysis and configured runner), and `3fa7ba5` (analysis registry-key fix). No commit was pushed.
+Phase 2 work is on the dedicated local branch `phase-2-corrected-evaluation`, based on the requested baseline. The evaluation outputs were committed as `03517f3db42385237d0356d2387a3363d908ff83`; visualizer integrity changes were committed as `b76517f2a2db237c9d776a572708c09b2b033a8e`; the subsequent collision-rule wording refinement is `d6847b167b0f5c3b218b80757d2717731690bb95`. Earlier implementation commits are `c1c5f7e` (independent RNG evaluator), `b8be6dc` (matched analysis and configured runner), and `3fa7ba5` (analysis registry-key fix). No commit was pushed.
 
 ## Corrected results
 
 The table below is the corrected dataset. “SE” is the standard error of the mean. The confidence interval is a two-sided Student-t interval for the episode mean. Action distributions are available in `condition_metrics.json`; selected and executed actions are recorded separately.
 
-| Rank | Condition | Episodes | Mean | SE | 95% CI | Median | Min–max | Mean length | Max length | Cutoffs |
-|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1 | Astra local reference | 3,000 | 504.852 | 4.447 | [496.133, 513.572] | 642 | 0–824 | 7,199.46 | 10,000 | 1,484 (49.47%) |
-| 2 | Gemini Argon 4 Medium | 3,000 | 60.322 | 1.195 | [57.979, 62.665] | 38 | 0–475 | 914.85 | 7,910 | 0 |
-| 3 | Claude Sonnet 5.5 | 3,000 | 10.587 | 0.206 | [10.183, 10.991] | 6 | 0–91 | 124.43 | 1,096 | 0 |
-| 4 | Trained PPO baseline | 3,000 | 5.797 | 0.017 | [5.763, 5.831] | 6 | 0–7 | 67.77 | 80 | 0 |
-| 5 | GPT-6 Original | 3,000 | 2.516 | 0.036 | [2.445, 2.587] | 2 | 0–17 | 32.72 | 178 | 0 |
-| 6 | GPT-6 Luna Extra High | 3,000 | 1.230 | 0.023 | [1.185, 1.276] | 1 | 0–9 | 18.69 | 104 | 0 |
-| 7 | Zero-weight control | 3,000 | 0.518 | 0.014 | [0.491, 0.545] | 0 | 0–5 | 11.29 | 60 | 0 |
-| 8 | DeepSeek Original | 3,000 | 0.493 | 0.009 | [0.475, 0.511] | 0 | 0–1 | 10.93 | 16 | 0 |
-| 9 | Random-action control | 3,000 | 0.492 | 0.013 | [0.466, 0.518] | 0 | 0–7 | 11.01 | 80 | 0 |
+| Rank | Condition | Episodes | Mean | SD | SE | 95% CI | Median | Min–max | Mean length | Median length | Max length | Cutoffs |
+|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | Astra local reference | 3,000 | 504.852 | 243.575 | 4.447 | [496.133, 513.572] | 642 | 0–824 | 7,199.46 | 9,821 | 10,000 | 1,484 (49.47%) |
+| 2 | Gemini Argon 4 Medium | 3,000 | 60.322 | 65.458 | 1.195 | [57.979, 62.665] | 38 | 0–475 | 914.85 | 558 | 7,910 | 0 |
+| 3 | Claude Sonnet 5.5 | 3,000 | 10.587 | 11.284 | 0.206 | [10.183, 10.991] | 6 | 0–91 | 124.43 | 70 | 1,096 | 0 |
+| 4 | Trained PPO baseline | 3,000 | 5.797 | 0.954 | 0.017 | [5.763, 5.831] | 6 | 0–7 | 67.77 | 70 | 80 | 0 |
+| 5 | GPT-6 Original | 3,000 | 2.516 | 1.980 | 0.036 | [2.445, 2.587] | 2 | 0–17 | 32.72 | 28 | 178 | 0 |
+| 6 | GPT-6 Luna Extra High | 3,000 | 1.230 | 1.270 | 0.023 | [1.185, 1.276] | 1 | 0–9 | 18.69 | 16 | 104 | 0 |
+| 7 | Zero-weight control | 3,000 | 0.518 | 0.755 | 0.014 | [0.491, 0.545] | 0 | 0–5 | 11.29 | 6 | 60 | 0 |
+| 8 | DeepSeek Original | 3,000 | 0.493 | 0.500 | 0.009 | [0.475, 0.511] | 0 | 0–1 | 10.93 | 6 | 16 | 0 |
+| 9 | Random-action control | 3,000 | 0.492 | 0.721 | 0.013 | [0.466, 0.518] | 0 | 0–7 | 11.01 | 6 | 80 | 0 |
 
 The five primary zero-shot models retain the historical order: Argon, Sonnet, GPT-6 Original, Luna, DeepSeek. Across all comparison conditions, zero-weight control ranks just above DeepSeek and random control just below it. That small ordering is not evidence of a meaningful separation: DeepSeek minus random paired mean difference is 0.001 score, 95% paired bootstrap CI [-0.028, 0.030], permutation p=0.9633 and Holm-adjusted p=0.9633.
 
@@ -118,7 +118,7 @@ The checked-in paper/reference result at `_reference_repos/lm_understand-logs/ex
 
 The trajectory file `experiments/corrected_evaluation/failure_trace_replays.json` independently replays one historical seed-42, group-42 episode for each requested model and verifies score and length against its original CSV. It records ball/trail/paddle positions, selected and executed actions, sticky overrides, attempted and resolved transitions, collision/loss state, and logits. These five examples explain specific transitions only; they are not a representative or causal sample of aggregate failure.
 
-MinAtar 1.0.15 moves the paddle first. On a descending ball's next row, it catches/reflection-handles the ball if the ball's current x equals the new paddle position **or** the attempted next x equals that paddle position. Otherwise the ball is lost. A wall attempt is clamped to x=0 or x=9 and direction reverses. A single projected target is not the collision rule.
+MinAtar 1.0.15 moves the paddle first. It computes the ball's next x, clamps that coordinate at a side wall, then handles a descending ball if its current x equals the updated paddle position **or** the clamped next x equals that position. Otherwise the ball is lost. The trace records the attempted coordinate before clamping as well as the resulting state (for example, x=10 becomes x=9). A single projected target is not the collision rule.
 
 | Model | Replayed historical episode | What the transition demonstrates |
 |---|---|---|
