@@ -136,14 +136,26 @@ def main() -> None:
         "phase2_code_artifacts": [
             artifact(path)
             for path in [
+                "environment/actions.py",
+                "environment/breakout.py",
+                "environment/observations.py",
+                "network/architecture.py",
+                "network/inference.py",
                 "evaluation/rng_streams.py",
                 "evaluation/corrected_evaluate.py",
                 "evaluation/corrected_analysis.py",
+                "evaluation/evaluate.py",
                 "evaluation/legacy_trace_replay.py",
                 "scripts/run_corrected_evaluation.py",
                 "scripts/analyze_corrected_evaluation.py",
                 "scripts/replay_original_failure_traces.py",
                 "scripts/refresh_phase2_artifact_registry.py",
+                "tests/test_corrected_rng.py",
+                "tests/test_corrected_analysis.py",
+                "tests/test_phase2_preservation.py",
+                "tests/test_legacy_trace_replay.py",
+                "tests/test_visualizer_data_integrity.py",
+                "tests/test_deepseek_correction.py",
                 "visualize_comparison.py",
             ]
         ],
