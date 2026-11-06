@@ -115,8 +115,8 @@
     "exists": true
   },
   "visualize_comparison.py": {
-    "sha256": "f7df486827621be1c3705b1956297682fa91b46d104529de554fdfcf925ec261",
-    "size_bytes": 65995,
+    "sha256": "675453f66683d40e3900fe419a1d750b1598fbb8ffb0bde13d1213c82c787d13",
+    "size_bytes": 76941,
     "exists": true
   },
   "_reference_repos/lm_understand-logs/exp5_write_from_scratch/networks/breakout/hand.npz": {
@@ -242,6 +242,51 @@
   "experiments/strict_replication/generation_004_deepseek/analysis/visualizer_6way_screenshot.png": {
     "sha256": "638329ab9d6f397327dbff94417d194da884a3c00ee5a10c5b3ff63d137b4f81",
     "size_bytes": 439234,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/output/deepseek_corrected_weights.npz": {
+    "sha256": "21078c485156850253744ed0c2e1efd54361cf06f603a5ad2fd32ffea3c1c8bc",
+    "size_bytes": 83382,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/intervention_manifest.json": {
+    "sha256": "fca7c1af5f4413e70dd7b3745e6b03aa1d7de701eee2ecb98c801fae221d210d",
+    "size_bytes": 1918,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed42/summary.json": {
+    "sha256": "aca670f0a69e3d7545887506aad76e324d5f1cbfebcf2e6b4a3f20449e7b4d3d",
+    "size_bytes": 811,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed100/summary.json": {
+    "sha256": "22cb1901650abaf64fa951f060e3581574c43d8b0ae363af554750671c6e850f",
+    "size_bytes": 810,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed200/summary.json": {
+    "sha256": "01fc326d05d9d85ba4a550bbcb2a26d1737be59b33c1f97e5f70bbf4d12e5987",
+    "size_bytes": 813,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/comparative_metrics.json": {
+    "sha256": "911ff47da44b527c4c0de5315da58435d0e2d1a04b535cb470f967f9a8031c88",
+    "size_bytes": 3538,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/deepseek_corrected_comparative_score_distributions.png": {
+    "sha256": "f8b59d28e41de1d0ecd22c20b54556b790d9fc7488fe7f81e8e6174fb10cfebb",
+    "size_bytes": 153303,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/visualizer_7way_screenshot.png": {
+    "sha256": "7573c3b5bfe143c5725d1f7ca5c54d8eb7d299d0590d743db72028636cf9f8cc",
+    "size_bytes": 30675,
+    "exists": true
+  },
+  "PHASE_3D_DEEPSEEK_CORRECTION_REPORT.md": {
+    "sha256": "7fb5dd47733d0fd804143a6ea53b553bcbb9657d4f6b65fb500ba59b780e70b3",
+    "size_bytes": 18173,
     "exists": true
   }
 }
