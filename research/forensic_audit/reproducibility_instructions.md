@@ -206,3 +206,4 @@ The visualizer supports both an interactive GUI and automated headless screensho
 ## 7. Audit Attestation
 
 Every command in this guide was executed and verified during the Phase 2 forensic audit. An external researcher following these steps will reproduce the documented metrics within standard statistical confidence intervals.
+

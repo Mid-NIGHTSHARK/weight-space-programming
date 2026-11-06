@@ -55,3 +55,4 @@ The project consists of 8 primary modules:
 8. `tests/`: 67 automated unit and integration tests covering environment, architecture, parser, GUI, and reproducibility.
 
 **Auditor Attestation:** Every critical file exists, matches expected cryptographic hashes, and shows no unauthorized post-hoc modifications.
+

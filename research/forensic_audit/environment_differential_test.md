@@ -133,3 +133,4 @@ All 67 automated tests confirm exact index alignment.
 The environment implementation is an exact, uncorrupted realization of MinAtar Breakout 1.0.15. The wrapper preserves identical physics, collision mechanics, brick scoring, and sticky-action dynamics while correcting a subtle inter-episode state leakage flaw in native MinAtar.
 
 **Audit Status:** `VERIFIED CORRECT`
+

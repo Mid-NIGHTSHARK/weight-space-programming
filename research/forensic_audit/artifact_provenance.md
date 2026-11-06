@@ -135,3 +135,4 @@ flowchart TD
 The cryptographic chain of custody across all experimental materials is pristine. Every weight file, prompt, raw model response, and baseline is verified against immutable cryptographic hashes.
 
 **Audit Status:** `VERIFIED CORRECT`
+

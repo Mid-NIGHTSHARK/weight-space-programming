@@ -67,7 +67,7 @@ The audit identified specific structural limitations that distinguish Gemini Arg
   - **Argon's Strategy:** Directly couples the input ball channel (channel 3) to hidden neurons that compare the ball's column against the paddle's column. This is a *reactive proportional controller*. When the ball moves slowly or drops vertically, it never misses. However, when the ball bounces off a wall at high horizontal velocity, 1-step reactive tracking cannot accelerate the paddle fast enough, especially under 10% sticky action interference.
   - **Astra's Strategy:** Astra computes differences between channel 3 (ball) and channel 4 (trail) to determine horizontal velocity $v_x$, and couples this with ball altitude $y$ to compute the expected intercept point:
     $$x_{\text{landing}} = x_{\text{ball}} + v_x \cdot (9 - y_{\text{ball}})$$
-    Astra's weights pre-position the paddle at the future landing coordinate multiple steps in advance. Consequently, Astra survives for thousands of steps, reaching the 10,000-step ceiling in 50.6% of episodes.
+    Astra's weights pre-position the paddle at the future landing coordinate multiple steps in advance. Consequently, Astra survives for thousands of steps, reaching the 10,000-step ceiling in 51.10% of episodes (2,044 / 4,000).
 
 ### Question 4: Is the PPO baseline valid despite scoring only 5.76?
 **Auditor Finding: YES (`VERIFIED CORRECT`).**
@@ -95,7 +95,7 @@ The audit identified specific structural limitations that distinguish Gemini Arg
 
 | Model Identity | Method / Origin | Nonzero Weights | Mean Score ($\bar{X}$) | Standard Error ($\text{SE}$) | Max Score | Mean Episode Length | 10k Cutoff Rate | Evaluation Sample ($N$) |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Astra Reference** | Published Weight-Space (GPT-6 Astra) | 815 / 20,486 ($3.98\%$) | **508.062** | $\pm 3.856$ | 800.0 | 7,230.5 | **50.6%** | 4,000 episodes |
+| **Astra Reference** | Published Weight-Space (GPT-6 Astra) | 815 / 20,486 ($3.98\%$) | **508.062** | $\pm 3.856$ | 800.0 | 7,230.5 | **51.10%** (2,044 / 4,000) | 4,000 episodes |
 | *Astra Published* | *Published Benchmark (minatar_eval.json)* | 815 / 20,486 ($3.98\%$) | **517.411** | $\pm 7.417$ | 800.0 | 7,417.2 | $\sim 50\%$ | 1,000 episodes |
 | **Gemini Argon** | Blind Zero-Shot Replication (Argon 4 Med) | 817 / 20,486 ($3.99\%$) | **57.866** | $\pm 1.137$ | 493.0 | 871.6 | **0.0%** | 3,000 episodes |
 | **Trained PPO Baseline** | Deep RL (10M steps PPO) | 20,486 / 20,486 ($100\%$) | **5.757** | $\pm 0.019$ | 9.0 | 67.3 | **0.0%** | 3,000 episodes |
@@ -138,6 +138,15 @@ Every finding in this report is supported by comprehensive documentation and mac
     - [network_numerical_trace.json](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/network_numerical_trace.json)
     - [artifact_hashes.json](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/artifact_hashes.json)
 
+### Phase 2B Supplementary Verification Deliverables (`research/forensic_audit/phase_2b/`):
+11. [supplementary_audit_report.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/supplementary_audit_report.md) — Master Phase 2B synthesis.
+12. [astra_cutoff_reconciliation.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/astra_cutoff_reconciliation.md) — Reconciliation of 2,044 / 4,000 cutoff count (51.10%).
+13. [environment_reset_semantics.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/environment_reset_semantics.md) — Detailed analysis of native reset semantics and dual-condition parity.
+14. [ppo_training_verification.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/ppo_training_verification.md) — Detailed inspection of 78,112 optimizer updates and convergence dynamics.
+15. [astra_statistical_reanalysis.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/astra_statistical_reanalysis.md) — TOST equivalence testing ($\pm 4.8\%$) and Welch t-test.
+16. [runtime_contamination_trace.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/runtime_contamination_trace.md) — Live call stack tracing and SHA-256 weight immutability test.
+17. [argon_failure_traces.md](file:///Users/zero/Documents/Area/testing_llms/research/forensic_audit/phase_2b/argon_failure_traces.md) — Reproducible terminal traces and physical constraint proof.
+
 ---
 
 ## 6. Final Auditor Certification
@@ -147,3 +156,4 @@ I certify that this forensic audit was conducted with rigorous adversarial skept
 **Lead Forensic Auditor:** Senior Research Software Engineer & AI Systems Auditor  
 **Date:** November 6, 2026  
 **Final Status:** **`AUDIT COMPLETE — VERIFIED WITH LIMITATIONS`**
+
