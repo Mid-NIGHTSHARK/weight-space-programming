@@ -130,3 +130,4 @@ def generate_markdown_report(
     with open(filepath, "w") as f:
         f.write(content)
     return content
+

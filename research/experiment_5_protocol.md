@@ -139,3 +139,4 @@ For each agent/weight checkpoint:
 3. **Immutability:** Raw output is stored verbatim in `gemini/response_raw.txt`.
 4. **Parsing:** The safe weight parser converts the raw response into `gemini/generated_weights.npz`.
 5. **Evaluation:** The pre-frozen evaluation harness tests the weights under identical seeds and conditions without manual tuning.
+

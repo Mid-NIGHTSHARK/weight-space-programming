@@ -89,3 +89,4 @@ def export_actor_to_weights_dict(model: ActorCritic) -> dict:
         W3 = model.actor[4].weight.detach().cpu().numpy().T.astype(np.float32)
         b3 = model.actor[4].bias.detach().cpu().numpy().astype(np.float32)
     return {"W1": W1, "b1": b1, "W2": W2, "b2": b2, "W3": W3, "b3": b3}
+

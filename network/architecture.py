@@ -143,3 +143,4 @@ class MinAtarNetworkPyTorch(nn.Module):
         h2 = self.act(self.fc2(h1))
         logits = self.fc3(h2)
         return logits
+

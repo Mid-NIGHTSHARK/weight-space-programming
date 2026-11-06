@@ -319,3 +319,4 @@ class SafeASTWeightParser:
             report.max_abs[name] = float(np.max(np.abs(arr))) if arr.size > 0 else 0.0
 
         return weights, report
+

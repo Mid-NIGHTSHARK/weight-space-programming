@@ -56,3 +56,4 @@ def test_action_to_char():
     expected = {0: 'n', 1: 'l', 2: 'u', 3: 'r', 4: 'd', 5: 'f'}
     for a, c in expected.items():
         assert action_to_char(a) == c
+

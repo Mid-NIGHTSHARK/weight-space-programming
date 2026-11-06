@@ -61,3 +61,4 @@ class PolicyAgent:
         probs = softmax(logits)
         action = sample_action(probs, rng=self.rng)
         return action, probs, logits
+

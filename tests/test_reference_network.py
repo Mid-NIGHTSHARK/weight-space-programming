@@ -63,3 +63,4 @@ def test_reference_numpy_pytorch_equivalence():
         logits_pt = net_pt.forward(torch.from_numpy(x)).numpy()
 
     assert np.allclose(logits_np, logits_pt, atol=1e-4)
+

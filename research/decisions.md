@@ -44,3 +44,4 @@ This document records the foundational technical and experimental decisions made
 ## 7. Experimental Isolation for Gemini Argon
 - **Decision:** Prepare the exact prompt in `gemini/experiment_prompt.txt` and execution tooling, but do NOT execute the generation of Gemini Argon weights during lab construction.
 - **Rationale:** Strict adherence to research protocol: the infrastructure engineer (Gemini 3.8 Flash) builds and verifies the testbed; the experimental subject (Gemini Argon) will be evaluated in a clean, isolated session without leakage of Astra's responses or prior evaluation feedback.
+

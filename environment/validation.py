@@ -88,3 +88,4 @@ def validate_paddle_boundaries(env: MinAtarBreakoutEnv) -> bool:
     env.sticky_action_prob = 0.1
     env._minatar_env.sticky_action_prob = 0.1
     return True
+

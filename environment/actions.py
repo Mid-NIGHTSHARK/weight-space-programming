@@ -50,3 +50,4 @@ def action_to_char(action: int) -> str:
     """Convert an action index to its MinAtar character representation."""
     validate_action(action)
     return ACTION_CHARS[action]
+

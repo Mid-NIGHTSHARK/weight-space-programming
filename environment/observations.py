@@ -108,3 +108,4 @@ def validate_observation(obs_flat: np.ndarray) -> np.ndarray:
     if not np.all(np.isin(obs_flat, [0.0, 1.0])):
         raise ValueError("Observation values must be binary (0 or 1)")
     return obs_flat
+

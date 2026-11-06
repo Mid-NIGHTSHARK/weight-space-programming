@@ -21,3 +21,4 @@ class ZeroWeightAgent:
         self.agent.rng = rng
         action, probs, logits = self.agent.get_action(obs)
         return action
+

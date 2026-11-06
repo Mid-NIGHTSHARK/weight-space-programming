@@ -14,3 +14,4 @@ class RandomAgent:
 
     def __call__(self, obs: np.ndarray, rng: np.random.RandomState) -> int:
         return int(rng.choice(6))
+

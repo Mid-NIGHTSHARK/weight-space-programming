@@ -40,3 +40,4 @@
    - **Reasoning Effort:** `xhigh`
    - **Reasoning Summaries:** `detailed`
    - **Execution Configuration:** `--strict-config`, `--skip-git-repo-check`, tool-free (`"tool_free": true`), 0 tool calls.
+

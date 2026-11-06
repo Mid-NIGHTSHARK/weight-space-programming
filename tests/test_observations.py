@@ -131,3 +131,4 @@ def test_validate_observation():
         invalid_vals = np.zeros(600, dtype=np.float32)
         invalid_vals[0] = 2.5
         validate_observation(invalid_vals)
+

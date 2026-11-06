@@ -126,3 +126,4 @@ def test_invalid_tensor_rejection():
     weights["W1"][0, 0] = np.nan
     with pytest.raises(ValueError):
         MinAtarNetworkNumPy(weights)
+

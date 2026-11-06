@@ -56,7 +56,7 @@ EXPERIMENTAL REPLICATION & BENCHMARK SUMMARY (1,000 EPISODES EACH)
 Agent / Model Policy          Mean Score      Std Error   Max Score   Mean Length    Cutoffs (10k)
 ----------------------------------------------------------------------------------------------------
 [Paper] Astra Hand-Written      517.411        ±7.417       800.0      7,417.2 steps      N/A
-[Lab] Astra Hand-Written        503.021        ±7.672       804.0      7,178.4 steps      38.9%
+[Lab] Astra Hand-Written        503.021        ±7.672       804.0      7,178.4 steps      49.8% (498/1k)
 ----------------------------------------------------------------------------------------------------
 [Paper] PPO 500M steps (best)    25.344        ±0.121        29.0        281.9 steps      0.0%
 [Paper] PPO 100M steps (best)    15.779        ±0.093        17.0        178.4 steps      0.0%
@@ -117,3 +117,4 @@ Once approved, conduct the Gemini Argon experiment using the following steps:
        results/summary.json \
        experiments/strict_replication/argon_run_001/summary.json
    ```
+

@@ -118,3 +118,4 @@ class MinAtarBreakoutEnv:
     def internal_env(self):
         """Access the inner MinAtar Env object for state verification."""
         return self._minatar_env.env
+

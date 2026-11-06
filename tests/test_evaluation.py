@@ -82,3 +82,4 @@ def test_evaluator_network_policy():
     summary = evaluator.evaluate_network(net, agent_id="net_test", verbose=False)
     assert summary.episodes == 3
     assert summary.mean_score >= 0.0
+
