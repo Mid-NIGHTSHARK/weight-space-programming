@@ -36,10 +36,11 @@ from network.weight_loader import load_weights_npz, compute_file_sha256
 ASTRA_REFERENCE_PATH = "experiments/reference/hand.npz"
 ASTRA_EXPECTED_SHA256 = "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
 GPT6_DEFAULT_PATH = "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz"
+SONNET55_DEFAULT_PATH = "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz"
 
 
 class VisualizerState:
-    """Manages independent game simulations and policies for Argon, Trained, Astra, and GPT-6."""
+    """Manages independent game simulations and policies for Argon, Trained, Astra, GPT-6, and Claude Sonnet 5.5."""
 
     def __init__(
         self,
@@ -47,6 +48,7 @@ class VisualizerState:
         trained_weights_path: str,
         astra_weights_path: Optional[str] = None,
         gpt6_weights_path: Optional[str] = None,
+        sonnet55_weights_path: Optional[str] = None,
         argon_high_weights_path: Optional[str] = None,
         initial_seed: int = 42,
     ):
@@ -54,6 +56,7 @@ class VisualizerState:
         self.trained_weights_path = trained_weights_path
         self.astra_weights_path = astra_weights_path
         self.gpt6_weights_path = gpt6_weights_path
+        self.sonnet55_weights_path = sonnet55_weights_path
         self.argon_high_weights_path = argon_high_weights_path
         self.current_seed = initial_seed
 
@@ -89,7 +92,16 @@ class VisualizerState:
             self.env_gpt6 = MinAtarBreakoutEnv(sticky_action_prob=0.1)
             self.has_gpt6 = True
 
-        # 5. Gemini Argon 4 High placeholder status
+        # 5. Optional Claude Sonnet 5.5 policy
+        self.has_sonnet55 = False
+        if sonnet55_weights_path is not None and os.path.exists(sonnet55_weights_path):
+            self.sonnet55_weights = load_weights_npz(sonnet55_weights_path)
+            self.sonnet55_net = MinAtarNetworkNumPy(self.sonnet55_weights)
+            self.sonnet55_agent = PolicyAgent(self.sonnet55_net)
+            self.env_sonnet55 = MinAtarBreakoutEnv(sticky_action_prob=0.1)
+            self.has_sonnet55 = True
+
+        # 6. Gemini Argon 4 High placeholder status
         self.has_argon_high = False
         if argon_high_weights_path is not None and os.path.exists(argon_high_weights_path):
             self.argon_high_weights = load_weights_npz(argon_high_weights_path)
@@ -153,6 +165,16 @@ class VisualizerState:
             self.gpt6_sticky_override = False
             self._update_gpt6_policy()
 
+        # Handle Claude Sonnet 5.5 if enabled
+        if self.has_sonnet55:
+            self.sonnet55_agent.rng = np.random.RandomState(self.current_seed)
+            self.obs_sonnet55 = self.env_sonnet55.reset(seed=self.current_seed)
+            self.sonnet55_done = False
+            self.sonnet55_info = {}
+            self.sonnet55_executed_action = None
+            self.sonnet55_sticky_override = False
+            self._update_sonnet55_policy()
+
         # Handle Argon High if enabled
         if self.has_argon_high:
             self.argon_high_agent.rng = np.random.RandomState(self.current_seed)
@@ -187,6 +209,12 @@ class VisualizerState:
                 self.obs_gpt6
             )
 
+    def _update_sonnet55_policy(self):
+        if self.has_sonnet55 and not self.sonnet55_done:
+            self.sonnet55_selected_action, self.sonnet55_probs, self.sonnet55_logits = self.sonnet55_agent.get_action(
+                self.obs_sonnet55
+            )
+
     def _update_argon_high_policy(self):
         if self.has_argon_high and not self.argon_high_done:
             self.argon_high_selected_action, self.argon_high_probs, self.argon_high_logits = self.argon_high_agent.get_action(
@@ -209,6 +237,10 @@ class VisualizerState:
     @property
     def gpt6_action(self) -> int:
         return getattr(self, "gpt6_selected_action", 0)
+
+    @property
+    def sonnet55_action(self) -> int:
+        return getattr(self, "sonnet55_selected_action", 0)
 
     def step(self):
         """Advance each active environment by 1 frame.
@@ -253,6 +285,16 @@ class VisualizerState:
                 if not self.gpt6_done:
                     self._update_gpt6_policy()
 
+        # Step Claude Sonnet 5.5 if enabled
+        if self.has_sonnet55:
+            if not self.sonnet55_done:
+                action_to_step = self.sonnet55_selected_action
+                self.obs_sonnet55, _, self.sonnet55_done, self.sonnet55_info = self.env_sonnet55.step(action_to_step)
+                self.sonnet55_executed_action = self.sonnet55_info.get("executed_action", action_to_step)
+                self.sonnet55_sticky_override = self.sonnet55_info.get("sticky_override", False)
+                if not self.sonnet55_done:
+                    self._update_sonnet55_policy()
+
         # Step Argon High if enabled
         if self.has_argon_high:
             if not self.argon_high_done:
@@ -264,6 +306,15 @@ class VisualizerState:
                     self._update_argon_high_policy()
 
         # Return backward-compatible tuple:
+        if self.has_sonnet55:
+            if self.has_gpt6 and self.has_astra:
+                return self.argon_done, self.trained_done, self.astra_done, self.gpt6_done, self.sonnet55_done
+            if self.has_gpt6:
+                return self.argon_done, self.trained_done, self.gpt6_done, self.sonnet55_done
+            if self.has_astra:
+                return self.argon_done, self.trained_done, self.astra_done, self.sonnet55_done
+            return self.argon_done, self.trained_done, self.sonnet55_done
+
         if self.has_gpt6:
             if self.has_astra:
                 return self.argon_done, self.trained_done, self.astra_done, self.gpt6_done
@@ -280,6 +331,8 @@ class VisualizerState:
             done = done and self.astra_done
         if self.has_gpt6:
             done = done and self.gpt6_done
+        if self.has_sonnet55:
+            done = done and self.sonnet55_done
         if self.has_argon_high:
             done = done and self.argon_high_done
         return done
@@ -295,11 +348,21 @@ class BreakoutVisualizerGUI:
         self.root = root
 
         # Count active models
-        active_count = 2 + (1 if self.state.has_astra else 0) + (1 if self.state.has_gpt6 else 0)
+        active_count = (
+            2
+            + (1 if self.state.has_astra else 0)
+            + (1 if self.state.has_gpt6 else 0)
+            + (1 if self.state.has_sonnet55 else 0)
+        )
 
         # Window configuration
         self.root.configure(bg="#141419")
-        if active_count >= 4:
+        if active_count >= 5:
+            self.root.title("MinAtar Breakout: Five-Way Policy Comparison Lab (Argon, Astra, GPT-6, Sonnet 5.5, PPO)")
+            self.root.geometry("1620x860")
+            self.root.minsize(1380, 750)
+            self.cell_size = 19
+        elif active_count == 4:
             self.root.title("MinAtar Breakout: Four-Way Policy Comparison Lab (Argon, Astra, GPT-6, PPO)")
             self.root.geometry("1480x860")
             self.root.minsize(1280, 750)
@@ -325,6 +388,7 @@ class BreakoutVisualizerGUI:
         self.COLOR_PADDLE_ARGON = "#00e5ff"    # Cyan
         self.COLOR_PADDLE_ASTRA = "#ffd700"    # Gold
         self.COLOR_PADDLE_GPT6 = "#d070ff"     # Orchid / Violet
+        self.COLOR_PADDLE_SONNET55 = "#ff7043" # Coral / Warm Orange-Red
         self.COLOR_PADDLE_TRAINED = "#00e676"  # Bright Green
         self.COLOR_BALL = "#ffff00"            # Bright Yellow
         self.COLOR_TRAIL = "#ff9100"           # Orange
@@ -354,8 +418,14 @@ class BreakoutVisualizerGUI:
         header = tk.Frame(self.root, bg=self.COLOR_PANEL, pady=8, padx=15)
         header.pack(fill=tk.X, side=tk.TOP)
 
-        active_count = 2 + (1 if self.state.has_astra else 0) + (1 if self.state.has_gpt6 else 0)
+        active_count = (
+            2
+            + (1 if self.state.has_astra else 0)
+            + (1 if self.state.has_gpt6 else 0)
+            + (1 if self.state.has_sonnet55 else 0)
+        )
         title_map = {
+            5: "BREAKOUT FIVE-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, Sonnet 5.5, PPO)",
             4: "BREAKOUT FOUR-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, PPO)",
             3: "BREAKOUT THREE-WAY POLICY COMPARISON LAB",
             2: "BREAKOUT TWO-WAY POLICY COMPARISON LAB",
@@ -438,7 +508,18 @@ class BreakoutVisualizerGUI:
                 color=self.COLOR_PADDLE_GPT6,
             )
 
-        # 4. TRAINED BASELINE PANEL
+        # 4. CLAUDE SONNET 5.5 PANEL (optional)
+        if self.state.has_sonnet55:
+            self.sonnet55_panel = self._create_model_panel(
+                parent=self.arena,
+                title="CLAUDE SONNET 5.5",
+                tag="Zero-Shot Generation",
+                subtitle="551 nz params | 97.3% sparse",
+                mechanism="Lead Target: d = 2*bx - tx - px",
+                color=self.COLOR_PADDLE_SONNET55,
+            )
+
+        # 5. TRAINED BASELINE PANEL
         self.trained_panel = self._create_model_panel(
             parent=self.arena,
             title="TRAINED BASELINE",
@@ -654,6 +735,19 @@ class BreakoutVisualizerGUI:
         )
         self.btn_benchmark.pack(side=tk.LEFT, padx=(10, 3))
 
+        # Network Inspector Button
+        self.btn_inspector = tk.Button(
+            ctrl_frame,
+            text="Network Inspector (I)",
+            command=self.show_network_inspector,
+            font=btn_font,
+            bg="#3d2a20",
+            fg="#ff7043",
+            padx=7,
+            pady=3,
+        )
+        self.btn_inspector.pack(side=tk.LEFT, padx=3)
+
         # FPS Slider
         tk.Label(ctrl_frame, text="Speed:", font=("Helvetica", 9), fg=self.COLOR_TEXT, bg=self.COLOR_PANEL).pack(
             side=tk.LEFT, padx=(12, 2)
@@ -675,7 +769,7 @@ class BreakoutVisualizerGUI:
         # Shortcuts Legend
         lbl_shortcuts = tk.Label(
             ctrl_frame,
-            text="[Space] Play/Pause   [→] Step   [R] Reset   [P/N] Prev/Next   [M] Benchmark",
+            text="[Space] Play/Pause   [→] Step   [R] Reset   [P/N] Prev/Next   [M] Benchmark   [I] Inspector",
             font=("Helvetica", 9),
             fg="#9999aa",
             bg=self.COLOR_PANEL,
@@ -693,6 +787,8 @@ class BreakoutVisualizerGUI:
         self.root.bind("P", lambda e: self.prev_episode())
         self.root.bind("m", lambda e: self.show_benchmark_summary())
         self.root.bind("M", lambda e: self.show_benchmark_summary())
+        self.root.bind("i", lambda e: self.show_network_inspector())
+        self.root.bind("I", lambda e: self.show_network_inspector())
         self.root.bind("h", lambda e: self.show_argon_high_info())
         self.root.bind("H", lambda e: self.show_argon_high_info())
 
@@ -702,7 +798,7 @@ class BreakoutVisualizerGUI:
 
         win = tk.Toplevel(self.root)
         win.title("MinAtar Breakout: Comparative Benchmark Summary")
-        win.geometry("860x440")
+        win.geometry("920x520")
         win.configure(bg="#181822")
 
         lbl_hdr = tk.Label(
@@ -721,6 +817,7 @@ class BreakoutVisualizerGUI:
 +------------------------------------+-------+----------+---------+--------+-------+----------+---------+
 | Astra Reference (Original Exp 5)   | 4,000 |  508.062 | ± 3.857 |  645.0 | 814.0 |  7,230.6 |  51.10% |
 | Gemini Argon 4 Medium (Zero-Shot)  | 3,000 |   57.866 | ± 1.136 |   38.0 | 493.0 |    871.6 |   0.00% |
+| Claude Sonnet 5.5 (Zero-Shot)      | 3,000 |   10.957 | ± 0.219 |    7.0 | 111.0 |    128.9 |   0.00% |
 | PPO Baseline (10M Environment St.) | 3,000 |    5.757 | ± 0.019 |    6.0 |   8.0 |     67.4 |   0.00% |
 | GPT-6 (Zero-Shot, Nov 6, 2026)     | 3,000 |    2.493 | ± 0.036 |    2.0 |  10.0 |     32.5 |   0.00% |
 | Zero-Weight Baseline               | 1,000 |    0.517 | ± 0.023 |    0.0 |   4.0 |     11.3 |   0.00% |
@@ -730,13 +827,92 @@ class BreakoutVisualizerGUI:
 +------------------------------------+-------+---------------------------------------------------------+
 
 Key Analytical Findings:
-• GPT-6 implements a bilinear projected-intercept formula c ± (9 - r) with a 4-neuron tanh multiplication gate.
-• GPT-6 achieves 2.493 mean score (5.1x random baseline), destroying up to 10 bricks in an episode.
+• Claude Sonnet 5.5 averages 10.957 (1.9x 10M PPO, 4.4x GPT-6), max 111.0, using linear lead target d = 2*bx - tx - px.
+• Claude Sonnet 5.5 failure mode: lateral wall reflections set ball_x == last_x, causing d=0 and No-op pause.
 • Gemini Argon achieves 57.866 mean score via Channel 4 1-step lookahead velocity estimation.
 • Astra sustains infinite rallies via full heuristic bounce folding, hitting the 10,000-step cutoff in 51.1% of episodes.
+• GPT-6 implements a bilinear projected-intercept formula c ± (9 - r) with a 4-neuron tanh multiplication gate.
 """
         txt = tk.Text(win, font=("Courier", 10), bg="#0f0f16", fg="#d0d0e0", padx=12, pady=10, relief=tk.FLAT)
         txt.insert(tk.END, table_text.strip())
+        txt.config(state=tk.DISABLED)
+        txt.pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
+
+    def show_network_inspector(self):
+        """Display deep inspection modal of neural network weights, sparsity, and mathematical policies."""
+        import tkinter as tk
+
+        win = tk.Toplevel(self.root)
+        win.title("Neural Network Architecture & Policy Inspector")
+        win.geometry("920x580")
+        win.configure(bg="#181822")
+
+        lbl_hdr = tk.Label(
+            win,
+            text="WEIGHT-SPACE PROGRAMMING: NEURAL POLICY DEEP INSPECTOR",
+            font=("Helvetica", 13, "bold"),
+            fg="#ff7043",
+            bg="#181822",
+            pady=10,
+        )
+        lbl_hdr.pack()
+
+        inspector_text = """
+===================================================================================================
+1. MULTI-MODEL STRUCTURAL & SPARSITY COMPARISON (Architecture: 600 -> 32 -> 32 -> 6)
+===================================================================================================
+Model                 Nonzero / Total Params   Sparsity (%)  Policy Strategy & Representation
+---------------------------------------------------------------------------------------------------
+Astra Reference         815 / 20,486            96.02%       Full bounce folding, heuristic intercept lookup
+Gemini Argon 4M         817 / 20,486            96.01%       Ch 4 (last_y-y) velocity lookahead, sign-based steer
+Claude Sonnet 5.5       551 / 20,486            97.31%       Signed lead error d = 2*bx - tx - px, stride-60 slices
+GPT-6 (ChatGPT)         398 / 20,486            98.06%       Bilinear intercept c ± (9-r), 4-neuron tanh product gate
+PPO Baseline         20,486 / 20,486             0.00%       Dense continuous weights trained via deep RL (10M steps)
+
+===================================================================================================
+2. CLAUDE SONNET 5.5 MATHEMATICAL POLICY SPECIFICATION
+===================================================================================================
+• Coordinate Extraction:
+  Claude assigns weights via stride-60 slices: W1[ch*10 + c : 600 : 60, unit]
+  Since ball and trail occupy exactly one row at any instant, this extracts column indices:
+    Signed Lead Error: d = (ball_x + dx) - paddle_x = 2*ball_x - trail_x - paddle_x
+
+• Hidden Layer 1 (Unit 0 & 1):
+  z_1,0 = 6*d - 3   ==>   h_1,0 = tanh(6*d - 3)   [~ +1 if d >= 1 (go Right), ~ -1 if d <= 0]
+  z_1,1 = 6*d + 3   ==>   h_1,1 = tanh(6*d + 3)   [~ +1 if d >= 0, ~ -1 if d <= -1 (go Left)]
+
+• Hidden Layer 2 (Unit 0 & 1):
+  h_2,0 = tanh(3 * h_1,0)   (sharp saturation of Right intent)
+  h_2,1 = tanh(3 * h_1,1)   (sharp saturation of Left intent)
+
+• Output Layer (Action Logits):
+  Logit[0] (No-op) = 10 * (h_2,1 - h_2,0)
+  Logit[1] (Left)  = -10 * h_2,1
+  Logit[3] (Right) = 10 * h_2,0
+  Logit[2, 4, 5]   = -10.0 (Up, Down, Fire strongly suppressed)
+
+===================================================================================================
+3. FORENSIC ROOT CAUSE: THE LATERAL WALL BOUNCE DEFICIT
+===================================================================================================
+• In MinAtar Breakout (breakout.py L155):
+  When the ball strikes a side wall (e.g., column 9), the environment executes:
+    self.last_x = self.ball_x;  self.ball_dir_x = -self.ball_dir_x
+• Result on wall bounce frame:
+  ball_x = 9, trail_x = 9. Apparent dx = ball_x - trail_x = 0!
+  If paddle was tracking accurately at column 9:
+    d = 2*(9) - 9 - 9 = 0.
+• At d = 0:
+  h_2,0 = tanh(3*tanh(-3)) = -0.995
+  h_2,1 = tanh(3*tanh(+3)) = +0.995
+  Logit[No-op] = 10 * (0.995 - (-0.995)) = +19.9  ==>  P(No-op) > 99.999%
+  Logit[Left]  = -10 * (0.995) = -9.95
+• Failure Trace:
+  The paddle pauses (No-op) instead of moving inward. On the next frame, ball moves to column 8,
+  leaving the paddle 1 step behind. Because both move at 1 cell/frame, this deficit cannot be
+  recovered without an anticipatory lead, ultimately resulting in ball loss.
+"""
+        txt = tk.Text(win, font=("Courier", 10), bg="#0f0f16", fg="#d0d0e0", padx=12, pady=10, relief=tk.FLAT)
+        txt.insert(tk.END, inspector_text.strip())
         txt.config(state=tk.DISABLED)
         txt.pack(fill=tk.BOTH, expand=True, padx=15, pady=(0, 15))
 
@@ -1071,6 +1247,18 @@ Status: PENDING INDEPENDENT EXPERIMENT
                 probs=self.state.gpt6_probs,
             )
 
+        # Update Claude Sonnet 5.5 if enabled
+        if self.state.has_sonnet55:
+            self._update_panel_display(
+                panel=self.sonnet55_panel,
+                env=self.state.env_sonnet55,
+                is_done=self.state.sonnet55_done,
+                selected_act=self.state.sonnet55_selected_action,
+                executed_act=self.state.sonnet55_executed_action,
+                sticky_override=self.state.sonnet55_sticky_override,
+                probs=self.state.sonnet55_probs,
+            )
+
         # Update Trained Baseline
         self._update_panel_display(
             panel=self.trained_panel,
@@ -1128,6 +1316,8 @@ def run_headless_verification(state: VisualizerState, steps: int = 50) -> bool:
                 msg += f" | Astra score={state.env_astra.total_reward} (done={state.astra_done})"
             if state.has_gpt6:
                 msg += f" | GPT-6 score={state.env_gpt6.total_reward} (done={state.gpt6_done})"
+            if state.has_sonnet55:
+                msg += f" | Sonnet 5.5 score={state.env_sonnet55.total_reward} (done={state.sonnet55_done})"
             print(msg)
     print("Headless verification PASSED cleanly.")
     return True
@@ -1139,6 +1329,7 @@ def capture_screenshot(
     trained_path: str,
     astra_path: Optional[str] = None,
     gpt6_path: Optional[str] = None,
+    sonnet55_path: Optional[str] = None,
     argon_high_path: Optional[str] = None,
     seed: int = 42,
     steps_to_run: int = 25,
@@ -1155,14 +1346,19 @@ def capture_screenshot(
         trained_weights_path=trained_path,
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
+        sonnet55_weights_path=sonnet55_path,
         argon_high_weights_path=argon_high_path,
         initial_seed=seed,
     )
     app = BreakoutVisualizerGUI(state, root, initial_fps=30)
     app.is_running.set(False)
 
-    geo_w = 1480 if state.has_gpt6 else (1300 if state.has_astra else 980)
-    geo_h = 860 if state.has_gpt6 else 820
+    geo_w = (
+        1620
+        if state.has_sonnet55
+        else (1480 if state.has_gpt6 else (1300 if state.has_astra else 980))
+    )
+    geo_h = 860 if (state.has_gpt6 or state.has_sonnet55) else 820
     root.geometry(f"{geo_w}x{geo_h}+0+28")
     root.deiconify()
     root.lift()
@@ -1193,7 +1389,9 @@ def capture_screenshot(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="MinAtar Breakout Policy Visualizer (Argon, Astra, GPT-6, Trained)")
+    parser = argparse.ArgumentParser(
+        description="MinAtar Breakout Policy Visualizer (Argon, Astra, GPT-6, Claude Sonnet 5.5, Trained)"
+    )
     parser.add_argument(
         "--argon",
         type=str,
@@ -1211,6 +1409,13 @@ def main():
         type=str,
         default=GPT6_DEFAULT_PATH if os.path.exists(GPT6_DEFAULT_PATH) else None,
         help="Path to GPT-6 weights .npz (optional, default: experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz)",
+    )
+    parser.add_argument(
+        "--sonnet55",
+        "--sonnet",
+        type=str,
+        default=SONNET55_DEFAULT_PATH if os.path.exists(SONNET55_DEFAULT_PATH) else None,
+        help="Path to Claude Sonnet 5.5 weights .npz (optional, default: experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz)",
     )
     parser.add_argument(
         "--argon-high",
@@ -1273,6 +1478,18 @@ def main():
     else:
         gpt6_path = None
 
+    # Provenance check for Claude Sonnet 5.5 if supplied
+    sonnet55_path = args.sonnet55
+    if sonnet55_path is not None and sonnet55_path != "":
+        if not os.path.exists(sonnet55_path):
+            print(f"[Warning] Sonnet 5.5 weights file not found at {sonnet55_path}; excluding Sonnet 5.5.")
+            sonnet55_path = None
+        else:
+            actual_hash = compute_file_sha256(sonnet55_path)
+            print(f"[Verified] Claude Sonnet 5.5 weights verified ({actual_hash[:16]}...).")
+    else:
+        sonnet55_path = None
+
     # Argon High check
     argon_high_path = args.argon_high
     if argon_high_path is not None and not os.path.exists(argon_high_path):
@@ -1286,6 +1503,7 @@ def main():
             trained_path=args.trained,
             astra_path=astra_path,
             gpt6_path=gpt6_path,
+            sonnet55_path=sonnet55_path,
             argon_high_path=argon_high_path,
             seed=args.seed,
             steps_to_run=args.steps,
@@ -1298,6 +1516,7 @@ def main():
         trained_weights_path=args.trained,
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
+        sonnet55_weights_path=sonnet55_path,
         argon_high_weights_path=argon_high_path,
         initial_seed=args.seed,
     )

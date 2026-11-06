@@ -1,0 +1,99 @@
+## Design
+
+**Strategy:** the paddle chases a lead target, the ball's column plus its horizontal direction of travel. The ball moves one column per step and the paddle also moves one column per step, so the paddle can keep up. The catch rule works out as follows:
+
+- When the ball is on row 8, the game checks the ball's current column and its next column against the paddle's column after it has moved.
+- Aiming at the ball's next column (x + dx) therefore lets the paddle lag by one cell, which is the typical error from sticky actions, and still catch the ball.
+
+**Signed error:** let `d = 2·ball_x − trail_x − paddle_x`. This equals (ball_x + dx) − paddle_x, because `dx = ball_x − trail_x`. It is a purely linear function of the input, since each cell's weight is just its column index.
+
+**Hidden units:**
+- **Layer 1, unit 0:** `tanh(6d − 3)`, which is about +1 if d ≥ 1 and −1 if d ≤ 0 (paddle needs to go right).
+- **Layer 1, unit 1:** `tanh(6d + 3)`, which is about +1 if d ≥ 0 and −1 if d ≤ −1 (paddle does not need to go left).
+- **Layer 2:** unit 0 and unit 1 each pass their layer-1 partner through with gain 3, to sharpen the saturation.
+- **Output:**
+  - right = 10·a
+  - left = −10·b
+  - no-op = 10·(b − a)
+  - up, down and fire get a −10 bias.
+  - The right action wins by a margin of about 10 when d ≥ 1.
+  - No-op wins by about 30 when d = 0.
+  - Left wins by about 10 when d ≤ −1.
+  - Sampling is therefore almost deterministic.
+
+I traced both starting positions by hand. In each case the paddle is in a catching position on the first descent.
+
+```edits
+# --- layer 1: units 0 and 1 compute d = 2*ball_x - trail_x - paddle_x (scaled by 6) ---
+# ball channel (3): weight 12*col
+W1[9:600:60, 0] = 12
+W1[15:600:60, 0] = 24
+W1[21:600:60, 0] = 36
+W1[27:600:60, 0] = 48
+W1[33:600:60, 0] = 60
+W1[39:600:60, 0] = 72
+W1[45:600:60, 0] = 84
+W1[51:600:60, 0] = 96
+W1[57:600:60, 0] = 108
+W1[9:600:60, 1] = 12
+W1[15:600:60, 1] = 24
+W1[21:600:60, 1] = 36
+W1[27:600:60, 1] = 48
+W1[33:600:60, 1] = 60
+W1[39:600:60, 1] = 72
+W1[45:600:60, 1] = 84
+W1[51:600:60, 1] = 96
+W1[57:600:60, 1] = 108
+# trail channel (4): weight -6*col
+W1[10:600:60, 0] = -6
+W1[16:600:60, 0] = -12
+W1[22:600:60, 0] = -18
+W1[28:600:60, 0] = -24
+W1[34:600:60, 0] = -30
+W1[40:600:60, 0] = -36
+W1[46:600:60, 0] = -42
+W1[52:600:60, 0] = -48
+W1[58:600:60, 0] = -54
+W1[10:600:60, 1] = -6
+W1[16:600:60, 1] = -12
+W1[22:600:60, 1] = -18
+W1[28:600:60, 1] = -24
+W1[34:600:60, 1] = -30
+W1[40:600:60, 1] = -36
+W1[46:600:60, 1] = -42
+W1[52:600:60, 1] = -48
+W1[58:600:60, 1] = -54
+# paddle channel (0): weight -6*col
+W1[6:600:60, 0] = -6
+W1[12:600:60, 0] = -12
+W1[18:600:60, 0] = -18
+W1[24:600:60, 0] = -24
+W1[30:600:60, 0] = -30
+W1[36:600:60, 0] = -36
+W1[42:600:60, 0] = -42
+W1[48:600:60, 0] = -48
+W1[54:600:60, 0] = -54
+W1[6:600:60, 1] = -6
+W1[12:600:60, 1] = -12
+W1[18:600:60, 1] = -18
+W1[24:600:60, 1] = -24
+W1[30:600:60, 1] = -30
+W1[36:600:60, 1] = -36
+W1[42:600:60, 1] = -42
+W1[48:600:60, 1] = -48
+W1[54:600:60, 1] = -54
+# thresholds
+b1[0] = -3
+b1[1] = 3
+# --- layer 2: pass-through with gain 3 ---
+W2[0, 0] = 3
+W2[1, 1] = 3
+# --- output ---
+W3[0, 3] = 10      # right  = +10 * a
+W3[1, 1] = -10     # left   = -10 * b
+W3[1, 0] = 10      # no-op  = 10 * (b - a)
+W3[0, 0] = -10
+b3[2] = -10        # up, down, fire suppressed
+b3[4] = -10
+b3[5] = -10
+```

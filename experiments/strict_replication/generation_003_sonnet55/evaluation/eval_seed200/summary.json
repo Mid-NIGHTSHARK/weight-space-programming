@@ -1,0 +1,33 @@
+{
+  "episodes": 1000,
+  "mean": 11.105,
+  "median": 7.0,
+  "std": 12.588743044937068,
+  "se": 0.39809100900604555,
+  "min": 0.0,
+  "max": 111.0,
+  "mean_length": 130.712,
+  "median_length": 80.0,
+  "std_length": 149.38884189283374,
+  "total_bricks_destroyed": 11105,
+  "action_distribution": {
+    "0": 0.08909663994124488,
+    "1": 0.4529499969398372,
+    "2": 0.0,
+    "3": 0.45795336311891793,
+    "4": 0.0,
+    "5": 0.0
+  },
+  "step_cutoffs_count": 0,
+  "metadata": {
+    "model_id": "sonnet55_seed200",
+    "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b",
+    "episodes": 1000,
+    "sticky_action_prob": 0.1,
+    "max_steps": 10000,
+    "base_seed": 200,
+    "minatar_version": "1.0.15",
+    "total_eval_time_seconds": 3.53,
+    "timestamp": "2026-11-06T16:24:19.739338"
+  }
+}

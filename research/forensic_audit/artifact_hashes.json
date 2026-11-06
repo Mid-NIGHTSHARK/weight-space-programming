@@ -148,5 +148,45 @@
     "sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b",
     "size_bytes": 83574,
     "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/input/sonnet55_raw_response.txt": {
+    "sha256": "7b6a0461c2f775cc08604c65672f145aa3efc1adbb5ce51ac59244e036cb85ee",
+    "size_bytes": 3355,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz": {
+    "sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/output/generation_metadata.json": {
+    "sha256": "cb8bf19a40859a86e122ec3d442e15f87b56cc6a42e11b757195f55ce85d1095",
+    "size_bytes": 1425,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/summary.json": {
+    "sha256": "150998d8f2261ae3cb6134c23112eca5c1cb25de0ff171f3bf0a69f2585e5385",
+    "size_bytes": 811,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/summary.json": {
+    "sha256": "dda0c5fad68bcd56015437a4e247f4b63c310206aed31dbcd86fbc15cc442967",
+    "size_bytes": 815,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/summary.json": {
+    "sha256": "ff61956dc1715428278811c1e7f14c762782e6f4952a033f1410d8125871a4e5",
+    "size_bytes": 817,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/analysis/comparative_metrics.json": {
+    "sha256": "3ee9b622a39f69926e4573ba19ce84ea5a2ab74a2a03fb45c05069ac9d17864f",
+    "size_bytes": 2108,
+    "exists": true
   }
 }
