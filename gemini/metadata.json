@@ -1,0 +1,28 @@
+{
+  "experiment_id": "breakout_gemini_argon_run_001",
+  "subject_model": {
+    "identifier": "gemini-argon",
+    "provider": "Google DeepMind / Google",
+    "reasoning_effort": "high",
+    "temperature": 1.0,
+    "max_output_tokens": null
+  },
+  "prompt": {
+    "file": "gemini/experiment_prompt.txt",
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876"
+  },
+  "generation": {
+    "status": "pending_human_approval",
+    "response_raw_file": "gemini/response_raw.txt",
+    "response_raw_sha256": null,
+    "timestamp": null
+  },
+  "parsed_weights": {
+    "file": "gemini/generated_weights.npz",
+    "sha256": null,
+    "statements_total": 0,
+    "statements_applied": 0,
+    "nonzero_parameters": 0,
+    "errors": []
+  }
+}

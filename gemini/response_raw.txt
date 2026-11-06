@@ -1,0 +1,8 @@
+# PLACEHOLDER: GEMINI ARGON RAW RESPONSE
+# -----------------------------------------------------------------------------
+# When the human researcher runs the Gemini Argon experiment:
+# 1. Provide the exact text from `gemini/experiment_prompt.txt` to Gemini Argon.
+# 2. Paste the entire unedited model response into this file.
+# 3. Execute `python gemini/parse_weights.py` to parse and validate the weights.
+# 4. Execute `python scripts/run_evaluation.py --weights gemini/generated_weights.npz`
+# -----------------------------------------------------------------------------
