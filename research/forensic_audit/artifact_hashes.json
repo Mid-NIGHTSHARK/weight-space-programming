@@ -1,0 +1,132 @@
+{
+  "gemini/experiment_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "research/original_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/input/argon_experiment_001.zip": {
+    "sha256": "976c17cd21bed3febb81e5f4f5b7c43467a7cf87230bb646c0135406d86bec64",
+    "size_bytes": 3686,
+    "exists": true
+  },
+  "Read the attached file experiment_5_prompt.txt and....docx": {
+    "sha256": "2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7",
+    "size_bytes": 67042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/argon_response_original.docx": {
+    "sha256": "2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7",
+    "size_bytes": 67042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/raw_response.txt": {
+    "sha256": "6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac",
+    "size_bytes": 107380,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/argon_weights.npz": {
+    "sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/reference/hand.npz": {
+    "sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/trained_baseline/trained_actor_weights.npz": {
+    "sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/trained_baseline/final_actor_critic.pt": {
+    "sha256": "bbf6fbc64d0b4e89cfa36a7980a17a695133884ca9be10e842fbd1f8f86767a3",
+    "size_bytes": 168197,
+    "exists": true
+  },
+  "network/architecture.py": {
+    "sha256": "b345cf3dec62928e19ca61235b0f16ab7ccb73f6bbc73cb98d29a2c53c0ee5b6",
+    "size_bytes": 5280,
+    "exists": true
+  },
+  "network/inference.py": {
+    "sha256": "9ee68f4e396f458fb52b0c9d4db79438731c6b45eacbe05fa8d22103e8cee8a4",
+    "size_bytes": 2065,
+    "exists": true
+  },
+  "network/weight_loader.py": {
+    "sha256": "b6aad0c6d9e8ffef87bdcb0f0631890bd1223079f84b27489c0acfd1708aff16",
+    "size_bytes": 2680,
+    "exists": true
+  },
+  "network/weight_parser.py": {
+    "sha256": "59b5e2a106208c20effa1f5fbe272a7e8d388469bb1751d0899e81b453d7f285",
+    "size_bytes": 13646,
+    "exists": true
+  },
+  "network/weight_validation.py": {
+    "sha256": "0674be58b39edbebd682f90a53befc7962804273894ad5bc02d56b38eb06bd59",
+    "size_bytes": 2862,
+    "exists": true
+  },
+  "environment/breakout.py": {
+    "sha256": "e974de5f9b9735b4fb582e2ffd5dc3a8306b9045e2e58f24145e9934a7fa3b75",
+    "size_bytes": 4595,
+    "exists": true
+  },
+  "environment/actions.py": {
+    "sha256": "72dc1b97555b2a28885e88a8b43fbf3e054155d0652c8e4ae62333e385679b7f",
+    "size_bytes": 1347,
+    "exists": true
+  },
+  "environment/observations.py": {
+    "sha256": "f825eeab44b3f8d4bac0525ce0aca8a3b6e9c3e772a390641d4521254858f703",
+    "size_bytes": 4098,
+    "exists": true
+  },
+  "evaluation/evaluate.py": {
+    "sha256": "f7a430e47f55aa28292181184231b11c95cc4bd9b69908d9baf0a4b455012720",
+    "size_bytes": 6522,
+    "exists": true
+  },
+  "evaluation/metrics.py": {
+    "sha256": "3e8cf85a24588c1ef8348d38b21d0e9cce2eda88972760cc0f926c9e299b9a79",
+    "size_bytes": 3373,
+    "exists": true
+  },
+  "evaluation/seeds.py": {
+    "sha256": "90bcc3692375e1f84e9821d3698cd7c31d8ed43aa292d8e608a183c68353b0e1",
+    "size_bytes": 461,
+    "exists": true
+  },
+  "baselines/train_ppo.py": {
+    "sha256": "9d3d02588173212933a76b1ca3e768c38fc62145d4e9ccedccec79949f075b74",
+    "size_bytes": 16866,
+    "exists": true
+  },
+  "visualize_comparison.py": {
+    "sha256": "9cd20a3c96b2f7fd0ea015fbd2c510c9180246fcfffb31fbd19cf0280871aeca",
+    "size_bytes": 35241,
+    "exists": true
+  },
+  "_reference_repos/lm_understand-logs/exp5_write_from_scratch/networks/breakout/hand.npz": {
+    "sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "_reference_repos/lm_understand-logs/exp5_write_from_scratch/eval/minatar_eval.json": {
+    "sha256": "bc10c6f957af95cdd52ee4be085acd249046f6117dbdb8c735fd5ddb2195c47c",
+    "size_bytes": 4693,
+    "exists": true
+  }
+}

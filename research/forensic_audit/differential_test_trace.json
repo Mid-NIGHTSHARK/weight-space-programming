@@ -1,0 +1,410 @@
+{
+  "total_episodes": 50,
+  "episodes": [
+    {
+      "episode": 1,
+      "seed": 101,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 2,
+      "seed": 202,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 3,
+      "seed": 303,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 4,
+      "seed": 404,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 5,
+      "seed": 505,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 6,
+      "seed": 606,
+      "steps": 38,
+      "wrapper_reward": 3.0,
+      "native_reward": 3.0,
+      "match": true
+    },
+    {
+      "episode": 7,
+      "seed": 707,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 8,
+      "seed": 808,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 9,
+      "seed": 909,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 10,
+      "seed": 1010,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 11,
+      "seed": 1111,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 12,
+      "seed": 1212,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 13,
+      "seed": 1313,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 14,
+      "seed": 1414,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 15,
+      "seed": 1515,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 16,
+      "seed": 1616,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 17,
+      "seed": 1717,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 18,
+      "seed": 1818,
+      "steps": 26,
+      "wrapper_reward": 2.0,
+      "native_reward": 2.0,
+      "match": true
+    },
+    {
+      "episode": 19,
+      "seed": 1919,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 20,
+      "seed": 2020,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 21,
+      "seed": 2121,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 22,
+      "seed": 2222,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 23,
+      "seed": 2323,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 24,
+      "seed": 2424,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 25,
+      "seed": 2525,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 26,
+      "seed": 2626,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 27,
+      "seed": 2727,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 28,
+      "seed": 2828,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 29,
+      "seed": 2929,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 30,
+      "seed": 3030,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 31,
+      "seed": 3131,
+      "steps": 28,
+      "wrapper_reward": 2.0,
+      "native_reward": 2.0,
+      "match": true
+    },
+    {
+      "episode": 32,
+      "seed": 3232,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 33,
+      "seed": 3333,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 34,
+      "seed": 3434,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 35,
+      "seed": 3535,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 36,
+      "seed": 3636,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 37,
+      "seed": 3737,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 38,
+      "seed": 3838,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 39,
+      "seed": 3939,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 40,
+      "seed": 4040,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 41,
+      "seed": 4141,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 42,
+      "seed": 4242,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 43,
+      "seed": 4343,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 44,
+      "seed": 4444,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 45,
+      "seed": 4545,
+      "steps": 6,
+      "wrapper_reward": 0.0,
+      "native_reward": 0.0,
+      "match": true
+    },
+    {
+      "episode": 46,
+      "seed": 4646,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 47,
+      "seed": 4747,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 48,
+      "seed": 4848,
+      "steps": 38,
+      "wrapper_reward": 3.0,
+      "native_reward": 3.0,
+      "match": true
+    },
+    {
+      "episode": 49,
+      "seed": 4949,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    },
+    {
+      "episode": 50,
+      "seed": 5050,
+      "steps": 16,
+      "wrapper_reward": 1.0,
+      "native_reward": 1.0,
+      "match": true
+    }
+  ],
+  "total_steps_evaluated": 586,
+  "total_state_mismatches": 0,
+  "total_reward_mismatches": 0,
+  "total_terminal_mismatches": 0,
+  "all_passed": true
+}
