@@ -74,6 +74,12 @@ def test_corrected_evaluator_enforces_original_environment_parameters():
         CorrectedPolicyEvaluator(42, [1], max_steps=9999)
 
 
+def test_minatar_receives_exact_sticky_action_probability():
+    env = MinAtarBreakoutEnv(sticky_action_prob=0.1)
+    assert env.sticky_action_prob == 0.1
+    assert env._minatar_env.sticky_action_prob == 0.1
+
+
 def test_categorical_action_sampling_and_temperature_remain_unchanged():
     probs = softmax(np.array([0.2, -0.1, 1.0, 0.4, -0.8, 0.3]), temperature=1.0)
     seed = 872
