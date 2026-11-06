@@ -238,10 +238,10 @@ def test_visualizer_state_7way_simulation():
 
 
 def test_benchmark_registry_sorting():
-    """Verify that load_verified_benchmark_registry returns models in strict descending order of mean score."""
+    """Corrected ranking comes from the complete, separated Phase 2 dataset."""
     registry = load_verified_benchmark_registry()
 
-    assert len(registry) >= 7
+    assert len(registry) == 9
 
     # Extract all mean scores and verify strictly descending
     scores = [info["mean_score"] for info in registry.values()]
@@ -252,11 +252,17 @@ def test_benchmark_registry_sorting():
     assert model_keys[0] == "astra"
     assert model_keys[1] == "argon"
     assert model_keys[2] == "sonnet55"
-    assert model_keys[3] == "deepseek_corrected"
-    assert model_keys[4] == "trained"
-    assert model_keys[5] == "gpt6"
-    if "gpt6_luna" in model_keys:
-        assert model_keys[6] == "gpt6_luna"
-        assert model_keys[7] == "deepseek"
-    else:
-        assert model_keys[6] == "deepseek"
+    assert model_keys[3] == "trained"
+    assert model_keys[4] == "gpt6"
+    assert model_keys[5] == "gpt6_luna"
+    assert model_keys[6:] == ["zero", "deepseek", "random"]
+    assert "deepseek_corrected" not in registry
+
+
+def test_original_dataset_remains_available_and_labeled():
+    registry = load_verified_benchmark_registry(dataset="original")
+    assert list(registry)[0] == "astra"
+    assert registry["astra"]["episodes"] == 4000
+    assert registry["random"]["episodes"] == 1000
+    assert registry["zero"]["episodes"] == 1000
+    assert all(item["dataset"] == "original_historical_csvs" for item in registry.values())
