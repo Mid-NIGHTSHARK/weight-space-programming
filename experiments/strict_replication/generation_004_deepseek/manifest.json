@@ -1,0 +1,33 @@
+{
+  "condition_id": "generation_004_deepseek",
+  "model_family": "DeepSeek",
+  "model_name": "DeepSeek",
+  "provider": "DeepSeek",
+  "generation_date_utc": "2026-11-06T17:16:35Z",
+  "files": {
+    "prompt": {
+      "path": "experiments/strict_replication/generation_004_deepseek/input/experiment_5_prompt.txt",
+      "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+      "size_bytes": 9973
+    },
+    "raw_response_txt": {
+      "path": "experiments/strict_replication/generation_004_deepseek/input/deepseek_raw_response.txt",
+      "sha256": "e16d5a6fc4cfff6aa0184211d983bf53274c34b04af6f0501d2f91ed0d1e9de0",
+      "size_bytes": 2473
+    },
+    "parsed_weights_npz": {
+      "path": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz",
+      "sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9",
+      "size_bytes": 83382
+    }
+  },
+  "parser_summary": {
+    "statements_total": 97,
+    "statements_applied": 97,
+    "entries_written": 124,
+    "nonzero_parameters": 786,
+    "total_parameters": 20486,
+    "parameter_sparsity_pct": 96.16323342770673,
+    "rejected_lines": 0
+  }
+}

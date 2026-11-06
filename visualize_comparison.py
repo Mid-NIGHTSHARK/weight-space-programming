@@ -37,10 +37,11 @@ ASTRA_REFERENCE_PATH = "experiments/reference/hand.npz"
 ASTRA_EXPECTED_SHA256 = "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
 GPT6_DEFAULT_PATH = "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz"
 SONNET55_DEFAULT_PATH = "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz"
+DEEPSEEK_DEFAULT_PATH = "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz"
 
 
 class VisualizerState:
-    """Manages independent game simulations and policies for Argon, Trained, Astra, GPT-6, and Claude Sonnet 5.5."""
+    """Manages independent game simulations and policies for Argon, Trained, Astra, GPT-6, Sonnet 5.5, and DeepSeek."""
 
     def __init__(
         self,
@@ -49,6 +50,7 @@ class VisualizerState:
         astra_weights_path: Optional[str] = None,
         gpt6_weights_path: Optional[str] = None,
         sonnet55_weights_path: Optional[str] = None,
+        deepseek_weights_path: Optional[str] = None,
         argon_high_weights_path: Optional[str] = None,
         initial_seed: int = 42,
     ):
@@ -57,6 +59,7 @@ class VisualizerState:
         self.astra_weights_path = astra_weights_path
         self.gpt6_weights_path = gpt6_weights_path
         self.sonnet55_weights_path = sonnet55_weights_path
+        self.deepseek_weights_path = deepseek_weights_path
         self.argon_high_weights_path = argon_high_weights_path
         self.current_seed = initial_seed
 
@@ -101,7 +104,16 @@ class VisualizerState:
             self.env_sonnet55 = MinAtarBreakoutEnv(sticky_action_prob=0.1)
             self.has_sonnet55 = True
 
-        # 6. Gemini Argon 4 High placeholder status
+        # 6. Optional DeepSeek policy
+        self.has_deepseek = False
+        if deepseek_weights_path is not None and os.path.exists(deepseek_weights_path):
+            self.deepseek_weights = load_weights_npz(deepseek_weights_path)
+            self.deepseek_net = MinAtarNetworkNumPy(self.deepseek_weights)
+            self.deepseek_agent = PolicyAgent(self.deepseek_net)
+            self.env_deepseek = MinAtarBreakoutEnv(sticky_action_prob=0.1)
+            self.has_deepseek = True
+
+        # 7. Gemini Argon 4 High placeholder status
         self.has_argon_high = False
         if argon_high_weights_path is not None and os.path.exists(argon_high_weights_path):
             self.argon_high_weights = load_weights_npz(argon_high_weights_path)
@@ -175,6 +187,16 @@ class VisualizerState:
             self.sonnet55_sticky_override = False
             self._update_sonnet55_policy()
 
+        # Handle DeepSeek if enabled
+        if self.has_deepseek:
+            self.deepseek_agent.rng = np.random.RandomState(self.current_seed)
+            self.obs_deepseek = self.env_deepseek.reset(seed=self.current_seed)
+            self.deepseek_done = False
+            self.deepseek_info = {}
+            self.deepseek_executed_action = None
+            self.deepseek_sticky_override = False
+            self._update_deepseek_policy()
+
         # Handle Argon High if enabled
         if self.has_argon_high:
             self.argon_high_agent.rng = np.random.RandomState(self.current_seed)
@@ -215,6 +237,12 @@ class VisualizerState:
                 self.obs_sonnet55
             )
 
+    def _update_deepseek_policy(self):
+        if self.has_deepseek and not self.deepseek_done:
+            self.deepseek_selected_action, self.deepseek_probs, self.deepseek_logits = self.deepseek_agent.get_action(
+                self.obs_deepseek
+            )
+
     def _update_argon_high_policy(self):
         if self.has_argon_high and not self.argon_high_done:
             self.argon_high_selected_action, self.argon_high_probs, self.argon_high_logits = self.argon_high_agent.get_action(
@@ -241,6 +269,10 @@ class VisualizerState:
     @property
     def sonnet55_action(self) -> int:
         return getattr(self, "sonnet55_selected_action", 0)
+
+    @property
+    def deepseek_action(self) -> int:
+        return getattr(self, "deepseek_selected_action", 0)
 
     def step(self):
         """Advance each active environment by 1 frame.
@@ -295,6 +327,16 @@ class VisualizerState:
                 if not self.sonnet55_done:
                     self._update_sonnet55_policy()
 
+        # Step DeepSeek if enabled
+        if self.has_deepseek:
+            if not self.deepseek_done:
+                action_to_step = self.deepseek_selected_action
+                self.obs_deepseek, _, self.deepseek_done, self.deepseek_info = self.env_deepseek.step(action_to_step)
+                self.deepseek_executed_action = self.deepseek_info.get("executed_action", action_to_step)
+                self.deepseek_sticky_override = self.deepseek_info.get("sticky_override", False)
+                if not self.deepseek_done:
+                    self._update_deepseek_policy()
+
         # Step Argon High if enabled
         if self.has_argon_high:
             if not self.argon_high_done:
@@ -306,6 +348,9 @@ class VisualizerState:
                     self._update_argon_high_policy()
 
         # Return backward-compatible tuple:
+        if self.has_deepseek:
+            return self.argon_done, self.trained_done, self.astra_done, self.gpt6_done, self.sonnet55_done, self.deepseek_done
+
         if self.has_sonnet55:
             if self.has_gpt6 and self.has_astra:
                 return self.argon_done, self.trained_done, self.astra_done, self.gpt6_done, self.sonnet55_done
@@ -333,6 +378,8 @@ class VisualizerState:
             done = done and self.gpt6_done
         if self.has_sonnet55:
             done = done and self.sonnet55_done
+        if self.has_deepseek:
+            done = done and self.deepseek_done
         if self.has_argon_high:
             done = done and self.argon_high_done
         return done
@@ -353,11 +400,17 @@ class BreakoutVisualizerGUI:
             + (1 if self.state.has_astra else 0)
             + (1 if self.state.has_gpt6 else 0)
             + (1 if self.state.has_sonnet55 else 0)
+            + (1 if self.state.has_deepseek else 0)
         )
 
         # Window configuration
         self.root.configure(bg="#141419")
-        if active_count >= 5:
+        if active_count >= 6:
+            self.root.title("MinAtar Breakout: Six-Way Policy Comparison Lab (Argon, Astra, GPT-6, Sonnet 5.5, DeepSeek, PPO)")
+            self.root.geometry("1800x870")
+            self.root.minsize(1520, 750)
+            self.cell_size = 16
+        elif active_count == 5:
             self.root.title("MinAtar Breakout: Five-Way Policy Comparison Lab (Argon, Astra, GPT-6, Sonnet 5.5, PPO)")
             self.root.geometry("1620x860")
             self.root.minsize(1380, 750)
@@ -389,6 +442,7 @@ class BreakoutVisualizerGUI:
         self.COLOR_PADDLE_ASTRA = "#ffd700"    # Gold
         self.COLOR_PADDLE_GPT6 = "#d070ff"     # Orchid / Violet
         self.COLOR_PADDLE_SONNET55 = "#ff7043" # Coral / Warm Orange-Red
+        self.COLOR_PADDLE_DEEPSEEK = "#2979ff" # Deep Electric Blue
         self.COLOR_PADDLE_TRAINED = "#00e676"  # Bright Green
         self.COLOR_BALL = "#ffff00"            # Bright Yellow
         self.COLOR_TRAIL = "#ff9100"           # Orange
@@ -423,8 +477,10 @@ class BreakoutVisualizerGUI:
             + (1 if self.state.has_astra else 0)
             + (1 if self.state.has_gpt6 else 0)
             + (1 if self.state.has_sonnet55 else 0)
+            + (1 if self.state.has_deepseek else 0)
         )
         title_map = {
+            6: "BREAKOUT SIX-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, Sonnet 5.5, DeepSeek, PPO)",
             5: "BREAKOUT FIVE-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, Sonnet 5.5, PPO)",
             4: "BREAKOUT FOUR-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, PPO)",
             3: "BREAKOUT THREE-WAY POLICY COMPARISON LAB",
@@ -519,7 +575,18 @@ class BreakoutVisualizerGUI:
                 color=self.COLOR_PADDLE_SONNET55,
             )
 
-        # 5. TRAINED BASELINE PANEL
+        # 5. DEEPSEEK PANEL (optional)
+        if self.state.has_deepseek:
+            self.deepseek_panel = self._create_model_panel(
+                parent=self.arena,
+                title="DEEPSEEK",
+                tag="Zero-Shot Generation",
+                subtitle="786 nz params | 96.2% sparse",
+                mechanism="Inverted tanh: Up/Down/Fire +1724",
+                color=self.COLOR_PADDLE_DEEPSEEK,
+            )
+
+        # 6. TRAINED BASELINE PANEL
         self.trained_panel = self._create_model_panel(
             parent=self.arena,
             title="TRAINED BASELINE",
@@ -798,7 +865,7 @@ class BreakoutVisualizerGUI:
 
         win = tk.Toplevel(self.root)
         win.title("MinAtar Breakout: Comparative Benchmark Summary")
-        win.geometry("920x520")
+        win.geometry("960x560")
         win.configure(bg="#181822")
 
         lbl_hdr = tk.Label(
@@ -821,6 +888,7 @@ class BreakoutVisualizerGUI:
 | PPO Baseline (10M Environment St.) | 3,000 |    5.757 | ± 0.019 |    6.0 |   8.0 |     67.4 |   0.00% |
 | GPT-6 (Zero-Shot, Nov 6, 2026)     | 3,000 |    2.493 | ± 0.036 |    2.0 |  10.0 |     32.5 |   0.00% |
 | Zero-Weight Baseline               | 1,000 |    0.517 | ± 0.023 |    0.0 |   4.0 |     11.3 |   0.00% |
+| DeepSeek (Zero-Shot, Nov 6, 2026)  | 3,000 |    0.484 | ± 0.009 |    0.0 |   1.0 |     10.8 |   0.00% |
 | Random Action Baseline             | 1,000 |    0.485 | ± 0.023 |    0.0 |   4.0 |     11.0 |   0.00% |
 +------------------------------------+-------+----------+---------+--------+-------+----------+---------+
 | Gemini Argon 4 High (Ultra-Reason) |   0   | [Data Unavailable / Pending Experiment]                     |
@@ -828,7 +896,8 @@ class BreakoutVisualizerGUI:
 
 Key Analytical Findings:
 • Claude Sonnet 5.5 averages 10.957 (1.9x 10M PPO, 4.4x GPT-6), max 111.0, using linear lead target d = 2*bx - tx - px.
-• Claude Sonnet 5.5 failure mode: lateral wall reflections set ball_x == last_x, causing d=0 and No-op pause.
+• DeepSeek averages 0.484: intended to suppress Up/Down/Fire via W3=-100, but 19 inactive Layer 2 neurons at -1.0
+  produced logits of +1724 (19 * +100 - 100), making Up/Down/Fire 100% probable and completely freezing the paddle.
 • Gemini Argon achieves 57.866 mean score via Channel 4 1-step lookahead velocity estimation.
 • Astra sustains infinite rallies via full heuristic bounce folding, hitting the 10,000-step cutoff in 51.1% of episodes.
 • GPT-6 implements a bilinear projected-intercept formula c ± (9 - r) with a 4-neuron tanh multiplication gate.
@@ -844,7 +913,7 @@ Key Analytical Findings:
 
         win = tk.Toplevel(self.root)
         win.title("Neural Network Architecture & Policy Inspector")
-        win.geometry("920x580")
+        win.geometry("960x620")
         win.configure(bg="#181822")
 
         lbl_hdr = tk.Label(
@@ -865,6 +934,7 @@ Model                 Nonzero / Total Params   Sparsity (%)  Policy Strategy & R
 ---------------------------------------------------------------------------------------------------
 Astra Reference         815 / 20,486            96.02%       Full bounce folding, heuristic intercept lookup
 Gemini Argon 4M         817 / 20,486            96.01%       Ch 4 (last_y-y) velocity lookahead, sign-based steer
+DeepSeek                786 / 20,486            96.16%       Gated row/dir intercept comparison; inverted tanh suppression
 Claude Sonnet 5.5       551 / 20,486            97.31%       Signed lead error d = 2*bx - tx - px, stride-60 slices
 GPT-6 (ChatGPT)         398 / 20,486            98.06%       Bilinear intercept c ± (9-r), 4-neuron tanh product gate
 PPO Baseline         20,486 / 20,486             0.00%       Dense continuous weights trained via deep RL (10M steps)
@@ -874,42 +944,39 @@ PPO Baseline         20,486 / 20,486             0.00%       Dense continuous we
 ===================================================================================================
 • Coordinate Extraction:
   Claude assigns weights via stride-60 slices: W1[ch*10 + c : 600 : 60, unit]
-  Since ball and trail occupy exactly one row at any instant, this extracts column indices:
-    Signed Lead Error: d = (ball_x + dx) - paddle_x = 2*ball_x - trail_x - paddle_x
-
-• Hidden Layer 1 (Unit 0 & 1):
-  z_1,0 = 6*d - 3   ==>   h_1,0 = tanh(6*d - 3)   [~ +1 if d >= 1 (go Right), ~ -1 if d <= 0]
-  z_1,1 = 6*d + 3   ==>   h_1,1 = tanh(6*d + 3)   [~ +1 if d >= 0, ~ -1 if d <= -1 (go Left)]
-
-• Hidden Layer 2 (Unit 0 & 1):
-  h_2,0 = tanh(3 * h_1,0)   (sharp saturation of Right intent)
-  h_2,1 = tanh(3 * h_1,1)   (sharp saturation of Left intent)
-
-• Output Layer (Action Logits):
-  Logit[0] (No-op) = 10 * (h_2,1 - h_2,0)
-  Logit[1] (Left)  = -10 * h_2,1
-  Logit[3] (Right) = 10 * h_2,0
-  Logit[2, 4, 5]   = -10.0 (Up, Down, Fire strongly suppressed)
+  Signed Lead Error: d = (ball_x + dx) - paddle_x = 2*ball_x - trail_x - paddle_x
+• Hidden Layer 1: z_1,0 = 6*d - 3 (Right), z_1,1 = 6*d + 3 (Left)
+• Output Logits: Right = 10*h_2,0, Left = -10*h_2,1, No-op = 10*(h_2,1 - h_2,0)
+• Failure Mode: On wall bounce, ball_x == trail_x => d = 0 => commands No-op pause.
 
 ===================================================================================================
-3. FORENSIC ROOT CAUSE: THE LATERAL WALL BOUNCE DEFICIT
+3. DEEPSEEK MATHEMATICAL POLICY SPECIFICATION
 ===================================================================================================
-• In MinAtar Breakout (breakout.py L155):
-  When the ball strikes a side wall (e.g., column 9), the environment executes:
-    self.last_x = self.ball_x;  self.ball_dir_x = -self.ball_dir_x
-• Result on wall bounce frame:
-  ball_x = 9, trail_x = 9. Apparent dx = ball_x - trail_x = 0!
-  If paddle was tracking accurately at column 9:
-    d = 2*(9) - 9 - 9 = 0.
-• At d = 0:
-  h_2,0 = tanh(3*tanh(-3)) = -0.995
-  h_2,1 = tanh(3*tanh(+3)) = +0.995
-  Logit[No-op] = 10 * (0.995 - (-0.995)) = +19.9  ==>  P(No-op) > 99.999%
-  Logit[Left]  = -10 * (0.995) = -9.95
-• Failure Trace:
-  The paddle pauses (No-op) instead of moving inward. On the next frame, ball moves to column 8,
-  leaving the paddle 1 step behind. Because both move at 1 cell/frame, this deficit cannot be
-  recovered without an anticipatory lead, ultimately resulting in ball loss.
+• Intended Design:
+  - Neurons 0..9: Row detectors B_r = tanh(10 * has_ball_in_row_r - 5)
+  - Neurons 10, 11: Direction detectors D_plus (moving right) and D_minus (moving left) with wall reversal
+  - Neurons 12, 13: Linear position features 0.005 * c_ball and 0.005 * c_paddle
+  - Layer 2 (Units 0..19): Gated comparisons z_2,j = 0.5 * [(c_ball ± (9 - r)) - c_paddle]
+    Active unit predicts landing column and compares against paddle.
+  - Output Layer: Left = -8*h_2 - 1, Right = 8*h_2 - 1, No-op = 0.
+
+===================================================================================================
+4. FORENSIC ROOT CAUSE: DEEPSEEK'S INVERTED TANH SUPPRESSION ERROR
+===================================================================================================
+• In Layer 3, DeepSeek wrote:
+    W3[0:20, 2] = -100; b3[2] = -100   # Up action
+    W3[0:20, 4] = -100; b3[4] = -100   # Down action
+    W3[0:20, 5] = -100; b3[5] = -100   # Fire action
+• Inactive neurons in a tanh hidden layer saturate to -1.0, NOT 0.0!
+  Out of 20 units in Layer 2, exactly 19 are inactive with h_2,j ≈ -1.0.
+• Multiplying by -100: (-1.0) * (-100) = +100 per inactive neuron!
+  Net Logit[Up, Down, Fire] = 19 * (+100) - 100 - 100 ≈ +1700 to +1724!
+• In contrast, Logit[Left] ≈ -7 and Logit[Right] ≈ +5 (where DeepSeek remembered to cancel the 19 units).
+• Softmax Result:
+  P(Up) = 33.3%, P(Down) = 33.3%, P(Fire) = 33.3%, P(Left) = 0%, P(Right) = 0%.
+• Empirical Impact:
+  Because Up, Down, and Fire are inert no-ops in MinAtar Breakout, the paddle never moves.
+  The model acts as a static frozen paddle, scoring 0.484 mean bricks (matching random baseline).
 """
         txt = tk.Text(win, font=("Courier", 10), bg="#0f0f16", fg="#d0d0e0", padx=12, pady=10, relief=tk.FLAT)
         txt.insert(tk.END, inspector_text.strip())
@@ -1259,6 +1326,18 @@ Status: PENDING INDEPENDENT EXPERIMENT
                 probs=self.state.sonnet55_probs,
             )
 
+        # Update DeepSeek if enabled
+        if self.state.has_deepseek:
+            self._update_panel_display(
+                panel=self.deepseek_panel,
+                env=self.state.env_deepseek,
+                is_done=self.state.deepseek_done,
+                selected_act=self.state.deepseek_selected_action,
+                executed_act=self.state.deepseek_executed_action,
+                sticky_override=self.state.deepseek_sticky_override,
+                probs=self.state.deepseek_probs,
+            )
+
         # Update Trained Baseline
         self._update_panel_display(
             panel=self.trained_panel,
@@ -1318,6 +1397,8 @@ def run_headless_verification(state: VisualizerState, steps: int = 50) -> bool:
                 msg += f" | GPT-6 score={state.env_gpt6.total_reward} (done={state.gpt6_done})"
             if state.has_sonnet55:
                 msg += f" | Sonnet 5.5 score={state.env_sonnet55.total_reward} (done={state.sonnet55_done})"
+            if state.has_deepseek:
+                msg += f" | DeepSeek score={state.env_deepseek.total_reward} (done={state.deepseek_done})"
             print(msg)
     print("Headless verification PASSED cleanly.")
     return True
@@ -1330,6 +1411,7 @@ def capture_screenshot(
     astra_path: Optional[str] = None,
     gpt6_path: Optional[str] = None,
     sonnet55_path: Optional[str] = None,
+    deepseek_path: Optional[str] = None,
     argon_high_path: Optional[str] = None,
     seed: int = 42,
     steps_to_run: int = 25,
@@ -1347,6 +1429,7 @@ def capture_screenshot(
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
         sonnet55_weights_path=sonnet55_path,
+        deepseek_weights_path=deepseek_path,
         argon_high_weights_path=argon_high_path,
         initial_seed=seed,
     )
@@ -1354,11 +1437,11 @@ def capture_screenshot(
     app.is_running.set(False)
 
     geo_w = (
-        1620
-        if state.has_sonnet55
-        else (1480 if state.has_gpt6 else (1300 if state.has_astra else 980))
+        1800
+        if state.has_deepseek
+        else (1620 if state.has_sonnet55 else (1480 if state.has_gpt6 else (1300 if state.has_astra else 980)))
     )
-    geo_h = 860 if (state.has_gpt6 or state.has_sonnet55) else 820
+    geo_h = 870 if state.has_deepseek else (860 if (state.has_gpt6 or state.has_sonnet55) else 820)
     root.geometry(f"{geo_w}x{geo_h}+0+28")
     root.deiconify()
     root.lift()
@@ -1390,7 +1473,7 @@ def capture_screenshot(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="MinAtar Breakout Policy Visualizer (Argon, Astra, GPT-6, Claude Sonnet 5.5, Trained)"
+        description="MinAtar Breakout Policy Visualizer (Argon, Astra, GPT-6, Claude Sonnet 5.5, DeepSeek, Trained)"
     )
     parser.add_argument(
         "--argon",
@@ -1416,6 +1499,12 @@ def main():
         type=str,
         default=SONNET55_DEFAULT_PATH if os.path.exists(SONNET55_DEFAULT_PATH) else None,
         help="Path to Claude Sonnet 5.5 weights .npz (optional, default: experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz)",
+    )
+    parser.add_argument(
+        "--deepseek",
+        type=str,
+        default=DEEPSEEK_DEFAULT_PATH if os.path.exists(DEEPSEEK_DEFAULT_PATH) else None,
+        help="Path to DeepSeek weights .npz (optional, default: experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz)",
     )
     parser.add_argument(
         "--argon-high",
@@ -1490,6 +1579,18 @@ def main():
     else:
         sonnet55_path = None
 
+    # Provenance check for DeepSeek if supplied
+    deepseek_path = args.deepseek
+    if deepseek_path is not None and deepseek_path != "":
+        if not os.path.exists(deepseek_path):
+            print(f"[Warning] DeepSeek weights file not found at {deepseek_path}; excluding DeepSeek.")
+            deepseek_path = None
+        else:
+            actual_hash = compute_file_sha256(deepseek_path)
+            print(f"[Verified] DeepSeek weights verified ({actual_hash[:16]}...).")
+    else:
+        deepseek_path = None
+
     # Argon High check
     argon_high_path = args.argon_high
     if argon_high_path is not None and not os.path.exists(argon_high_path):
@@ -1504,6 +1605,7 @@ def main():
             astra_path=astra_path,
             gpt6_path=gpt6_path,
             sonnet55_path=sonnet55_path,
+            deepseek_path=deepseek_path,
             argon_high_path=argon_high_path,
             seed=args.seed,
             steps_to_run=args.steps,
@@ -1517,6 +1619,7 @@ def main():
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
         sonnet55_weights_path=sonnet55_path,
+        deepseek_weights_path=deepseek_path,
         argon_high_weights_path=argon_high_path,
         initial_seed=args.seed,
     )

@@ -321,3 +321,44 @@ def test_visualizer_gui_5way():
         root.destroy()
 
 
+def test_visualizer_gui_6way():
+    """Verify that BreakoutVisualizerGUI constructs and renders the DeepSeek panel in 6-way mode."""
+    from visualize_comparison import GPT6_DEFAULT_PATH, SONNET55_DEFAULT_PATH, DEEPSEEK_DEFAULT_PATH
+
+    state = VisualizerState(
+        argon_weights_path=ARGON_WEIGHTS,
+        trained_weights_path=TRAINED_WEIGHTS,
+        astra_weights_path=ASTRA_REFERENCE_PATH,
+        gpt6_weights_path=GPT6_DEFAULT_PATH,
+        sonnet55_weights_path=SONNET55_DEFAULT_PATH,
+        deepseek_weights_path=DEEPSEEK_DEFAULT_PATH,
+        initial_seed=42,
+    )
+    root = tk.Tk()
+    root.withdraw()
+    app = BreakoutVisualizerGUI(state, root, initial_fps=30)
+    app.is_running.set(False)
+
+    try:
+        assert hasattr(app, "deepseek_panel")
+        assert app.deepseek_panel["canvas_board"] is not None
+        assert app.deepseek_panel["canvas_probs"] is not None
+        assert "DEEPSEEK" in app.deepseek_panel["title_label"].cget("text")
+
+        # Verify redraw executes cleanly with 6 panels
+        app.redraw()
+
+        # Step single frame via app
+        initial_steps = app.state.env_deepseek.step_count
+        app.btn_step.invoke()
+        assert app.state.env_deepseek.step_count == initial_steps + 1
+
+        # Verify all modals open cleanly in 6-way mode
+        app.show_benchmark_summary()
+        app.show_network_inspector()
+        app.show_argon_high_info()
+    finally:
+        root.destroy()
+
+
+

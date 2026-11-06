@@ -1,0 +1,30 @@
+{
+  "experiment_id": "breakout_deepseek_generation_004",
+  "model_name": "DeepSeek",
+  "model_identifier": "deepseek_zero_shot",
+  "provider": "DeepSeek",
+  "interface": "DeepSeek Interface (deepseek_edits_20261106_3be876.txt)",
+  "timestamp_recorded_utc": "2026-11-06T17:16:35Z",
+  "generation_type": "Zero-shot neural-network weight construction",
+  "training_type": "None (No gradients, no RL, no environment interaction during generation)",
+  "tools_enabled": false,
+  "search_grounding_enabled": false,
+  "code_interpreter_enabled": false,
+  "one_shot": true,
+  "raw_artifacts": {
+    "raw_response_text": "experiments/strict_replication/generation_004_deepseek/input/deepseek_raw_response.txt",
+    "raw_response_sha256": "e16d5a6fc4cfff6aa0184211d983bf53274c34b04af6f0501d2f91ed0d1e9de0",
+    "experiment_prompt": "experiments/strict_replication/generation_004_deepseek/input/experiment_5_prompt.txt",
+    "experiment_prompt_sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876"
+  },
+  "parsed_weights": {
+    "file": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz",
+    "sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9",
+    "total_parameters": 20486,
+    "nonzero_parameters": 786,
+    "parameter_sparsity_percent": 96.16323342770673,
+    "statements_total": 97,
+    "statements_applied": 97,
+    "errors": []
+  }
+}
