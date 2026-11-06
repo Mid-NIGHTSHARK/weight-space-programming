@@ -241,8 +241,8 @@
   ],
   "evaluation_config_sha256": "50292561321d3de7faf18cb6ba28ec02c294442be73ff80ae4744da474cc030b",
   "evaluation_source_commit": "b8be6dc0134b80d6fefb69005ff364f799d1d793",
-  "generated_at_utc": "2026-11-06T16:13:45.408089+00:00",
-  "git_head_at_generation": "61721c4a0f34ead53648cf59c4b508cc031f3014",
+  "generated_at_utc": "2026-11-06T16:16:48.868763+00:00",
+  "git_head_at_generation": "be5e0fad42f3eb263ea87cf00543438bfc7d6247",
   "historical_artifact_hash_registry": {
     "path": "research/forensic_audit/artifact_hashes.json",
     "sha256": "0195f92000f92b20810db3c167fa5825c922dc2c4b06e195c7decd23553ac6f7",
@@ -530,8 +530,8 @@
     },
     {
       "path": "scripts/refresh_phase2_artifact_registry.py",
-      "sha256": "b02acc935f8b9e3466a10a89d846f2f3e0ae1de764268260315ed454ae9265cb",
-      "size_bytes": 8356
+      "sha256": "6cd895b5067f68c44933a8c3ae0f7d4456bbad75d5dffe4c8930682d4a37a890",
+      "size_bytes": 8404
     },
     {
       "path": "tests/test_corrected_rng.py",
@@ -559,6 +559,11 @@
       "size_bytes": 2489
     },
     {
+      "path": "tests/test_visualizer_gui.py",
+      "sha256": "499f1f2b618230eae95b9810f2073142dd0e13d67ce86c305b3b0e3b613bcff5",
+      "size_bytes": 17280
+    },
+    {
       "path": "tests/test_deepseek_correction.py",
       "sha256": "1e3e5b1c7c55a07cc6e4f6d14c2de653fb8d5652c70d35f28885b09125acb315",
       "size_bytes": 11300
@@ -571,8 +576,8 @@
   ],
   "phase2_report": {
     "path": "PHASE_2_CORRECTED_EVALUATION_REPORT.md",
-    "sha256": "e80d282065e260746ce4d9cb90b7af27c6b9ce06d5cea98a96431b95df158d09",
-    "size_bytes": 22499
+    "sha256": "bccc6ae47ef95eeb229030ff0c2c087226df94cdad4ae48f466cfcb9ca66f616",
+    "size_bytes": 22581
   },
   "protected_artifact_registry": {
     "path": "experiments/corrected_evaluation/preserved_artifacts_sha256.json",
