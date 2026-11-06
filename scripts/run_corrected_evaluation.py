@@ -27,6 +27,14 @@ from network.weight_loader import compute_file_sha256, load_weights_npz
 
 
 REGISTRY_PATH = ROOT / "experiments/corrected_evaluation/condition_registry.json"
+CONFIG_PATH = ROOT / "experiments/corrected_evaluation/evaluation_config.json"
+
+
+def load_evaluation_config():
+    with CONFIG_PATH.open() as fh:
+        return json.load(fh)
+
+
 def load_conditions():
     with REGISTRY_PATH.open() as fh:
         registry = json.load(fh)
@@ -70,11 +78,13 @@ def load_conditions():
     return conditions
 
 
-def build_schedule(kind: str):
+def build_schedule(kind: str, config: dict):
     if kind == "pilot":
-        counts = {42: 4, 100: 3, 200: 3}
+        counts = {int(group): int(count) for group, count in config["pilot_episodes_by_seed_group"].items()}
+        if sum(counts.values()) != int(config["pilot_episodes_per_condition"]):
+            raise ValueError("Pilot seed-group allocation does not match configured episode count")
     else:
-        counts = {42: 1000, 100: 1000, 200: 1000}
+        counts = {int(group): int(config["episodes_per_seed_group"]) for group in config["seed_groups"]}
     schedule = []
     for seed_group, count in counts.items():
         base_seeds = generate_evaluation_seeds(count, seed_group)
@@ -102,6 +112,7 @@ def runtime_versions():
         "python": sys.version,
         "numpy": version("numpy"),
         "minatar": version("minatar"),
+        "matplotlib": version("matplotlib"),
         "pandas": version("pandas"),
         "scipy": version("scipy"),
         "torch": version("torch"),
@@ -109,11 +120,30 @@ def runtime_versions():
     }
 
 
+def record_failure(output_dir: Path, logs_dir: Path, manifest: dict, kind: str, exc: Exception):
+    manifest["status"] = "failed"
+    manifest["failed_at_utc"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    manifest["error"] = {"type": type(exc).__name__, "message": str(exc)}
+    write_json(output_dir / "run_manifest.json", manifest)
+    with (logs_dir / "error.txt").open("w") as fh:
+        fh.write(traceback.format_exc())
+    logging.exception("Corrected %s run failed", kind)
+
+
 def run(args):
     kind = "pilot" if args.pilot else "full"
     output_dir = (ROOT / args.output_dir).resolve()
     if output_dir.exists():
         raise FileExistsError(f"Refusing to overwrite existing run directory: {output_dir}")
+    restarted_from = None
+    if args.restart_of:
+        failed_manifest_path = (ROOT / args.restart_of).resolve() / "run_manifest.json"
+        if not failed_manifest_path.is_file():
+            raise FileNotFoundError(f"Restart source manifest not found: {failed_manifest_path}")
+        failed_manifest = json.loads(failed_manifest_path.read_text())
+        if failed_manifest.get("status") != "failed":
+            raise ValueError("--restart-of must reference a run whose manifest status is failed")
+        restarted_from = str(Path(args.restart_of))
     output_dir.mkdir(parents=True)
     logs_dir = output_dir / "logs"
     logs_dir.mkdir()
@@ -123,8 +153,6 @@ def run(args):
         format="%(asctime)s %(levelname)s %(message)s",
     )
 
-    schedule = build_schedule(kind)
-    conditions = load_conditions()
     git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
     manifest = {
         "schema_version": 1,
@@ -134,24 +162,39 @@ def run(args):
         "source_commit": git_commit,
         "run_kind": kind,
         "pilot_is_software_validation_only": kind == "pilot",
-        "episode_count_per_condition": len(schedule),
-        "seed_groups": [42, 100, 200],
-        "evaluation_config": corrected_run_metadata(),
-        "runtime_versions": runtime_versions(),
-        "condition_registry_sha256": hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest(),
-        "conditions": [
-            {k: v for k, v in condition.items() if k not in {"action_fn"}}
-            for condition in conditions
-        ],
-        "episode_seeds_file": "episode_seeds.csv",
+        "run_attempt": "restart_from_failed_run" if restarted_from else "fresh_start",
+        "resumed": False,
+        "restarted_from": restarted_from,
         "failure_policy": "failed run is retained; no implicit resume; reruns require a new output directory",
     }
     write_json(output_dir / "run_manifest.json", manifest)
 
-    with (output_dir / "episode_seeds.csv").open("w", newline="") as fh:
-        writer = csv.DictWriter(fh, fieldnames=list(schedule[0].keys()))
-        writer.writeheader()
-        writer.writerows(schedule)
+    try:
+        config = load_evaluation_config()
+        schedule = build_schedule(kind, config)
+        conditions = load_conditions()
+        manifest.update({
+            "episode_count_per_condition": len(schedule),
+            "seed_groups": config["seed_groups"],
+            "evaluation_config": {**config, "rng_implementation": corrected_run_metadata()},
+            "evaluation_config_sha256": hashlib.sha256(CONFIG_PATH.read_bytes()).hexdigest(),
+            "runtime_versions": runtime_versions(),
+            "condition_registry_sha256": hashlib.sha256(REGISTRY_PATH.read_bytes()).hexdigest(),
+            "conditions": [
+                {k: v for k, v in condition.items() if k not in {"action_fn"}}
+                for condition in conditions
+            ],
+            "episode_seeds_file": "episode_seeds.csv",
+        })
+        write_json(output_dir / "run_manifest.json", manifest)
+
+        with (output_dir / "episode_seeds.csv").open("w", newline="") as fh:
+            writer = csv.DictWriter(fh, fieldnames=list(schedule[0].keys()))
+            writer.writeheader()
+            writer.writerows(schedule)
+    except Exception as exc:
+        record_failure(output_dir, logs_dir, manifest, kind, exc)
+        raise
 
     csv_columns = [
         "seed_group", "episode_index", "base_seed", "environment_seed", "policy_seed",
@@ -212,22 +255,17 @@ def run(args):
         }
         write_json(output_dir / "run_manifest.json", manifest)
     except Exception as exc:
-        manifest["status"] = "failed"
-        manifest["failed_at_utc"] = dt.datetime.now(dt.timezone.utc).isoformat()
-        manifest["error"] = {"type": type(exc).__name__, "message": str(exc)}
-        write_json(output_dir / "run_manifest.json", manifest)
-        with (logs_dir / "error.txt").open("w") as fh:
-            fh.write(traceback.format_exc())
-        logging.exception("Corrected %s run failed", kind)
+        record_failure(output_dir, logs_dir, manifest, kind, exc)
         raise
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
-    mode.add_argument("--pilot", action="store_true", help="Run 10 pilot episodes per condition (4/3/3 by seed group).")
-    mode.add_argument("--full", action="store_true", help="Run 3,000 episodes per condition, 1,000 per seed group.")
+    mode.add_argument("--pilot", action="store_true", help="Run the configured 10-episode-per-condition validation pilot.")
+    mode.add_argument("--full", action="store_true", help="Run the configured 3,000-episode benchmark.")
     parser.add_argument("--output-dir", help="New output directory; refuses to overwrite existing runs.")
+    parser.add_argument("--restart-of", help="Relative path to a failed run; records an explicit fresh restart.")
     args = parser.parse_args()
     if args.output_dir is None:
         args.output_dir = "experiments/corrected_evaluation/pilot" if args.pilot else "experiments/corrected_evaluation/full_run"
