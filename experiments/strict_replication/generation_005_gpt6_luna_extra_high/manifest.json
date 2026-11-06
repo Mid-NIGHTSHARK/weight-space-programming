@@ -1,0 +1,42 @@
+{
+  "condition_id": "generation_005_gpt6_luna_extra_high",
+  "model_family": "GPT-6",
+  "model_name": "GPT-6 Luna Extra High",
+  "provider": "OpenAI",
+  "reasoning_effort": "Extra High",
+  "generation_date_utc": "2026-11-06T13:10:01Z",
+  "files": {
+    "prompt": {
+      "path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/input/experiment_5_prompt.txt",
+      "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+      "size_bytes": 9973
+    },
+    "raw_response_txt": {
+      "path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/input/gpt6_luna_raw_response.txt",
+      "sha256": "e037cc069e092820da6e0f08e54a7fad82af4eabe396695b559311bac068601c",
+      "size_bytes": 3168
+    },
+    "parsed_weights_npz": {
+      "path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz",
+      "sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9",
+      "size_bytes": 2073
+    }
+  },
+  "parser_summary": {
+    "statements_total": 39,
+    "statements_applied": 39,
+    "entries_written": 309,
+    "nonzero_parameters": 309,
+    "nonzero_per_tensor": {
+      "W1": 300,
+      "b1": 0,
+      "W2": 3,
+      "b2": 0,
+      "W3": 2,
+      "b3": 4
+    },
+    "total_parameters": 20486,
+    "parameter_sparsity_pct": 98.49165283608318,
+    "rejected_lines": 0
+  }
+}

@@ -255,4 +255,8 @@ def test_benchmark_registry_sorting():
     assert model_keys[3] == "deepseek_corrected"
     assert model_keys[4] == "trained"
     assert model_keys[5] == "gpt6"
-    assert model_keys[6] == "deepseek"
+    if "gpt6_luna" in model_keys:
+        assert model_keys[6] == "gpt6_luna"
+        assert model_keys[7] == "deepseek"
+    else:
+        assert model_keys[6] == "deepseek"

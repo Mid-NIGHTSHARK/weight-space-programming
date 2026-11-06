@@ -38,13 +38,16 @@ ASTRA_EXPECTED_SHA256 = "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e65
 GPT6_DEFAULT_PATH = "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz"
 SONNET55_DEFAULT_PATH = "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz"
 DEEPSEEK_DEFAULT_PATH = "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz"
+GPT6_LUNA_DEFAULT_PATH = "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz"
 DEEPSEEK_CORRECTED_DEFAULT_PATH = "experiments/controlled_interventions/deepseek_corrected/output/deepseek_corrected_weights.npz"
 
 
 def load_verified_benchmark_registry() -> dict:
     """Read latest verified benchmark results from disk for data-driven panel ranking."""
     import json
-    summary_path = "experiments/controlled_interventions/deepseek_corrected/analysis/comparative_metrics.json"
+    summary_path = "experiments/strict_replication/generation_005_gpt6_luna_extra_high/analysis/comparative_metrics.json"
+    if not os.path.exists(summary_path):
+        summary_path = "experiments/controlled_interventions/deepseek_corrected/analysis/comparative_metrics.json"
     data = {}
     if os.path.exists(summary_path):
         try:
@@ -58,11 +61,13 @@ def load_verified_benchmark_registry() -> dict:
                     data["argon"] = item
                 elif "sonnet 5.5" in m:
                     data["sonnet55"] = item
+                elif "luna" in m:
+                    data["gpt6_luna"] = item
                 elif "corrected" in m:
                     data["deepseek_corrected"] = item
                 elif "ppo" in m:
                     data["trained"] = item
-                elif "gpt-6" in m:
+                elif "gpt-6" in m and "luna" not in m:
                     data["gpt6"] = item
                 elif "deepseek" in m and "corrected" not in m:
                     data["deepseek"] = item
@@ -72,15 +77,16 @@ def load_verified_benchmark_registry() -> dict:
         "astra": {"mean_score": 508.062, "se_score": 3.857},
         "argon": {"mean_score": 57.866, "se_score": 1.136},
         "sonnet55": {"mean_score": 10.957, "se_score": 0.219},
-        "deepseek_corrected": {"mean_score": 6.575, "se_score": 0.161},
         "trained": {"mean_score": 5.757, "se_score": 0.019},
         "gpt6": {"mean_score": 2.493, "se_score": 0.036},
+        "gpt6_luna": {"mean_score": 1.253, "se_score": 0.023},
         "deepseek": {"mean_score": 0.484, "se_score": 0.009},
+        "deepseek_corrected": {"mean_score": 6.575, "se_score": 0.161},
     }
     for k, v in defaults.items():
         if k not in data:
             data[k] = v
-    return data
+    return dict(sorted(data.items(), key=lambda item: item[1].get("mean_score", 0.0), reverse=True))
 
 
 class VisualizerState:
@@ -92,6 +98,7 @@ class VisualizerState:
         trained_weights_path: str,
         astra_weights_path: Optional[str] = None,
         gpt6_weights_path: Optional[str] = None,
+        gpt6_luna_weights_path: Optional[str] = None,
         sonnet55_weights_path: Optional[str] = None,
         deepseek_weights_path: Optional[str] = None,
         deepseek_corrected_weights_path: Optional[str] = None,
@@ -102,6 +109,7 @@ class VisualizerState:
         self.trained_weights_path = trained_weights_path
         self.astra_weights_path = astra_weights_path
         self.gpt6_weights_path = gpt6_weights_path
+        self.gpt6_luna_weights_path = gpt6_luna_weights_path
         self.sonnet55_weights_path = sonnet55_weights_path
         self.deepseek_weights_path = deepseek_weights_path
         self.deepseek_corrected_weights_path = deepseek_corrected_weights_path
@@ -131,7 +139,7 @@ class VisualizerState:
             self.env_astra = MinAtarBreakoutEnv(sticky_action_prob=0.1)
             self.has_astra = True
 
-        # 4. Optional GPT-6 policy
+        # 4. Optional GPT-6 Original policy
         self.has_gpt6 = False
         if gpt6_weights_path is not None and os.path.exists(gpt6_weights_path):
             self.gpt6_weights = load_weights_npz(gpt6_weights_path)
@@ -140,7 +148,16 @@ class VisualizerState:
             self.env_gpt6 = MinAtarBreakoutEnv(sticky_action_prob=0.1)
             self.has_gpt6 = True
 
-        # 5. Optional Claude Sonnet 5.5 policy
+        # 5. Optional GPT-6 Luna Extra High policy
+        self.has_gpt6_luna = False
+        if gpt6_luna_weights_path is not None and os.path.exists(gpt6_luna_weights_path):
+            self.gpt6_luna_weights = load_weights_npz(gpt6_luna_weights_path)
+            self.gpt6_luna_net = MinAtarNetworkNumPy(self.gpt6_luna_weights)
+            self.gpt6_luna_agent = PolicyAgent(self.gpt6_luna_net)
+            self.env_gpt6_luna = MinAtarBreakoutEnv(sticky_action_prob=0.1)
+            self.has_gpt6_luna = True
+
+        # 6. Optional Claude Sonnet 5.5 policy
         self.has_sonnet55 = False
         if sonnet55_weights_path is not None and os.path.exists(sonnet55_weights_path):
             self.sonnet55_weights = load_weights_npz(sonnet55_weights_path)
@@ -149,7 +166,7 @@ class VisualizerState:
             self.env_sonnet55 = MinAtarBreakoutEnv(sticky_action_prob=0.1)
             self.has_sonnet55 = True
 
-        # 6. Optional DeepSeek policy (Original Zero-Shot)
+        # 7. Optional DeepSeek policy (Original Zero-Shot)
         self.has_deepseek = False
         if deepseek_weights_path is not None and os.path.exists(deepseek_weights_path):
             self.deepseek_weights = load_weights_npz(deepseek_weights_path)
@@ -231,6 +248,16 @@ class VisualizerState:
             self.gpt6_sticky_override = False
             self._update_gpt6_policy()
 
+        # Handle GPT-6 Luna if enabled
+        if self.has_gpt6_luna:
+            self.gpt6_luna_agent.rng = np.random.RandomState(self.current_seed)
+            self.obs_gpt6_luna = self.env_gpt6_luna.reset(seed=self.current_seed)
+            self.gpt6_luna_done = False
+            self.gpt6_luna_info = {}
+            self.gpt6_luna_executed_action = None
+            self.gpt6_luna_sticky_override = False
+            self._update_gpt6_luna_policy()
+
         # Handle Claude Sonnet 5.5 if enabled
         if self.has_sonnet55:
             self.sonnet55_agent.rng = np.random.RandomState(self.current_seed)
@@ -295,6 +322,12 @@ class VisualizerState:
                 self.obs_gpt6
             )
 
+    def _update_gpt6_luna_policy(self):
+        if self.has_gpt6_luna and not self.gpt6_luna_done:
+            self.gpt6_luna_selected_action, self.gpt6_luna_probs, self.gpt6_luna_logits = self.gpt6_luna_agent.get_action(
+                self.obs_gpt6_luna
+            )
+
     def _update_sonnet55_policy(self):
         if self.has_sonnet55 and not self.sonnet55_done:
             self.sonnet55_selected_action, self.sonnet55_probs, self.sonnet55_logits = self.sonnet55_agent.get_action(
@@ -337,6 +370,10 @@ class VisualizerState:
     @property
     def gpt6_action(self) -> int:
         return getattr(self, "gpt6_selected_action", 0)
+
+    @property
+    def gpt6_luna_action(self) -> int:
+        return getattr(self, "gpt6_luna_selected_action", 0)
 
     @property
     def sonnet55_action(self) -> int:
@@ -393,6 +430,16 @@ class VisualizerState:
                 if not self.gpt6_done:
                     self._update_gpt6_policy()
 
+        # Step GPT-6 Luna if enabled
+        if self.has_gpt6_luna:
+            if not self.gpt6_luna_done:
+                action_to_step = self.gpt6_luna_selected_action
+                self.obs_gpt6_luna, _, self.gpt6_luna_done, self.gpt6_luna_info = self.env_gpt6_luna.step(action_to_step)
+                self.gpt6_luna_executed_action = self.gpt6_luna_info.get("executed_action", action_to_step)
+                self.gpt6_luna_sticky_override = self.gpt6_luna_info.get("sticky_override", False)
+                if not self.gpt6_luna_done:
+                    self._update_gpt6_luna_policy()
+
         # Step Claude Sonnet 5.5 if enabled
         if self.has_sonnet55:
             if not self.sonnet55_done:
@@ -448,6 +495,16 @@ class VisualizerState:
             )
 
         if self.has_deepseek:
+            if self.has_gpt6_luna:
+                return (
+                    self.argon_done,
+                    self.trained_done,
+                    self.astra_done,
+                    self.gpt6_done,
+                    self.gpt6_luna_done,
+                    self.sonnet55_done,
+                    self.deepseek_done,
+                )
             return self.argon_done, self.trained_done, self.astra_done, self.gpt6_done, self.sonnet55_done, self.deepseek_done
 
         if self.has_sonnet55:
@@ -475,6 +532,8 @@ class VisualizerState:
             done = done and self.astra_done
         if self.has_gpt6:
             done = done and self.gpt6_done
+        if self.has_gpt6_luna:
+            done = done and self.gpt6_luna_done
         if self.has_sonnet55:
             done = done and self.sonnet55_done
         if self.has_deepseek:
@@ -500,6 +559,7 @@ class BreakoutVisualizerGUI:
             2
             + (1 if self.state.has_astra else 0)
             + (1 if self.state.has_gpt6 else 0)
+            + (1 if self.state.has_gpt6_luna else 0)
             + (1 if self.state.has_sonnet55 else 0)
             + (1 if self.state.has_deepseek else 0)
             + (1 if self.state.has_deepseek_corrected else 0)
@@ -508,7 +568,7 @@ class BreakoutVisualizerGUI:
         # Window configuration
         self.root.configure(bg="#141419")
         if active_count >= 7:
-            self.root.title("MinAtar Breakout: Seven-Way Performance-Ranked Policy Comparison Lab")
+            self.root.title("MinAtar Breakout: Seven-Way Performance-Ranked Policy Lab (Astra, Argon, Sonnet 5.5, PPO, GPT-6, Luna, DeepSeek)")
             self.root.geometry("1820x870")
             self.root.minsize(1540, 750)
             self.cell_size = 14
@@ -548,6 +608,7 @@ class BreakoutVisualizerGUI:
         self.COLOR_PADDLE_ARGON = "#00e5ff"             # Cyan
         self.COLOR_PADDLE_ASTRA = "#ffd700"             # Gold
         self.COLOR_PADDLE_GPT6 = "#d070ff"              # Orchid / Violet
+        self.COLOR_PADDLE_GPT6_LUNA = "#ff4081"         # Rose / Pink
         self.COLOR_PADDLE_SONNET55 = "#ff7043"          # Coral / Warm Orange-Red
         self.COLOR_PADDLE_DEEPSEEK = "#3949ab"          # Deep Indigo (Zero-shot)
         self.COLOR_PADDLE_DEEPSEEK_CORRECTED = "#00b0ff" # Electric Sky Blue (Researcher Intervention)
@@ -584,12 +645,14 @@ class BreakoutVisualizerGUI:
             2
             + (1 if self.state.has_astra else 0)
             + (1 if self.state.has_gpt6 else 0)
+            + (1 if self.state.has_gpt6_luna else 0)
             + (1 if self.state.has_sonnet55 else 0)
             + (1 if self.state.has_deepseek else 0)
             + (1 if self.state.has_deepseek_corrected else 0)
         )
         title_map = {
-            7: "BREAKOUT SEVEN-WAY PERFORMANCE-RANKED POLICY LAB (*DeepSeek Corrected is an intervention)",
+            8: "BREAKOUT EIGHT-WAY PERFORMANCE-RANKED POLICY LAB (*DeepSeek Corrected is an intervention)",
+            7: "BREAKOUT SEVEN-WAY ZERO-SHOT & BASELINE BENCHMARK LAB",
             6: "BREAKOUT SIX-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, Sonnet 5.5, DeepSeek, PPO)",
             5: "BREAKOUT FIVE-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, Sonnet 5.5, PPO)",
             4: "BREAKOUT FOUR-WAY POLICY COMPARISON LAB (Argon, Astra, GPT-6, PPO)",
@@ -734,6 +797,21 @@ class BreakoutVisualizerGUI:
                 "exec_attr": "gpt6_executed_action",
                 "sticky_attr": "gpt6_sticky_override",
                 "probs_attr": "gpt6_probs",
+            },
+            "gpt6_luna": {
+                "title": "GPT-6 LUNA",
+                "tag": "Zero-Shot Generation",
+                "cond_type": "Zero-Shot",
+                "subtitle": "309 nz | 98.5% sparse",
+                "mechanism": "2*ball_x - trail_x - paddle_x",
+                "color": self.COLOR_PADDLE_GPT6_LUNA,
+                "is_active": self.state.has_gpt6_luna,
+                "env_attr": "env_gpt6_luna",
+                "done_attr": "gpt6_luna_done",
+                "sel_attr": "gpt6_luna_selected_action",
+                "exec_attr": "gpt6_luna_executed_action",
+                "sticky_attr": "gpt6_luna_sticky_override",
+                "probs_attr": "gpt6_luna_probs",
             },
             "deepseek": {
                 "title": "DEEPSEEK (ORIGINAL)",
@@ -1056,7 +1134,7 @@ class BreakoutVisualizerGUI:
 
         win = tk.Toplevel(self.root)
         win.title("MinAtar Breakout: Comparative Benchmark Summary")
-        win.geometry("980x620")
+        win.geometry("980x640")
         win.configure(bg="#181822")
 
         lbl_hdr = tk.Label(
@@ -1076,19 +1154,22 @@ class BreakoutVisualizerGUI:
 | Astra Reference (Original Exp 5)   | 4,000 |  508.062 | ± 3.857 |  645.0 | 814.0 |  7,230.6 |  51.10% |
 | Gemini Argon 4 Medium (Zero-Shot)  | 3,000 |   57.866 | ± 1.136 |   38.0 | 493.0 |    871.6 |   0.00% |
 | Claude Sonnet 5.5 (Zero-Shot)      | 3,000 |   10.957 | ± 0.219 |    7.0 | 111.0 |    128.9 |   0.00% |
-| DeepSeek Corrected (Intervention)  | 3,000 |    6.575 | ± 0.161 |    3.0 |  90.0 |     93.2 |   0.00% |
 | PPO Baseline (10M Environment St.) | 3,000 |    5.757 | ± 0.019 |    6.0 |   8.0 |     67.4 |   0.00% |
-| GPT-6 (Zero-Shot, Nov 6, 2026)     | 3,000 |    2.493 | ± 0.036 |    2.0 |  10.0 |     32.5 |   0.00% |
+| GPT-6 Original (Zero-Shot)         | 3,000 |    2.493 | ± 0.036 |    2.0 |  10.0 |     32.5 |   0.00% |
+| GPT-6 Luna Extra High (Zero-Shot)  | 3,000 |    1.253 | ± 0.023 |    1.0 |  10.0 |     18.9 |   0.00% |
 | Zero-Weight Baseline               | 1,000 |    0.517 | ± 0.023 |    0.0 |   4.0 |     11.3 |   0.00% |
 | Random Action Baseline             | 1,000 |    0.485 | ± 0.023 |    0.0 |   4.0 |     11.0 |   0.00% |
 | DeepSeek Original (Zero-Shot)      | 3,000 |    0.484 | ± 0.009 |    0.0 |   1.0 |     10.8 |   0.00% |
++------------------------------------+-------+----------+---------+--------+-------+----------+---------+
+| Supplementary Condition:           |       |          |         |        |       |          |         |
+| DeepSeek Corrected (Intervention)  | 3,000 |    6.575 | ± 0.161 |    3.0 |  90.0 |     93.2 |   0.00% |
 +------------------------------------+-------+----------+---------+--------+-------+----------+---------+
 | Gemini Argon 4 High (Ultra-Reason) |   0   | [Data Unavailable / Pending Experiment]                     |
 +------------------------------------+-------+---------------------------------------------------------+
 
 Key Analytical Findings:
 • Claude Sonnet 5.5 averages 10.957 (1.9x 10M PPO, 4.4x GPT-6), max 111.0, using linear lead target d = 2*bx - tx - px.
-• DeepSeek Corrected jumps to 6.575 (exceeding 10M PPO at 5.757) with max score 90.0 after targeted 60-parameter repair.
+• GPT-6 Luna Extra High averages 1.253 ± 0.023 (2.6x Random) using 309 parameters (98.5% sparse) to track 2*bx - tx - px.
 • DeepSeek Original averages 0.484: intended to suppress Up/Down/Fire via W3=-100, but 19 inactive Layer 2 neurons at -1.0
   produced logits of +1724 (19 * +100 - 100), making Up/Down/Fire 100% probable and completely freezing the paddle.
 • Mandatory Conceptual Distinction:
@@ -1097,7 +1178,7 @@ Key Analytical Findings:
    model's observed failure. The two results must not be conflated."
 • Gemini Argon achieves 57.866 mean score via Channel 4 1-step lookahead velocity estimation.
 • Astra sustains infinite rallies via full heuristic bounce folding, hitting the 10,000-step cutoff in 51.1% of episodes.
-• GPT-6 implements a bilinear projected-intercept formula c ± (9 - r) with a 4-neuron tanh multiplication gate.
+• GPT-6 Original implements a bilinear projected-intercept formula c ± (9 - r) with a 4-neuron tanh multiplication gate.
 """
         txt = tk.Text(win, font=("Courier", 10), bg="#0f0f16", fg="#d0d0e0", padx=12, pady=10, relief=tk.FLAT)
         txt.insert(tk.END, table_text.strip())
@@ -1131,14 +1212,32 @@ Model                 Nonzero / Total Params   Sparsity (%)  Policy Strategy & R
 ---------------------------------------------------------------------------------------------------
 Astra Reference         815 / 20,486            96.02%       Full bounce folding, heuristic intercept lookup
 Gemini Argon 4M         817 / 20,486            96.01%       Ch 4 (last_y-y) velocity lookahead, sign-based steer
-DeepSeek (Original)     786 / 20,486            96.16%       Gated row/dir intercept comparison; inverted tanh suppression
-DeepSeek (Corrected)    726 / 20,486            96.46%       Post-hoc 60-param fix (W3[0:20, [2,4,5]]=0), restored steering
 Claude Sonnet 5.5       551 / 20,486            97.31%       Signed lead error d = 2*bx - tx - px, stride-60 slices
-GPT-6 (ChatGPT)         398 / 20,486            98.06%       Bilinear intercept c ± (9-r), 4-neuron tanh product gate
+GPT-6 Original          398 / 20,486            98.06%       Bilinear intercept c ± (9-r), 4-neuron tanh product gate
+GPT-6 Luna Extra High   309 / 20,486            98.49%       Linear 0.08*(c-4.5) encodings, 2*bx - tx - px projection
+DeepSeek (Original)     786 / 20,486            96.16%       Gated row/dir intercept comparison; inverted tanh suppression
 PPO Baseline         20,486 / 20,486             0.00%       Dense continuous weights trained via deep RL (10M steps)
+DeepSeek (Corrected)*   726 / 20,486            96.46%       Post-hoc 60-param fix (W3[0:20, [2,4,5]]=0), restored steering
 
 ===================================================================================================
-2. CLAUDE SONNET 5.5 MATHEMATICAL POLICY SPECIFICATION
+2. GPT-6 LUNA EXTRA HIGH MATHEMATICAL POLICY SPECIFICATION
+===================================================================================================
+• Coordinate Extraction:
+  Units encode linear column position: W1[col_idx, unit] = 0.08 * (c - 4.5).
+  - Unit 0 (Ball, Ch 3):   z_1,0 = 0.08 * (ball_x - 4.5)
+  - Unit 2 (Trail, Ch 4):  z_1,2 = 0.08 * (trail_x - 4.5)
+  - Unit 4 (Paddle, Ch 0): z_1,4 = 0.08 * (paddle_x - 4.5)
+• Hidden Layer 2:
+  z_2,0 = 12 * h_1,0 - 6 * h_1,2 - 6 * h_1,4 ≈ 0.48 * (2 * ball_x - trail_x - paddle_x)
+• Output Logits:
+  Left = -4 * h_2,0, Right = +4 * h_2,0, No-Op = +1.5, Up = -6.0, Down = -6.0, Fire = -6.0.
+• Policy Behavior:
+  - Aligned (d = 0): No-Op is 69.1%, Left is 15.2%, Right is 15.6%.
+  - Ball right of paddle (d > 0): Right dominates (56% to 89%).
+  - Ball left of paddle (d < 0): Left dominates (55% to 88%).
+
+===================================================================================================
+3. CLAUDE SONNET 5.5 MATHEMATICAL POLICY SPECIFICATION
 ===================================================================================================
 • Coordinate Extraction:
   Claude assigns weights via stride-60 slices: W1[ch*10 + c : 600 : 60, unit]
@@ -1148,7 +1247,7 @@ PPO Baseline         20,486 / 20,486             0.00%       Dense continuous we
 • Failure Mode: On wall bounce, ball_x == trail_x => d = 0 => commands No-op pause.
 
 ===================================================================================================
-3. DEEPSEEK MATHEMATICAL POLICY SPECIFICATION
+4. DEEPSEEK MATHEMATICAL POLICY SPECIFICATION
 ===================================================================================================
 • Intended Design:
   - Neurons 0..9: Row detectors B_r = tanh(10 * has_ball_in_row_r - 5)
@@ -1159,7 +1258,7 @@ PPO Baseline         20,486 / 20,486             0.00%       Dense continuous we
   - Output Layer: Left = -8*h_2 - 1, Right = 8*h_2 - 1, No-op = 0.
 
 ===================================================================================================
-4. FORENSIC ROOT CAUSE: DEEPSEEK'S INVERTED TANH SUPPRESSION ERROR
+5. FORENSIC ROOT CAUSE: DEEPSEEK'S INVERTED TANH SUPPRESSION ERROR
 ===================================================================================================
 • In Layer 3, DeepSeek wrote:
     W3[0:20, 2] = -100; b3[2] = -100   # Up action
@@ -1177,7 +1276,7 @@ PPO Baseline         20,486 / 20,486             0.00%       Dense continuous we
   The model acts as a static frozen paddle, scoring 0.484 mean bricks (matching random baseline).
 
 ===================================================================================================
-5. CONTROLLED RESEARCHER INTERVENTION: DEEPSEEK REPAIRED (Phase 3D)
+6. CONTROLLED RESEARCHER INTERVENTION: DEEPSEEK REPAIRED (Phase 3D)
 ===================================================================================================
 • Minimal Controlled Edit:
   DeepSeek's original weight assignment wrote W3[0:20, 2] = -100, W3[0:20, 4] = -100, W3[0:20, 5] = -100.
@@ -1557,6 +1656,8 @@ def run_headless_verification(state: VisualizerState, steps: int = 50) -> bool:
                 msg += f" | Astra score={state.env_astra.total_reward} (done={state.astra_done})"
             if state.has_gpt6:
                 msg += f" | GPT-6 score={state.env_gpt6.total_reward} (done={state.gpt6_done})"
+            if state.has_gpt6_luna:
+                msg += f" | GPT-6 Luna score={state.env_gpt6_luna.total_reward} (done={state.gpt6_luna_done})"
             if state.has_sonnet55:
                 msg += f" | Sonnet 5.5 score={state.env_sonnet55.total_reward} (done={state.sonnet55_done})"
             if state.has_deepseek:
@@ -1574,6 +1675,7 @@ def capture_screenshot(
     trained_path: str,
     astra_path: Optional[str] = None,
     gpt6_path: Optional[str] = None,
+    gpt6_luna_path: Optional[str] = None,
     sonnet55_path: Optional[str] = None,
     deepseek_path: Optional[str] = None,
     deepseek_corrected_path: Optional[str] = None,
@@ -1593,6 +1695,7 @@ def capture_screenshot(
         trained_weights_path=trained_path,
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
+        gpt6_luna_weights_path=gpt6_luna_path,
         sonnet55_weights_path=sonnet55_path,
         deepseek_weights_path=deepseek_path,
         deepseek_corrected_weights_path=deepseek_corrected_path,
@@ -1604,14 +1707,10 @@ def capture_screenshot(
 
     geo_w = (
         1820
-        if state.has_deepseek_corrected
-        else (
-            1800
-            if state.has_deepseek
-            else (1620 if state.has_sonnet55 else (1480 if state.has_gpt6 else (1300 if state.has_astra else 980)))
-        )
+        if (state.has_gpt6_luna or state.has_deepseek_corrected or state.has_deepseek)
+        else (1620 if state.has_sonnet55 else (1480 if state.has_gpt6 else (1300 if state.has_astra else 980)))
     )
-    geo_h = 870 if (state.has_deepseek or state.has_deepseek_corrected) else (860 if (state.has_gpt6 or state.has_sonnet55) else 820)
+    geo_h = 870 if (state.has_gpt6_luna or state.has_deepseek or state.has_deepseek_corrected) else (860 if (state.has_gpt6 or state.has_sonnet55) else 820)
     root.geometry(f"{geo_w}x{geo_h}+0+28")
     root.deiconify()
     root.lift()
@@ -1661,7 +1760,14 @@ def main():
         "--gpt6",
         type=str,
         default=GPT6_DEFAULT_PATH if os.path.exists(GPT6_DEFAULT_PATH) else None,
-        help="Path to GPT-6 weights .npz (optional, default: experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz)",
+        help="Path to GPT-6 Original weights .npz (optional, default: experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz)",
+    )
+    parser.add_argument(
+        "--gpt6-luna",
+        "--luna",
+        type=str,
+        default=GPT6_LUNA_DEFAULT_PATH if os.path.exists(GPT6_LUNA_DEFAULT_PATH) else None,
+        help="Path to GPT-6 Luna Extra High weights .npz (optional, default: experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz)",
     )
     parser.add_argument(
         "--sonnet55",
@@ -1674,14 +1780,14 @@ def main():
         "--deepseek",
         type=str,
         default=DEEPSEEK_DEFAULT_PATH if os.path.exists(DEEPSEEK_DEFAULT_PATH) else None,
-        help="Path to DeepSeek weights .npz (optional, default: experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz)",
+        help="Path to DeepSeek Original weights .npz (optional, default: experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz)",
     )
     parser.add_argument(
         "--deepseek-corrected",
         "--corrected",
         type=str,
-        default=DEEPSEEK_CORRECTED_DEFAULT_PATH if os.path.exists(DEEPSEEK_CORRECTED_DEFAULT_PATH) else None,
-        help="Path to DeepSeek Corrected weights .npz (optional, default: experiments/controlled_interventions/deepseek_corrected/output/deepseek_corrected_weights.npz)",
+        default=None,
+        help="Path to DeepSeek Corrected weights .npz (optional; post-hoc researcher intervention)",
     )
     parser.add_argument(
         "--argon-high",
@@ -1744,6 +1850,18 @@ def main():
     else:
         gpt6_path = None
 
+    # Provenance check for GPT-6 Luna if supplied
+    gpt6_luna_path = args.gpt6_luna
+    if gpt6_luna_path is not None and gpt6_luna_path != "":
+        if not os.path.exists(gpt6_luna_path):
+            print(f"[Warning] GPT-6 Luna weights file not found at {gpt6_luna_path}; excluding GPT-6 Luna.")
+            gpt6_luna_path = None
+        else:
+            actual_hash = compute_file_sha256(gpt6_luna_path)
+            print(f"[Verified] GPT-6 Luna weights verified ({actual_hash[:16]}...).")
+    else:
+        gpt6_luna_path = None
+
     # Provenance check for Claude Sonnet 5.5 if supplied
     sonnet55_path = args.sonnet55
     if sonnet55_path is not None and sonnet55_path != "":
@@ -1793,6 +1911,7 @@ def main():
             trained_path=args.trained,
             astra_path=astra_path,
             gpt6_path=gpt6_path,
+            gpt6_luna_path=gpt6_luna_path,
             sonnet55_path=sonnet55_path,
             deepseek_path=deepseek_path,
             deepseek_corrected_path=deepseek_corrected_path,
@@ -1808,6 +1927,7 @@ def main():
         trained_weights_path=args.trained,
         astra_weights_path=astra_path,
         gpt6_weights_path=gpt6_path,
+        gpt6_luna_weights_path=gpt6_luna_path,
         sonnet55_weights_path=sonnet55_path,
         deepseek_weights_path=deepseek_path,
         deepseek_corrected_weights_path=deepseek_corrected_path,

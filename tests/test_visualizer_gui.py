@@ -17,6 +17,7 @@ from visualize_comparison import (
     GPT6_DEFAULT_PATH,
     SONNET55_DEFAULT_PATH,
     DEEPSEEK_DEFAULT_PATH,
+    GPT6_LUNA_DEFAULT_PATH,
     DEEPSEEK_CORRECTED_DEFAULT_PATH,
 )
 
@@ -366,12 +367,67 @@ def test_visualizer_gui_6way():
 
 
 def test_visualizer_gui_7way_performance_ranking():
-    """Verify BreakoutVisualizerGUI constructs 7-model layout in strict performance rank order."""
+    """Verify BreakoutVisualizerGUI constructs 7-model primary layout in strict performance rank order."""
     state = VisualizerState(
         argon_weights_path=ARGON_WEIGHTS,
         trained_weights_path=TRAINED_WEIGHTS,
         astra_weights_path=ASTRA_REFERENCE_PATH,
         gpt6_weights_path=GPT6_DEFAULT_PATH,
+        gpt6_luna_weights_path=GPT6_LUNA_DEFAULT_PATH,
+        sonnet55_weights_path=SONNET55_DEFAULT_PATH,
+        deepseek_weights_path=DEEPSEEK_DEFAULT_PATH,
+        initial_seed=42,
+    )
+    root = tk.Tk()
+    root.withdraw()
+    app = BreakoutVisualizerGUI(state, root, initial_fps=30)
+    app.is_running.set(False)
+
+    try:
+        assert hasattr(app, "gpt6_luna_panel")
+        assert app.gpt6_luna_panel["canvas_board"] is not None
+        assert app.gpt6_luna_panel["canvas_probs"] is not None
+        assert "LUNA" in app.gpt6_luna_panel["title_label"].cget("text")
+        assert "#6" in app.gpt6_luna_panel["title_label"].cget("text")
+
+        # Verify panels are ordered strictly descending by benchmark mean score:
+        # #1 Astra (508.062) > #2 Argon (57.866) > #3 Sonnet 5.5 (10.957) >
+        # #4 Trained (5.757) > #5 GPT-6 (2.493) > #6 GPT-6 Luna (1.253) > #7 DeepSeek (0.484)
+        expected_order = [
+            "astra",
+            "argon",
+            "sonnet55",
+            "trained",
+            "gpt6",
+            "gpt6_luna",
+            "deepseek",
+        ]
+        assert list(app.panels.keys()) == expected_order
+
+        # Verify redraw executes cleanly with 7 panels
+        app.redraw()
+
+        # Step single frame via app
+        initial_steps = app.state.env_gpt6_luna.step_count
+        app.btn_step.invoke()
+        assert app.state.env_gpt6_luna.step_count == initial_steps + 1
+
+        # Verify all modals open cleanly in 7-way mode
+        app.show_benchmark_summary()
+        app.show_network_inspector()
+        app.show_argon_high_info()
+    finally:
+        root.destroy()
+
+
+def test_visualizer_gui_with_deepseek_corrected():
+    """Verify BreakoutVisualizerGUI constructs layout with DeepSeek Corrected placed at rank #4."""
+    state = VisualizerState(
+        argon_weights_path=ARGON_WEIGHTS,
+        trained_weights_path=TRAINED_WEIGHTS,
+        astra_weights_path=ASTRA_REFERENCE_PATH,
+        gpt6_weights_path=GPT6_DEFAULT_PATH,
+        gpt6_luna_weights_path=GPT6_LUNA_DEFAULT_PATH,
         sonnet55_weights_path=SONNET55_DEFAULT_PATH,
         deepseek_weights_path=DEEPSEEK_DEFAULT_PATH,
         deepseek_corrected_weights_path=DEEPSEEK_CORRECTED_DEFAULT_PATH,
@@ -391,7 +447,8 @@ def test_visualizer_gui_7way_performance_ranking():
 
         # Verify panels are ordered strictly descending by benchmark mean score:
         # #1 Astra (508.062) > #2 Argon (57.866) > #3 Sonnet 5.5 (10.957) >
-        # #4 DeepSeek Corrected (6.575) > #5 Trained (5.757) > #6 GPT-6 (2.493) > #7 DeepSeek (0.484)
+        # #4 DeepSeek Corrected (6.575) > #5 Trained (5.757) > #6 GPT-6 (2.493) >
+        # #7 GPT-6 Luna (1.253) > #8 DeepSeek (0.484)
         expected_order = [
             "astra",
             "argon",
@@ -399,22 +456,18 @@ def test_visualizer_gui_7way_performance_ranking():
             "deepseek_corrected",
             "trained",
             "gpt6",
+            "gpt6_luna",
             "deepseek",
         ]
         assert list(app.panels.keys()) == expected_order
 
-        # Verify redraw executes cleanly with 7 panels
+        # Verify redraw executes cleanly with 8 panels
         app.redraw()
 
         # Step single frame via app
         initial_steps = app.state.env_deepseek_corrected.step_count
         app.btn_step.invoke()
         assert app.state.env_deepseek_corrected.step_count == initial_steps + 1
-
-        # Verify all modals open cleanly in 7-way mode
-        app.show_benchmark_summary()
-        app.show_network_inspector()
-        app.show_argon_high_info()
     finally:
         root.destroy()
 
