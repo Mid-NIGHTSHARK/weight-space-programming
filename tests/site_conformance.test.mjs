@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { ACTION_CHARS, advanceState, channelGrid, createInitialState, encodeNativeState, encodeObservation, makeDemoStreams, resetEpisode } from "../docs/assets/minatar.js";
 import { forward, sampleAction, stableSoftmax } from "../docs/assets/network.js";
 import { renderIterativeComparisonRows, renderIterativeHistograms, renderIterativeMeanChart, renderIterativeProfiles, renderIterativeResultRows } from "../docs/assets/iterative.js";
+import { CAPTURE_FPS, CAPTURE_HEIGHT, CAPTURE_WIDTH, createArenaRecorder, renderCaptureFrame } from "../docs/assets/media-capture.js";
 
 test("action identifiers preserve the MinAtar action map", () => {
   assert.deepEqual(ACTION_CHARS, ["n", "l", "u", "r", "d", "f"]);
@@ -111,6 +112,51 @@ test("network forward pass uses two tanh layers and six output logits", () => {
   assert.equal(result.h2.length, 32);
   assert.deepEqual(Array.from(result.logits), [0, 0, 0, 0, 0, 0]);
   assert.deepEqual(result.probabilities, new Array(6).fill(1 / 6));
+});
+
+test("Arena media frame uses the live game canvas and includes the actual inference summary", () => {
+  const calls = [];
+  const context = {
+    clearRect: (...args) => calls.push(["clearRect", ...args]),
+    fillRect: (...args) => calls.push(["fillRect", ...args]),
+    fillText: (...args) => calls.push(["fillText", ...args]),
+    strokeRect: (...args) => calls.push(["strokeRect", ...args]),
+    drawImage: (...args) => calls.push(["drawImage", ...args]),
+  };
+  const gameCanvas = { id: "actual-arena-canvas" };
+  const frame = {
+    model: "Gemini Argon 4 Medium", category: "Zero-shot generation", score: 12, step: 88, seed: 42,
+    terminal: false, running: true, action: "left", actionNames: ["no-op", "left", "up", "right", "down", "fire"],
+    probabilities: [0.05, 0.7, 0.05, 0.1, 0.05, 0.05], logits: [0, 2, 0, 1, 0, 0],
+    h1Active: 4, h2Active: 3, randomPolicy: false, activeByChannel: [1, 0, 25, 1, 1, 0],
+    channelNames: ["Paddle", "Danger", "Bricks", "Ball", "Trail", "Gauge"], parameters: 20486,
+    observationGrid: Array.from({ length: 100 }, (_, index) => Number(index === 94)), selectedChannel: "Paddle", selectedChannelIndex: 0,
+  };
+  renderCaptureFrame(context, gameCanvas, frame);
+  assert.equal(CAPTURE_WIDTH, 1920);
+  assert.equal(CAPTURE_HEIGHT, 1080);
+  assert.equal(CAPTURE_FPS, 30);
+  assert.ok(calls.some(call => call[0] === "drawImage" && call[1] === gameCanvas && call[4] === 750 && call[5] === 750));
+  const text = calls.filter(call => call[0] === "fillText").map(call => call[1]);
+  assert.ok(text.includes("Gemini Argon 4 Medium"));
+  assert.ok(text.includes("left"));
+  assert.ok(text.includes("70.00%"));
+  assert.ok(text.some(value => value.includes("Paddle 1") && value.includes("Bricks 25")));
+  assert.ok(text.includes("Current observation input · Paddle"));
+  assert.ok(text.some(value => value.includes("0.0000") && value.includes("2.0000")));
+  assert.ok(text.some(value => value.includes("NumPy benchmark streams")));
+});
+
+test("Arena media recorder reports an unsupported browser without changing Arena state", () => {
+  const status = [];
+  const capture = createArenaRecorder({
+    canvas: {}, gameCanvas: {}, getFrame: () => ({ model: "Gemini Argon 4 Medium" }),
+    onStatus: (message, recording) => status.push([message, recording]), MediaRecorderImpl: undefined,
+  });
+  assert.equal(capture.start(), false);
+  assert.equal(capture.isRecording(), false);
+  assert.match(status[0][0], /Recording is unavailable/);
+  assert.equal(status[0][1], false);
 });
 
 test("iterative-development views render three source-backed versions separately from the primary model set", () => {

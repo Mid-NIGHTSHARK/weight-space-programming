@@ -1,0 +1,713 @@
+{
+  "manifest_version": 1,
+  "generated_from": "Preserved raw episode CSVs and checked analysis/trace records; no benchmark data were written.",
+  "protocols": {
+    "phase2": "Corrected local evaluation; nine conditions × 3,000 episodes; 27,000 total.",
+    "iterative_development": "Separate Argon High iterative experiment; three versions × 3,000 episodes; 9,000 total.",
+    "diagnostic_traces": "Single preserved historical diagnostic replay per primary model; not representative aggregate traces."
+  },
+  "sources": [
+    {
+      "path": "experiments/argon_high_iterative_development/evaluation/full_run/analysis/condition_metrics.json",
+      "sha256": "e5c5ef1fa7bbc2d20bc2b6094ec7d7a7e6524d44daa7b6ea5460eb9ff2c715a2"
+    },
+    {
+      "path": "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+      "sha256": "dc2a1fca571ccede39c5d4b96f5a93a07a4ab00b092d990ffd177a112774a527"
+    },
+    {
+      "path": "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv",
+      "sha256": "6f2dff042bc9d47fd5d4d2c9caa11a920f6a2bc89d55061c4a3c88cbc08b6cd0"
+    },
+    {
+      "path": "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+      "sha256": "a6d14220c51b14e88e1288a3e396731aa3e4fa2e8fdd3f9895f115735cf0da1c"
+    },
+    {
+      "path": "experiments/corrected_evaluation/failure_trace_replays.json",
+      "sha256": "7af54ed95222f2ccf4821408dec689faf8dcb601d86179550cc09d780e05f129"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/analysis/condition_metrics.json",
+      "sha256": "bfe30618860f004091c22ef9b7e21e69e4729967d363c952bef7b8a234757ad1"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/analysis/paired_comparisons.json",
+      "sha256": "f49e8a57858e185f87c735521b58e5527ea1e2534c58ac43317b11ccaafb46e9"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv",
+      "sha256": "95739181a6b781ce3ef3318aef4a6660645038a91aec31b33e11bc69ceb56872"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+      "sha256": "86d5a91027649e8d07f898d8ad3e145494880e5fc06e4fc6671efb0c8b7fc3db"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+      "sha256": "80211f3504025b24197768fc648991342ae54747621afb0b89454b139795a6a8"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+      "sha256": "382d63a7df6f412624aabb1d0391c2ae9c076e6f316dab1e7e0dd0612912e466"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+      "sha256": "205e8fd0085e4e6e3d8a83b4fc102a65a220743ca6a695c15ad073ef3a8e8788"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+      "sha256": "300413380b0d284fb10968ff000f7eb9272ec816feda06729bd4e71a6e208002"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+      "sha256": "8076f8fedce248fbe865f084b8ff7dd287f2d158db0588b2b7ba8e75b67c59a1"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+      "sha256": "c47a86dbed6b1addf32ba7838a4c93ec6c3966c2f12170a65928bd284ce8cdcc"
+    },
+    {
+      "path": "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+      "sha256": "bd42aa85035b89085001a46d7842e879dcb747ac9d644c631ffb0d977871fbbe"
+    }
+  ],
+  "assets": [
+    {
+      "asset_name": "benchmark_conditions.svg",
+      "description": "Mean score and standard error across all nine corrected benchmark conditions; Astra is separated on its own linear panel rather than a broken axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 26904,
+      "sha256": "a453f7c621013de8a489ec4e85d4f0fee03a24a751852aab6f8135ba0ea3bf7f",
+      "resolution": "vector",
+      "figure_size_inches": [
+        12.5,
+        5.6
+      ]
+    },
+    {
+      "asset_name": "benchmark_conditions.png",
+      "description": "Mean score and standard error across all nine corrected benchmark conditions; Astra is separated on its own linear panel rather than a broken axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 278291,
+      "sha256": "d77bd6faa350e6c5e6aa82f331b122ce046eaf1a8153a44001d75a4eb5abd899",
+      "resolution_px": [
+        3692,
+        1697
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "benchmark_conditions.pdf",
+      "description": "Mean score and standard error across all nine corrected benchmark conditions; Astra is separated on its own linear panel rather than a broken axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 31847,
+      "sha256": "9611ea0dfb58e5f7fc5251f7a39d07c2be6a57e6cdd0f28bbf77367338e934d5",
+      "resolution": "vector",
+      "figure_size_inches": [
+        12.5,
+        5.6
+      ]
+    },
+    {
+      "asset_name": "primary_zero_shot_ranking.svg",
+      "description": "Five original zero-shot conditions ranked by raw mean score with standard error; excludes Astra, PPO, controls, and DeepSeek Corrected.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 17156,
+      "sha256": "3dc7930dc6f73f14f8ce2ae820c16f89e0a57808281a1f78b532967925975ce9",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.2,
+        4.9
+      ]
+    },
+    {
+      "asset_name": "primary_zero_shot_ranking.png",
+      "description": "Five original zero-shot conditions ranked by raw mean score with standard error; excludes Astra, PPO, controls, and DeepSeek Corrected.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 145856,
+      "sha256": "7ae5ef2147b08a26c86ba1a14deea2943aea8c3c6ff6416f87a8902c9ca05c3f",
+      "resolution_px": [
+        2978,
+        1334
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "primary_zero_shot_ranking.pdf",
+      "description": "Five original zero-shot conditions ranked by raw mean score with standard error; excludes Astra, PPO, controls, and DeepSeek Corrected.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 24338,
+      "sha256": "4219e283a76161fd45f56e174111b1fc8c6a30b046445248533d8f1f8070cd0e",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.2,
+        4.9
+      ]
+    },
+    {
+      "asset_name": "score_distributions_ecdf.svg",
+      "description": "Empirical cumulative distributions from all 27,000 corrected Phase 2 episode scores, shown in separate role-aware panels with a clearly labeled log1p score axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 73571,
+      "sha256": "db4b5904ffbdd1e93585021788ab0098ef56b566369b8503b20d4aa2ff93fd83",
+      "resolution": "vector",
+      "figure_size_inches": [
+        12.2,
+        5.2
+      ]
+    },
+    {
+      "asset_name": "score_distributions_ecdf.png",
+      "description": "Empirical cumulative distributions from all 27,000 corrected Phase 2 episode scores, shown in separate role-aware panels with a clearly labeled log1p score axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 275463,
+      "sha256": "b0d1d402a4a0568606b927f88f118a57cb1411d95216cfcf4b5532c83f3904a5",
+      "resolution_px": [
+        4375,
+        1589
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "score_distributions_ecdf.pdf",
+      "description": "Empirical cumulative distributions from all 27,000 corrected Phase 2 episode scores, shown in separate role-aware panels with a clearly labeled log1p score axis.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 38739,
+      "sha256": "1d95e48e3f80280ad95874f088671467a226640205b2299b1d36cb5c996d2cdc",
+      "resolution": "vector",
+      "figure_size_inches": [
+        12.2,
+        5.2
+      ]
+    },
+    {
+      "asset_name": "primary_per_seed.svg",
+      "description": "Mean scores and standard errors for each of the five primary zero-shot conditions split across seed groups 42, 100, and 200; 1,000 raw episodes per point.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 37731,
+      "sha256": "2b6fc291b89a33cc985cdb6c52b99a3ecbfa0369eeede8c92e8a211613609839",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.6,
+        10.2
+      ]
+    },
+    {
+      "asset_name": "primary_per_seed.png",
+      "description": "Mean scores and standard errors for each of the five primary zero-shot conditions split across seed groups 42, 100, and 200; 1,000 raw episodes per point.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 302481,
+      "sha256": "5e5bdb936056a263e3bb302a88287dbc1887fe1931b6d94fb7c678cbdf56883e",
+      "resolution_px": [
+        3080,
+        3051
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "primary_per_seed.pdf",
+      "description": "Mean scores and standard errors for each of the five primary zero-shot conditions split across seed groups 42, 100, and 200; 1,000 raw episodes per point.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 28329,
+      "sha256": "e716e97b3eddb1538d27578df48c9b0389f115c27f8824c5a96cdd88b03f795b",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.6,
+        10.2
+      ]
+    },
+    {
+      "asset_name": "iterative_development_comparison.svg",
+      "description": "Three distinct Argon High iterative-development versions with mean, standard error, median, and 3,000 episode count; not interchangeable with zero-shot conditions.",
+      "source_data": [
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 12233,
+      "sha256": "66f2d3a3e5512bab18f043604ebc3f909c85ca5aeea9a93ba582449973f3c9f4",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.2,
+        4.7
+      ]
+    },
+    {
+      "asset_name": "iterative_development_comparison.png",
+      "description": "Three distinct Argon High iterative-development versions with mean, standard error, median, and 3,000 episode count; not interchangeable with zero-shot conditions.",
+      "source_data": [
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 140620,
+      "sha256": "cd3d9496918873ae5f8c43fa7d573e0ef2742c9a88d3452867352437d5a1043d",
+      "resolution_px": [
+        3531,
+        1281
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "iterative_development_comparison.pdf",
+      "description": "Three distinct Argon High iterative-development versions with mean, standard error, median, and 3,000 episode count; not interchangeable with zero-shot conditions.",
+      "source_data": [
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+        "experiments/argon_high_iterative_development/evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 26237,
+      "sha256": "fb25f6c1121857bcfa3dc6dba2af10f6dda148d257dfe5362f4daa6f375d18f9",
+      "resolution": "vector",
+      "figure_size_inches": [
+        9.2,
+        4.7
+      ]
+    },
+    {
+      "asset_name": "primary_paired_comparisons.svg",
+      "description": "Paired-bootstrap 95% intervals for the ten primary zero-shot pairwise mean differences, with exact paired Cohen's dz, two-sided sign-flip p-values, and Holm p-values from the full 36-comparison family.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/analysis/paired_comparisons.json"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 24939,
+      "sha256": "f7c78e31e4cc1217d88b36be6a1ac64c1a35127460951f1a71de3a7cc9b04e10",
+      "resolution": "vector",
+      "figure_size_inches": [
+        15.2,
+        7.0
+      ]
+    },
+    {
+      "asset_name": "primary_paired_comparisons.png",
+      "description": "Paired-bootstrap 95% intervals for the ten primary zero-shot pairwise mean differences, with exact paired Cohen's dz, two-sided sign-flip p-values, and Holm p-values from the full 36-comparison family.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/analysis/paired_comparisons.json"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 311127,
+      "sha256": "31d948c782394c92042e433011fdb22b54696b0ba05b9949317ef399cdadf587",
+      "resolution_px": [
+        3854,
+        1987
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "primary_paired_comparisons.pdf",
+      "description": "Paired-bootstrap 95% intervals for the ten primary zero-shot pairwise mean differences, with exact paired Cohen's dz, two-sided sign-flip p-values, and Holm p-values from the full 36-comparison family.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/analysis/paired_comparisons.json"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 35296,
+      "sha256": "090dd9e480dc280de02e0030531bdad788361852cbed93a87251613ede36177e",
+      "resolution": "vector",
+      "figure_size_inches": [
+        15.2,
+        7.0
+      ]
+    },
+    {
+      "asset_name": "primary_action_distributions.svg",
+      "description": "Normalized action-selection frequencies computed by summing actual action counts from raw episode CSVs for the five primary zero-shot policies; does not conflate selected with executed actions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 20596,
+      "sha256": "0b290395da310e0813fe203ccde02fbc4d212b23b71081c4d4d2c75404643d55",
+      "resolution": "vector",
+      "figure_size_inches": [
+        10.5,
+        4.7
+      ]
+    },
+    {
+      "asset_name": "primary_action_distributions.png",
+      "description": "Normalized action-selection frequencies computed by summing actual action counts from raw episode CSVs for the five primary zero-shot policies; does not conflate selected with executed actions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 182160,
+      "sha256": "73b81adbfc10c7c53b8401caf243012925c0ebafe78fae7ffdce2f4b3cd17462",
+      "resolution_px": [
+        3415,
+        1229
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "primary_action_distributions.pdf",
+      "description": "Normalized action-selection frequencies computed by summing actual action counts from raw episode CSVs for the five primary zero-shot policies; does not conflate selected with executed actions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 29879,
+      "sha256": "2eff773e7c8c9f59e59c50b6cdae0e08a9b818b9d91a9ef6f945585831935790",
+      "resolution": "vector",
+      "figure_size_inches": [
+        10.5,
+        4.7
+      ]
+    },
+    {
+      "asset_name": "episode_lengths_and_cutoffs.svg",
+      "description": "Episode-length ECDFs, mean/median lengths, and 10,000-step cutoff counts/rates computed from all nine corrected raw episode CSVs; the ECDF panel omits Astra's much longer durations, while the other panels include all conditions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 94990,
+      "sha256": "58d6162af2a871d794a027b9e1be4ae9424453be530476c14a6093917cc6395c",
+      "resolution": "vector",
+      "figure_size_inches": [
+        16.0,
+        5.7
+      ]
+    },
+    {
+      "asset_name": "episode_lengths_and_cutoffs.png",
+      "description": "Episode-length ECDFs, mean/median lengths, and 10,000-step cutoff counts/rates computed from all nine corrected raw episode CSVs; the ECDF panel omits Astra's much longer durations, while the other panels include all conditions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 349366,
+      "sha256": "33a98b27a854cfbdc181272afb6fb6e08e8032076e2e513aefbadbb47c392cf7",
+      "resolution_px": [
+        4716,
+        1726
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "episode_lengths_and_cutoffs.pdf",
+      "description": "Episode-length ECDFs, mean/median lengths, and 10,000-step cutoff counts/rates computed from all nine corrected raw episode CSVs; the ECDF panel omits Astra's much longer durations, while the other panels include all conditions.",
+      "source_data": [
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 50929,
+      "sha256": "80ba1c8dcb1aaf48ab0d74852b7228e94ebb64674dcd5f4c04871653b28f3358",
+      "resolution": "vector",
+      "figure_size_inches": [
+        16.0,
+        5.7
+      ]
+    },
+    {
+      "asset_name": "diagnostic_trajectory_traces.svg",
+      "description": "Step-by-step state positions and selected/executed actions and bricks remaining from five preserved single-episode historical diagnostic traces; not representative aggregate behavior.",
+      "source_data": [
+        "experiments/corrected_evaluation/failure_trace_replays.json",
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "svg",
+      "file_size_bytes": 430484,
+      "sha256": "04cc617351dbd9995922c6d3928473331a7c3449eade15f6572507b0f3e779aa",
+      "resolution": "vector",
+      "figure_size_inches": [
+        11.0,
+        12.8
+      ]
+    },
+    {
+      "asset_name": "diagnostic_trajectory_traces.png",
+      "description": "Step-by-step state positions and selected/executed actions and bricks remaining from five preserved single-episode historical diagnostic traces; not representative aggregate behavior.",
+      "source_data": [
+        "experiments/corrected_evaluation/failure_trace_replays.json",
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "png",
+      "file_size_bytes": 1322636,
+      "sha256": "17c26fd9d77485b817605ab81e8a61f703dc78797df01f90d075bca932d53930",
+      "resolution_px": [
+        4138,
+        3800
+      ],
+      "dpi": 300
+    },
+    {
+      "asset_name": "diagnostic_trajectory_traces.pdf",
+      "description": "Step-by-step state positions and selected/executed actions and bricks remaining from five preserved single-episode historical diagnostic traces; not representative aggregate behavior.",
+      "source_data": [
+        "experiments/corrected_evaluation/failure_trace_replays.json",
+        "experiments/corrected_evaluation/full_run/conditions/gemini_argon_4_medium/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/claude_sonnet_55/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/ppo_trained_baseline/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/gpt6_luna_extra_high/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/zero_weight_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/deepseek_original/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/random_action_control/episode_scores.csv",
+        "experiments/corrected_evaluation/full_run/conditions/astra_local_reference/episode_scores.csv"
+      ],
+      "generation_script": "docs/scripts/visualization/generate_figures.py",
+      "format": "pdf",
+      "file_size_bytes": 51384,
+      "sha256": "898fe107543ffb09a44b8ecd6c711363c6f42604435ab0eb4cf3749966b4d81c",
+      "resolution": "vector",
+      "figure_size_inches": [
+        11.0,
+        12.8
+      ]
+    }
+  ]
+}

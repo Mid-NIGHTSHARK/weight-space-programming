@@ -1,6 +1,7 @@
 import { ACTION_NAMES, CHANNELS, advanceState, channelGrid, encodeObservation, makeDemoStreams, resetEpisode } from "./minatar.js";
 import { decodeModelWeights, forward, sampleAction } from "./network.js";
 import { renderIterativeComparisonRows, renderIterativeDownloads, renderIterativeHistograms, renderIterativeMeanChart, renderIterativeProfiles, renderIterativeResultRows } from "./iterative.js";
+import { CAPTURE_HEIGHT, CAPTURE_WIDTH, createArenaRecorder } from "./media-capture.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
@@ -327,6 +328,63 @@ function initializeArena() {
   const modelSelect = $("#arena-model");
   const canvas = $("#game-canvas");
   arena = { running: false, timer: null, episode: null, model: null, decision: null, lastTransition: null, createdAt: null };
+  const captureCanvas = document.createElement("canvas");
+  captureCanvas.width = CAPTURE_WIDTH;
+  captureCanvas.height = CAPTURE_HEIGHT;
+  const captureStatus = $("#arena-capture-status");
+  const captureRecorder = createArenaRecorder({
+    canvas: captureCanvas,
+    gameCanvas: canvas,
+    getFrame: () => {
+      const state = arena.episode.state;
+      const observation = encodeObservation(state);
+      // Forward the current board without drawing a categorical sample or consuming policy RNG.
+      const currentInference = policyOutput(arena.model, observation, arena.streams.policy, false);
+      const activeByChannel = CHANNELS.map((_, channel) => {
+        let sum = 0;
+        for (let i = 0; i < 100; i += 1) sum += observation[i * 6 + channel];
+        return sum;
+      });
+      return {
+        model: arena.model.label,
+        category: categoryLabel(arena.model.condition_class),
+        score: state.score,
+        step: state.step,
+        seed: arena.episode.seed,
+        terminal: state.terminal,
+        running: arena.running,
+        lastAction: arena.lastTransition ? ACTION_NAMES[arena.lastTransition.selectedAction] : null,
+        highlightAction: null,
+        actionNames: ACTION_NAMES,
+        probabilities: Array.from(currentInference.probabilities),
+        logits: currentInference.logits ? Array.from(currentInference.logits) : null,
+        h1Active: currentInference.h1 ? currentInference.h1.filter(value => Math.abs(value) > 0.5).length : 0,
+        h2Active: currentInference.h2 ? currentInference.h2.filter(value => Math.abs(value) > 0.5).length : 0,
+        randomPolicy: currentInference.random,
+        activeByChannel,
+        channelNames: CHANNELS,
+        observationGrid: Array.from(channelGrid(observation, Number($("#observation-channel").value))),
+        selectedChannel: CHANNELS[Number($("#observation-channel").value)],
+        selectedChannelIndex: Number($("#observation-channel").value),
+        parameters: arena.model.weights?.total_parameters ?? 0,
+      };
+    },
+    onStatus: (message, recording) => {
+      captureStatus.textContent = message;
+      captureStatus.dataset.state = recording ? "recording" : "ready";
+    },
+  });
+  const recordButton = $("#arena-record");
+  const setCaptureControls = recording => {
+    recordButton.textContent = recording ? "■ Stop & download recording" : "● Record gameplay";
+    recordButton.setAttribute("aria-label", recording ? "Stop and download the Arena recording" : "Record the Arena gameplay at its current speed");
+    modelSelect.disabled = recording;
+    seedInput.disabled = recording;
+    $("#arena-speed").disabled = recording;
+    $("#arena-reset").disabled = recording;
+    $("#arena-step-button").disabled = recording;
+    $("#arena-random-seed").disabled = recording;
+  };
   const reset = () => {
     stopArena();
     const seed = Math.max(0, Math.min(2147483647, Math.floor(Number(seedInput.value) || 0)));
@@ -367,6 +425,22 @@ function initializeArena() {
   $("#arena-reset").addEventListener("click", reset);
   $("#arena-step-button").addEventListener("click", () => { if (arena.episode.state.terminal) reset(); oneStep(); });
   $("#arena-random-seed").addEventListener("click", () => { seedInput.value = String(Math.floor(Math.random() * 2147483648)); reset(); });
+  recordButton.addEventListener("click", () => {
+    if (captureRecorder.isRecording()) {
+      stopArena();
+      setCaptureControls(false);
+      captureRecorder.stop();
+      return;
+    }
+    // Start every capture from the selected seed at the Arena's normal 1× speed.
+    $("#arena-speed").value = "1";
+    reset();
+    if (captureRecorder.start()) {
+      setCaptureControls(true);
+      start();
+    }
+  });
+  $("#arena-capture-frame").addEventListener("click", () => captureRecorder.snapshot());
   seedInput.addEventListener("change", reset);
   modelSelect.addEventListener("change", reset);
   $("#observation-channel").addEventListener("change", drawObservation);
