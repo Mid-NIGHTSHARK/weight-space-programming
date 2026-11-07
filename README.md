@@ -1,183 +1,139 @@
-# Weight-Space Programming Replication Lab
-## Independent Reproduction of Experiment 5 — MinAtar Breakout
-### Experimental Subject: Gemini Argon | Infrastructure Engineering: Gemini 3.8 Flash
+# Weight-Space Programming
 
----
+**Research on whether large language models can write useful neural-network weights directly, without conventional training.**
 
-## 1. Overview & Research Objective
+[Overview](https://mid-nightshark.github.io/weight-space-programming/#overview) · [Live Arena](https://mid-nightshark.github.io/weight-space-programming/#arena) · [Models](https://mid-nightshark.github.io/weight-space-programming/#models) · [Results and downloads](https://mid-nightshark.github.io/weight-space-programming/#results) · [Methodology](https://mid-nightshark.github.io/weight-space-programming/#methodology) · [Browse the source repository](https://github.com/Mid-NIGHTSHARK/weight-space-programming)
 
-This repository contains a complete, research-grade experimental framework to independently reproduce Experiment 5 from the seminal paper:
+**Project status:** research artifact with a corrected local evaluation and an independent review verdict of **verified with limitations**. Model/provider provenance is not independently authenticated, and interactive desktop-GUI tests remain unresolved on the recorded macOS/Tk setup. See [the corrected evaluation report](PHASE_2_CORRECTED_EVALUATION_REPORT.md) for the evidence and qualifications.
 
-> **"Sparks of Weight-Space Programming: LLMs can natively read & write neural network weights"**  
-> *Authors: Rikiya Takehi, Jayden Teoh, Alex Zhang, Omar Khattab (MIT CSAIL, November 2026)*  
-> *Original Publication:* [https://rikiyat.github.io/blog/weight-space-programming/](https://rikiyat.github.io/blog/weight-space-programming/)  
-> *Original Logs & Code:* [https://github.com/RikiyaT/lm_understand-logs](https://github.com/RikiyaT/lm_understand-logs)  
+## Research question
 
-### Core Research Question:
-**Can Gemini Argon independently construct a functional neural-network policy for MinAtar Breakout by directly generating the network's weights, without reinforcement learning, gradient descent, backpropagation, or feedback from the environment?**
+Weight-space programming means specifying a neural network by writing its numerical parameters—the weights and biases that determine how inputs affect outputs—instead of training those parameters with a conventional optimization procedure.
 
----
+This project asks: **Can a language model directly construct useful neural-network weights for a game-playing task without receiving training feedback?** It evaluates fixed weight sets in MinAtar Breakout, a small, fast, grid-based version of Breakout. The compact environment makes the observations, actions, and weight arrays inspectable while retaining moving objects, collisions, sticky actions, and stochastic action selection.
 
-## 2. System Architecture & Components
+The repository studies a task related to Experiment 5 in the authors' [source article](https://rikiyat.github.io/blog/weight-space-programming/). This repository's corrected scores are local reevaluations of preserved weight files; they are not the same sample as the score reported by that article.
 
-```
-weight-space-gemini/
-│
-├── README.md                      # Complete system documentation
-├── pyproject.toml                 # Pinned dependencies & metadata
-├── .gitignore                     # Git configuration
-│
-├── research/                      # Research audit and protocols
-│   ├── research_audit.md          # Comprehensive audit of claims, evidence, and decisions
-│   ├── experiment_5_protocol.md   # Exact reproducible evaluation protocol
-│   ├── original_prompt.txt        # Byte-for-byte original Experiment 5 prompt
-│   ├── original_response.md       # Astra's exact raw answer and edits block
-│   ├── references.md              # Academic and source citations
-│   └── decisions.md               # Architecture and engineering rationales
-│
-├── environment/                   # MinAtar Breakout integration
-│   ├── __init__.py
-│   ├── breakout.py                # Authoritative environment wrapper
-│   ├── observations.py            # 6-channel mapping & 600-element C-order flattening
-│   ├── actions.py                 # Discrete action space [0..5] & character mappings
-│   └── validation.py              # Environment sanity and boundary validators
-│
-├── network/                       # Neural network architecture & parsing
-│   ├── __init__.py
-│   ├── architecture.py            # 600-32-32-6 MLP (NumPy authoritative & PyTorch reference)
-│   ├── inference.py               # Softmax action sampling engine
-│   ├── weight_loader.py           # NPZ archive loading/saving & SHA-256 validation
-│   ├── weight_parser.py           # Safe AST weight parser (no eval/exec)
-│   └── weight_validation.py       # Sparsity analysis & parameter validation
-│
-├── baselines/                     # Comparison agents
-│   ├── random_agent.py            # Uniform random action sampler
-│   ├── zero_agent.py              # Zero-weight policy baseline
-│   ├── train_ppo.py               # CleanRL-style PPO reference implementation
-│   └── evaluate_baselines.py      # Automated baseline evaluation script
-│
-├── gemini/                        # Gemini Argon experiment interface
-│   ├── experiment_prompt.txt      # Frozen prompt for Argon
-│   ├── response_raw.txt           # Raw response storage (human researcher input)
-│   ├── parse_weights.py           # Isolated weight parser CLI
-│   └── metadata.json              # Experiment tracking & model metadata
-│
-├── evaluation/                    # Rigorous evaluation harness
-│   ├── evaluate.py                # 1,000-episode evaluation harness
-│   ├── metrics.py                 # Aggregate statistics (mean, se, median, etc.)
-│   ├── seeds.py                   # Deterministic seed generator
-│   └── statistical_analysis.py    # Report generator & reference comparisons
-│
-├── experiments/                   # Experiment artifacts
-│   ├── reference/hand.npz         # GPT-6 Astra reference weights (verified SHA-256)
-│   ├── strict_replication/        # Isolated Gemini Argon runs
-│   └── extended_experiments/      # Extended / ablation studies
-│
-├── tests/                         # Comprehensive automated test suite
-│   ├── test_actions.py            # Action validation tests
-│   ├── test_observations.py       # Observation indexing & channel tests
-│   ├── test_environment.py       # MinAtar physics & sticky action tests
-│   ├── test_architecture.py      # Architecture, shapes, & PyTorch equivalence
-│   ├── test_weight_parser.py      # AST parser unit & golden tests
-│   ├── test_reference_network.py  # Reference network property & hash tests
-│   └── test_evaluation.py        # Evaluation harness & metrics tests
-│
-├── scripts/                       # Executable CLI tools
-│   ├── download_reference.py      # Download & verify original hand.npz
-│   ├── verify_reference.py        # Parameter & sparsity audit script
-│   ├── run_evaluation.py          # CLI evaluation runner
-│   └── analyze_results.py         # Comparative analysis tool
-│
-└── results/                       # Evaluation outputs (CSV, JSON, Markdown)
-    ├── episode_scores.csv         # Individual episode logs
-    ├── summary.json               # Structured metrics summary
-    └── evaluation_report.md       # Full Markdown research report
-```
+## How the experiment works
 
----
+1. A model receives a prompt describing the game, network, and weight format.
+2. It returns numerical weight assignments.
+3. The assignments are parsed into a fixed network, without training on game outcomes.
+4. The network selects actions while MinAtar Breakout runs thousands of episodes.
+5. The evaluator records scores, episode lengths, actions, seeds, and replay information.
 
-## 3. Specifications & Standards
+The project includes model responses, parsed weight archives, raw per-episode data, analysis outputs, and a static browser demonstration. The browser Arena is an educational JavaScript implementation; it does not reproduce the corrected evaluator's NumPy random streams and is not benchmark-equivalent.
 
-### Environment & Observation:
-- **Game:** MinAtar Breakout (`minatar==1.0.15`).
-- **Board:** 10 × 10 grid.
-- **Input Channels (6):** `player` (0), `danger` (1), `reward` (2), `projectile` (3), `trail` (4), `gauge` (5).
-- **Flattening Convention:** `index = (row * 10 + column) * 6 + channel` (standard C-order flattening into 600 float32 values).
-- **Actions:** 0: `no-op`, 1: `left`, 2: `up`, 3: `right`, 4: `down`, 5: `fire`.
-- **Sticky Actions:** Probability 0.1 of repeating `last_action`.
+## Network and environment
 
-### Neural Network:
-- **Shape:** 600 → 32 → 32 → 6.
-- **Activations:** Hidden layers: `tanh`. Output: Linear (logits).
-- **Parameters:** 20,486 float32 values. Initialized to zero.
-- **Action Sampling:** Softmax with stochastic sampling: $p = \text{softmax}(\text{logits})$, $a \sim \text{Categorical}(p)$.
+Each policy uses the same multilayer perceptron:
 
-### Safe Weight Parser:
-- Parses model-generated Python-like assignments (`W1[i, j] = ...`, slices, strides, lists, `+=`, `*=`) using `ast.parse`.
-- **Strictly prohibits `eval()` and `exec()`**. Whitelists only approved tensor identifiers (`W1, b1, W2, b2, W3, b3`) and numerical bounds ($|v| \le 10^6$).
-- **Golden Verification:** Successfully reconstructs GPT-6 Astra's released `hand.npz` weights with **exact bitwise equality (0.0 difference)**.
+| Component | Specification |
+|---|---|
+| Input | 600 values: a 10 × 10 board with six channels at each cell |
+| Hidden layers | 32 neurons, then 32 neurons; `tanh` activation after each |
+| Output | 6 linear action logits |
+| Parameters | 20,486 total: weights and biases across all three layers |
+| Initialization for parsed assignment blocks | Zero-filled tensors, then the allowed assignments are applied |
+| Action selection | Temperature-1 softmax followed by categorical sampling |
 
----
+MinAtar's native Breakout observation has four channels. The project maps it to six channels, in order: paddle, empty danger, bricks, ball, ball trail, empty gauge. Values are flattened in row-major order with channels innermost: `(row * 10 + column) * 6 + channel`. The six actions are no-op, left, up, right, down, and fire. The corrected protocol uses MinAtar 1.0.15, sticky-action probability 0.1, reset last action 0, and a 10,000-step episode limit.
 
-## 4. Evaluation Protocol
+The implementation and protocol are documented in [the network code](network/architecture.py), [observation mapping](environment/observations.py), [action mapping](environment/actions.py), [corrected evaluator](evaluation/corrected_evaluate.py), and [evaluation configuration](experiments/corrected_evaluation/evaluation_config.json).
 
-- **Episodes:** 1,000 independent runs.
-- **Cutoff:** Maximum 10,000 steps per episode.
-- **Seeds:** Deterministically managed via PRNG.
-- **Published Reference Scores:**
-  - **GPT-6 Astra (Hand-written one-shot):** Mean **517.411** ± 7.417 (Max 800.0, Mean Length 7,417 steps).
-  - **PPO 500M steps (Best seed):** Mean **25.344** ± 0.121 (Max 29.0).
-  - **PPO 100M steps (Best seed):** Mean **15.779** ± 0.093 (Max 17.0).
-  - **Random Agent Baseline:** Mean **0.485** ± 0.023 (Max 4.0).
-  - **Zero-Weight Baseline:** Mean **0.517** ± 0.023 (Max 4.0).
+## Corrected benchmark results
 
----
+The corrected dataset contains nine conditions and 3,000 episodes per condition (27,000 episodes total). Means and standard errors below are independently recomputed from the raw episode CSV files. Rows are grouped by scientific role; only the five rows marked **Primary zero-shot** belong in the zero-shot model ranking. The [detailed results page](https://mid-nightshark.github.io/weight-space-programming/#results) includes distributions, paired comparisons, and downloads.
 
-## 5. Quick Start & Execution
+| Condition | Role | Mean score ± SE | Median | Episodes |
+|---|---|---:|---:|---:|
+| Gemini Argon 4 Medium | Primary zero-shot | 60.322 ± 1.195 | 38 | 3,000 |
+| Claude Sonnet 5.5 | Primary zero-shot | 10.587 ± 0.206 | 6 | 3,000 |
+| GPT-6 Original | Primary zero-shot | 2.516 ± 0.036 | 2 | 3,000 |
+| GPT-6 Luna Extra High | Primary zero-shot | 1.230 ± 0.023 | 1 | 3,000 |
+| DeepSeek Original | Primary zero-shot | 0.493 ± 0.009 | 0 | 3,000 |
+| Astra local reference | Handcrafted/reference controller | 504.852 ± 4.447 | 642 | 3,000 |
+| Trained PPO baseline | Trained baseline | 5.797 ± 0.017 | 6 | 3,000 |
+| Zero-weight control | Control | 0.518 ± 0.014 | 0 | 3,000 |
+| Random-action control | Control | 0.492 ± 0.013 | 0 | 3,000 |
 
-### Setup Environment:
+These are results for the listed fixed weight files and this one environment/protocol. They do not estimate performance across repeated independent generations of each model. The Astra row is a reference policy, PPO is trained, and the two controls are not model generations.
+
+### Separate post-hoc and iterative conditions
+
+**DeepSeek Corrected** is a researcher-created post-hoc intervention. It is not an original zero-shot output and is excluded from the nine-condition corrected dataset and primary ranking. Its response, weights, and analysis remain separately archived; see the [DeepSeek correction report](PHASE_3D_DEEPSEEK_CORRECTION_REPORT.md).
+
+The three **Gemini Argon High iterative-development** versions are also separate from the primary zero-shot experiment. The first is a reconstruction from user-supplied inline assignments; the two follow-ups are researcher-directed scripts. They are not three independent model generations, and they are not interchangeable with Gemini Argon 4 Medium.
+
+| Version | Mean score ± SE | Median | Episodes |
+|---|---:|---:|---:|
+| Original first-prompt assignments | 59.998 ± 1.195 | 38 | 3,000 |
+| Follow-up 1 | 62.368 ± 1.203 | 40 | 3,000 |
+| Follow-up 2 | 62.188 ± 1.182 | 40 | 3,000 |
+
+Both follow-ups scored modestly above the supplied original, with small paired standardized effects. Follow-up 2 did not significantly differ from Follow-up 1; this does not establish equivalence. All 9,000 episodes ended in ball loss, with no time-limit cutoffs. The supplied Follow-up 2 verifier retains an impossible float64 probability assertion; an independent comparison against its finite-state oracle found no action mismatches over the tested 7,280 states. Provider identity and settings remain unauthenticated, and archived Gemini metadata conflicts with the Phase 2 Argon 4 Medium label. The [full iterative-development report](experiments/argon_high_iterative_development/report.md) documents these limits and links the raw records.
+
+## Evaluation and analysis
+
+The corrected evaluator creates a deterministic seed schedule using seed groups 42, 100, and 200. For each base episode seed, it derives separate environment and policy seeds with `numpy.random.SeedSequence(base_seed).spawn(2)`. MinAtar receives its own environment seed; categorical action sampling uses a separate `numpy.random.RandomState`. The same base and derived seed identifiers are used across conditions to support paired comparisons. The streams are separate PRNG instances; the seed derivation is reproducible, not a claim of mathematical independence.
+
+For corrected comparisons, episodes are paired by seed group and episode index, with the base, environment, and policy seeds checked for exact agreement. The analysis uses bootstrap resampling of whole episode pairs, two-sided sign-flip permutation tests, paired Cohen's *dz*, and Holm correction across 36 pairwise comparisons. A nonsignificant comparison is not evidence of equivalence. See the [full methods and comparison tables](experiments/corrected_evaluation/full_run/analysis/analysis_report.md) and [Phase 2 corrected evaluation report](PHASE_2_CORRECTED_EVALUATION_REPORT.md).
+
+The primary zero-shot ranking is Gemini Argon 4 Medium, Claude Sonnet 5.5, GPT-6 Original, GPT-6 Luna Extra High, and DeepSeek Original by mean score. It describes these five recorded artifacts on this benchmark only. Provider identity and some generation settings are locally recorded labels, not independently authenticated provider facts.
+
+## Reproducibility and project map
+
+Use Python 3.12 or later and [uv](https://docs.astral.sh/uv/). The package metadata declares the dependencies. From the repository root:
+
 ```bash
 uv venv .venv --python 3.12
 source .venv/bin/activate
 uv pip install -e .
 ```
 
-### Run All Automated Tests:
+Run the full test suite with:
+
 ```bash
-pytest
+pytest -q
 ```
 
-### Verify Astra Reference Network:
+The full suite includes GUI tests. In the 2026-11-07 local run, 141 tests were collected: 132 passed, 6 failed, and 3 errored. All nine failures/errors were in screenshot or Tk GUI checks; Tk 9.0 startup failed while evaluating `tk scaling` as NaN, before the GUI assertions ran, and Cocoa service errors were also logged. A successful run of the non-GUI tests does not verify desktop GUI behavior. See the [Phase 2 report](PHASE_2_CORRECTED_EVALUATION_REPORT.md) for the earlier recorded test environment and outcomes.
+
+To check the published static data bundle without writing files, and to run the browser/Python conformance tests used by Pages CI:
+
 ```bash
-python scripts/verify_reference.py
+python scripts/export_research_site_data.py --check
+pytest -q tests/test_site_export.py tests/test_browser_conformance.py
+node --test tests/site_conformance.test.mjs
 ```
 
-### Evaluate Baselines:
-```bash
-python baselines/evaluate_baselines.py 1000
-```
+The main implementation and evidence are organized by purpose:
 
-### Evaluate Reference Weights:
-```bash
-python scripts/run_evaluation.py --weights experiments/reference/hand.npz --episodes 1000
-```
+| Find | Location |
+|---|---|
+| MinAtar wrapper, observations, actions | [`environment/`](environment/) |
+| Network, inference, weight parser and loader | [`network/`](network/) |
+| Legacy and corrected evaluators, RNG, analysis | [`evaluation/`](evaluation/) |
+| Primary corrected config, raw CSVs, metrics and registry | [`experiments/corrected_evaluation/`](experiments/corrected_evaluation/) |
+| Iterative-development sources, weights, raw CSVs and reports | [`experiments/argon_high_iterative_development/`](experiments/argon_high_iterative_development/) |
+| Preserved primary prompts, responses, weights and runs | [`experiments/strict_replication/`](experiments/strict_replication/) |
+| Research background and forensic records | [`research/`](research/) |
+| Static site source and exported datasets | [`docs/`](docs/) |
+| Python and browser tests | [`tests/`](tests/) |
 
----
+See the [developer and reproducibility guide](docs/DEVELOPMENT.md) for the execution path, safe reconstruction steps, run commands, artifact hashes, and website data flow. It distinguishes commands verified by inspection or CI from full evaluations that were not rerun for this documentation update.
 
-## 6. Gemini Argon Experiment Workflow (Strict One-Shot)
+## Integrity and limitations
 
-1. Deliver `gemini/experiment_prompt.txt` to Gemini Argon in a clean conversation.
-2. Save Argon's complete raw response to `gemini/response_raw.txt`.
-3. Parse and validate the weights:
-   ```bash
-   python gemini/parse_weights.py
-   ```
-4. Evaluate Argon's generated policy:
-   ```bash
-   python scripts/run_evaluation.py --weights gemini/generated_weights.npz --agent-id gemini_argon_run_001 --output-dir experiments/strict_replication/argon_run_001
-   ```
-5. Compare results:
-   ```bash
-   python scripts/analyze_results.py results/summary.json experiments/strict_replication/argon_run_001/summary.json
-   ```
+- `experiments/corrected_evaluation/preserved_artifacts_sha256.json` records 180 pre-correction artifacts; the current files match those recorded hashes. The registry proves file identity against that snapshot, not scientific validity.
+- `experiments/corrected_evaluation/phase2_artifact_registry.json` records the corrected run, code, configuration, metrics, and protected-file registry. `experiments/argon_high_iterative_development/artifact_registry.json` separately records 35 iterative-experiment files.
+- The site exporter verifies its source data and generated bundle; `python scripts/export_research_site_data.py --check` checks the checked-in publication files without regenerating them.
+- The model/provider labels and some reasoning-effort metadata are not provider-attested. The archived Gemini metadata and the Phase 2 “Gemini Argon 4 Medium” condition label conflict; the conflict is unresolved.
+- The Tk GUI test failures remain unresolved on the audited host. The website Arena is a browser demonstration and does not share the benchmark's NumPy environment/policy random streams.
+- Evidence comes from one compact environment, one network architecture, and a small number of fixed model outputs. Episode count reduces uncertainty for each fixed policy; it does not replace independent generations or establish general model capability.
 
+Older reports and protocol files are retained as dated records. Where their early episode counts or evaluator details differ, use the explicitly labeled Phase 2 corrected dataset and report linked above for the corrected benchmark; do not treat historical and corrected outputs as one run.
+
+## License
+
+This project is distributed under the [MIT License](LICENSE).
