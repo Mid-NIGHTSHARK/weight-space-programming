@@ -1,0 +1,347 @@
+{
+  "gemini/experiment_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "research/original_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/input/argon_experiment_001.zip": {
+    "sha256": "976c17cd21bed3febb81e5f4f5b7c43467a7cf87230bb646c0135406d86bec64",
+    "size_bytes": 3686,
+    "exists": true
+  },
+  "Read the attached file experiment_5_prompt.txt and....docx": {
+    "sha256": "2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7",
+    "size_bytes": 67042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/argon_response_original.docx": {
+    "sha256": "2e40dafa935ed1b21290a1dcba0ae67f88a54b79c1f924fa493d37c49f80a2e7",
+    "size_bytes": 67042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/raw_response.txt": {
+    "sha256": "6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac",
+    "size_bytes": 107380,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_001/output/argon_weights.npz": {
+    "sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/reference/hand.npz": {
+    "sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/trained_baseline/trained_actor_weights.npz": {
+    "sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/trained_baseline/final_actor_critic.pt": {
+    "sha256": "bbf6fbc64d0b4e89cfa36a7980a17a695133884ca9be10e842fbd1f8f86767a3",
+    "size_bytes": 168197,
+    "exists": true
+  },
+  "network/architecture.py": {
+    "sha256": "b345cf3dec62928e19ca61235b0f16ab7ccb73f6bbc73cb98d29a2c53c0ee5b6",
+    "size_bytes": 5280,
+    "exists": true
+  },
+  "network/inference.py": {
+    "sha256": "9ee68f4e396f458fb52b0c9d4db79438731c6b45eacbe05fa8d22103e8cee8a4",
+    "size_bytes": 2065,
+    "exists": true
+  },
+  "network/weight_loader.py": {
+    "sha256": "b6aad0c6d9e8ffef87bdcb0f0631890bd1223079f84b27489c0acfd1708aff16",
+    "size_bytes": 2680,
+    "exists": true
+  },
+  "network/weight_parser.py": {
+    "sha256": "59b5e2a106208c20effa1f5fbe272a7e8d388469bb1751d0899e81b453d7f285",
+    "size_bytes": 13646,
+    "exists": true
+  },
+  "network/weight_validation.py": {
+    "sha256": "0674be58b39edbebd682f90a53befc7962804273894ad5bc02d56b38eb06bd59",
+    "size_bytes": 2862,
+    "exists": true
+  },
+  "environment/breakout.py": {
+    "sha256": "e974de5f9b9735b4fb582e2ffd5dc3a8306b9045e2e58f24145e9934a7fa3b75",
+    "size_bytes": 4595,
+    "exists": true
+  },
+  "environment/actions.py": {
+    "sha256": "72dc1b97555b2a28885e88a8b43fbf3e054155d0652c8e4ae62333e385679b7f",
+    "size_bytes": 1347,
+    "exists": true
+  },
+  "environment/observations.py": {
+    "sha256": "f825eeab44b3f8d4bac0525ce0aca8a3b6e9c3e772a390641d4521254858f703",
+    "size_bytes": 4098,
+    "exists": true
+  },
+  "evaluation/evaluate.py": {
+    "sha256": "f7a430e47f55aa28292181184231b11c95cc4bd9b69908d9baf0a4b455012720",
+    "size_bytes": 6522,
+    "exists": true
+  },
+  "evaluation/metrics.py": {
+    "sha256": "3e8cf85a24588c1ef8348d38b21d0e9cce2eda88972760cc0f926c9e299b9a79",
+    "size_bytes": 3373,
+    "exists": true
+  },
+  "evaluation/seeds.py": {
+    "sha256": "90bcc3692375e1f84e9821d3698cd7c31d8ed43aa292d8e608a183c68353b0e1",
+    "size_bytes": 461,
+    "exists": true
+  },
+  "baselines/train_ppo.py": {
+    "sha256": "9d3d02588173212933a76b1ca3e768c38fc62145d4e9ccedccec79949f075b74",
+    "size_bytes": 16866,
+    "exists": true
+  },
+  "visualize_comparison.py": {
+    "sha256": "53532b01c647d10d6bc81c24e81e627c3a63ac0c03cab65457d34df3c8219415",
+    "size_bytes": 83479,
+    "exists": true
+  },
+  "_reference_repos/lm_understand-logs/exp5_write_from_scratch/networks/breakout/hand.npz": {
+    "sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "_reference_repos/lm_understand-logs/exp5_write_from_scratch/eval/minatar_eval.json": {
+    "sha256": "bc10c6f957af95cdd52ee4be085acd249046f6117dbdb8c735fd5ddb2195c47c",
+    "size_bytes": 4693,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt.rtf": {
+    "sha256": "5b5526637c1f612db8ea9b4be439e92377199bae1561fda0d4e82b73c2280480",
+    "size_bytes": 5042,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_raw_response.txt": {
+    "sha256": "b1fe5433c47c3ea433440622953b17c15bedc2fac65cd34d1c2aa6ada7a4fc7a",
+    "size_bytes": 4311,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz": {
+    "sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/input/sonnet55_raw_response.txt": {
+    "sha256": "7b6a0461c2f775cc08604c65672f145aa3efc1adbb5ce51ac59244e036cb85ee",
+    "size_bytes": 3355,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz": {
+    "sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b",
+    "size_bytes": 83574,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/output/generation_metadata.json": {
+    "sha256": "cb8bf19a40859a86e122ec3d442e15f87b56cc6a42e11b757195f55ce85d1095",
+    "size_bytes": 1425,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/summary.json": {
+    "sha256": "150998d8f2261ae3cb6134c23112eca5c1cb25de0ff171f3bf0a69f2585e5385",
+    "size_bytes": 811,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/summary.json": {
+    "sha256": "dda0c5fad68bcd56015437a4e247f4b63c310206aed31dbcd86fbc15cc442967",
+    "size_bytes": 815,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/summary.json": {
+    "sha256": "ff61956dc1715428278811c1e7f14c762782e6f4952a033f1410d8125871a4e5",
+    "size_bytes": 817,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_003_sonnet55/analysis/comparative_metrics.json": {
+    "sha256": "3ee9b622a39f69926e4573ba19ce84ea5a2ab74a2a03fb45c05069ac9d17864f",
+    "size_bytes": 2108,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/input/deepseek_raw_response.txt": {
+    "sha256": "e16d5a6fc4cfff6aa0184211d983bf53274c34b04af6f0501d2f91ed0d1e9de0",
+    "size_bytes": 2473,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz": {
+    "sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9",
+    "size_bytes": 83382,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/output/generation_metadata.json": {
+    "sha256": "460d9ae8c06556285b522a02f71faab609e5c04e03c676eed56bb9ebf5996391",
+    "size_bytes": 1410,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/manifest.json": {
+    "sha256": "447d9c22d9b24ca6b0d37785a3f3f123862161611b6ace959980eebbe7ae71ef",
+    "size_bytes": 1170,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed42/summary.json": {
+    "sha256": "3194b6b67be467bf1bffb7a864b5a401ab8f84db8afef65e53344ab4b0960003",
+    "size_bytes": 809,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed100/summary.json": {
+    "sha256": "16b56912a6d925fe87bff617be39e9df9c683d17684a165608ecd7c938bfe56f",
+    "size_bytes": 810,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed200/summary.json": {
+    "sha256": "3a5b57487978d1d882b45d604456006ec0cf789f9a18945e6d6472a30bcf8b90",
+    "size_bytes": 810,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/analysis/comparative_metrics.json": {
+    "sha256": "671fdf106d67f2f052de38581f2cf2209623a556d15b4412849228b0202959ac",
+    "size_bytes": 2470,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/analysis/deepseek_comparative_score_distributions.png": {
+    "sha256": "493e1cb4189a66de288b61f0c5ef8ff2048816a638118662a1638a40263b4af9",
+    "size_bytes": 137834,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_004_deepseek/analysis/visualizer_6way_screenshot.png": {
+    "sha256": "638329ab9d6f397327dbff94417d194da884a3c00ee5a10c5b3ff63d137b4f81",
+    "size_bytes": 439234,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/output/deepseek_corrected_weights.npz": {
+    "sha256": "21078c485156850253744ed0c2e1efd54361cf06f603a5ad2fd32ffea3c1c8bc",
+    "size_bytes": 83382,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/intervention_manifest.json": {
+    "sha256": "fca7c1af5f4413e70dd7b3745e6b03aa1d7de701eee2ecb98c801fae221d210d",
+    "size_bytes": 1918,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed42/summary.json": {
+    "sha256": "aca670f0a69e3d7545887506aad76e324d5f1cbfebcf2e6b4a3f20449e7b4d3d",
+    "size_bytes": 811,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed100/summary.json": {
+    "sha256": "22cb1901650abaf64fa951f060e3581574c43d8b0ae363af554750671c6e850f",
+    "size_bytes": 810,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/evaluation/eval_seed200/summary.json": {
+    "sha256": "01fc326d05d9d85ba4a550bbcb2a26d1737be59b33c1f97e5f70bbf4d12e5987",
+    "size_bytes": 813,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/comparative_metrics.json": {
+    "sha256": "911ff47da44b527c4c0de5315da58435d0e2d1a04b535cb470f967f9a8031c88",
+    "size_bytes": 3538,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/deepseek_corrected_comparative_score_distributions.png": {
+    "sha256": "f8b59d28e41de1d0ecd22c20b54556b790d9fc7488fe7f81e8e6174fb10cfebb",
+    "size_bytes": 153303,
+    "exists": true
+  },
+  "experiments/controlled_interventions/deepseek_corrected/analysis/visualizer_7way_screenshot.png": {
+    "sha256": "7573c3b5bfe143c5725d1f7ca5c54d8eb7d299d0590d743db72028636cf9f8cc",
+    "size_bytes": 30675,
+    "exists": true
+  },
+  "PHASE_3D_DEEPSEEK_CORRECTION_REPORT.md": {
+    "sha256": "7fb5dd47733d0fd804143a6ea53b553bcbb9657d4f6b65fb500ba59b780e70b3",
+    "size_bytes": 18173,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/input/experiment_5_prompt.txt": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "size_bytes": 9973,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/input/gpt6_luna_raw_response.txt": {
+    "sha256": "e037cc069e092820da6e0f08e54a7fad82af4eabe396695b559311bac068601c",
+    "size_bytes": 3168,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz": {
+    "sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9",
+    "size_bytes": 2073,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/manifest.json": {
+    "sha256": "77bf61f7a92a8ce9081af9162fa963ee74266e1dd29b523716896405b1c21006",
+    "size_bytes": 1389,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed42/summary.json": {
+    "sha256": "47652ca87fff22d3406a9f6216b76b21e669130a9e592f7f5a0ffcbe45e8df2f",
+    "size_bytes": 868,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed100/summary.json": {
+    "sha256": "de678fe7f0b90a66526fd5ec54289fc256740fded0081bbb2adfd73a8dda9c6a",
+    "size_bytes": 873,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed200/summary.json": {
+    "sha256": "75a40fe3af22bf36d3317c9d3bb21420ed7886631f0f505a733e5b8366409d21",
+    "size_bytes": 873,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/analysis/comparative_metrics.json": {
+    "sha256": "d78646c2229a1ec1c6fa31607d4222ba0c18dec731c782795c1ac95c41e9d7c6",
+    "size_bytes": 2479,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/analysis/gpt6_luna_comparative_score_distributions.png": {
+    "sha256": "6472d47b5d851386df025f080864261a055f917e15b093e1ecdb7c2822efa237",
+    "size_bytes": 173288,
+    "exists": true
+  },
+  "experiments/strict_replication/generation_005_gpt6_luna_extra_high/analysis/visualizer_7way_primary_screenshot.png": {
+    "sha256": "e023a25f22aec3af5ff31d9eb678c6004587524f1092232794e081b5f6e2f78c",
+    "size_bytes": 1155069,
+    "exists": true
+  },
+  "PHASE_1_GENERATION_005_INTEGRATION_REPORT.md": {
+    "sha256": "eb7a8afe6897d83dd85ae8a55e9e9b5dbd6c164b8211b94f92fb30e4a554b670",
+    "size_bytes": 20364,
+    "exists": true
+  }
+}

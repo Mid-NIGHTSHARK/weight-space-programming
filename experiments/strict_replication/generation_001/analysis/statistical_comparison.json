@@ -1,0 +1,89 @@
+{
+  "argon": {
+    "episodes": 3000,
+    "mean_score": 57.866,
+    "std_score": 62.21677978296681,
+    "se_score": 1.1359177914154097,
+    "ci_95": [
+      55.639601128825795,
+      60.092398871174204
+    ],
+    "median_score": 38.0,
+    "min_score": 0.0,
+    "max_score": 493.0,
+    "mean_length": 871.6246666666667,
+    "median_length": 568.0,
+    "cutoff_count": 0,
+    "cutoff_pct": 0.0,
+    "action_distribution": {
+      "action_0_count": 0.10266727957064088,
+      "action_1_count": 0.4483776273732501,
+      "action_2_count": 0.0,
+      "action_3_count": 0.44895509305610903,
+      "action_4_count": 0.0,
+      "action_5_count": 0.0
+    }
+  },
+  "trained": {
+    "episodes": 3000,
+    "mean_score": 5.757333333333333,
+    "std_score": 1.0185571699508944,
+    "se_score": 0.018596224603024267,
+    "ci_95": [
+      5.720884733111406,
+      5.793781933555261
+    ],
+    "median_score": 6.0,
+    "min_score": 0.0,
+    "max_score": 8.0,
+    "mean_length": 67.35066666666667,
+    "median_length": 70.0,
+    "cutoff_count": 0,
+    "cutoff_pct": 0.0,
+    "action_distribution": {
+      "action_0_count": 0.1748312315641518,
+      "action_1_count": 0.10802664660582424,
+      "action_2_count": 0.17362362164195355,
+      "action_3_count": 0.11653435749213074,
+      "action_4_count": 0.20253697068081483,
+      "action_5_count": 0.22444717201512482
+    }
+  },
+  "astra_reference": {
+    "episodes": 4000,
+    "mean_score": 508.06225,
+    "std_score": 243.93082818121164,
+    "se_score": 3.8568850429190844,
+    "ci_95": [
+      500.5027553158786,
+      515.6217446841214
+    ],
+    "median_score": 645.0,
+    "min_score": 0.0,
+    "max_score": 814.0,
+    "mean_length": 7230.5615,
+    "median_length": 10000.0,
+    "cutoff_count": 2044,
+    "cutoff_pct": 51.1,
+    "action_distribution": {
+      "action_0_count": 0.5065722074281507,
+      "action_1_count": 0.2466965739797663,
+      "action_2_count": 0.0,
+      "action_3_count": 0.24673121859208305,
+      "action_4_count": 0.0,
+      "action_5_count": 0.0
+    }
+  },
+  "comparison": {
+    "score_diff_argon_minus_trained": 52.108666666666664,
+    "cohens_d_effect_size": 1.1842932091484384,
+    "welch_t_test": {
+      "t_statistic": 45.8674787605844,
+      "p_value": 0.0
+    },
+    "mann_whitney_u_test": {
+      "u_statistic": 7998619.5,
+      "p_value": 0.0
+    }
+  }
+}

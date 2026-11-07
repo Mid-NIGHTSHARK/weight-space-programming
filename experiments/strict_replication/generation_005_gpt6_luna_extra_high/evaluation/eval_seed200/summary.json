@@ -1,0 +1,33 @@
+{
+  "episodes": 1000,
+  "mean": 1.223,
+  "median": 1.0,
+  "std": 1.1758629399949867,
+  "se": 0.037184051065660584,
+  "min": 0.0,
+  "max": 8.0,
+  "mean_length": 18.602,
+  "median_length": 16.0,
+  "std_length": 12.414979972908846,
+  "total_bricks_destroyed": 1223,
+  "action_distribution": {
+    "0": 0.25733792065369315,
+    "1": 0.3581335340285991,
+    "2": 0.00016127298139984947,
+    "3": 0.38420599935490807,
+    "4": 0.00010751532093323298,
+    "5": 5.375766046661649e-05
+  },
+  "step_cutoffs_count": 0,
+  "metadata": {
+    "model_id": "gpt6_luna_extra_high",
+    "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9",
+    "episodes": 1000,
+    "sticky_action_prob": 0.1,
+    "max_steps": 10000,
+    "base_seed": 200,
+    "minatar_version": "1.0.15",
+    "total_eval_time_seconds": 0.61,
+    "timestamp": "2026-11-06T18:44:24.127795"
+  }
+}

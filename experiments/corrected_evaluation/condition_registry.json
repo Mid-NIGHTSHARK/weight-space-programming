@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "description": "Corrected evaluation conditions. Hashes bind this run to the inspected baseline weight files.",
+  "conditions": [
+    {"id": "gemini_argon_4_medium", "label": "Gemini Argon 4 Medium", "class": "primary_zero_shot", "weight_path": "experiments/strict_replication/generation_001/output/argon_weights.npz", "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"},
+    {"id": "gpt6_original", "label": "GPT-6 Original", "class": "primary_zero_shot", "weight_path": "experiments/strict_replication/generation_002_gpt6/output/gpt6_weights.npz", "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"},
+    {"id": "claude_sonnet_55", "label": "Claude Sonnet 5.5", "class": "primary_zero_shot", "weight_path": "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz", "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"},
+    {"id": "deepseek_original", "label": "DeepSeek Original", "class": "primary_zero_shot", "weight_path": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz", "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"},
+    {"id": "gpt6_luna_extra_high", "label": "GPT-6 Luna Extra High", "class": "primary_zero_shot", "weight_path": "experiments/strict_replication/generation_005_gpt6_luna_extra_high/output/gpt6_luna_weights.npz", "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"},
+    {"id": "astra_local_reference", "label": "Astra reference (local reevaluation)", "class": "reference", "weight_path": "experiments/reference/hand.npz", "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"},
+    {"id": "ppo_trained_baseline", "label": "Trained PPO baseline", "class": "trained_baseline", "weight_path": "experiments/trained_baseline/trained_actor_weights.npz", "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"},
+    {"id": "random_action_control", "label": "Random-action control", "class": "random_control", "weight_path": null, "weight_sha256": null},
+    {"id": "zero_weight_control", "label": "Zero-weight control", "class": "zero_weight_control", "weight_path": null, "weight_sha256": null}
+  ]
+}

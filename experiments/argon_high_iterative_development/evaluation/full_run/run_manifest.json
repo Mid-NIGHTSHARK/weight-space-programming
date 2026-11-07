@@ -1,0 +1,160 @@
+{
+  "analysis": {
+    "analysis_code": {
+      "experiment_analysis_wrapper": "experiments/argon_high_iterative_development/analyze_evaluation.py",
+      "experiment_analysis_wrapper_sha256": "156beb475143a405fe75c55ddfeafeed43ca42b67f94fd3ed0c96726ad28ce07",
+      "repository_analysis_file": "evaluation/corrected_analysis.py",
+      "repository_analysis_sha256": "cc595157e823883932b69d9df1cc0a729a5f0280090f420e2aa82491d89584f5"
+    },
+    "conditions": [
+      "argon_high_original",
+      "argon_high_followup_1",
+      "argon_high_followup_2"
+    ],
+    "path": "analysis/analysis.json",
+    "statistical_method": {
+      "bootstrap_resamples": 9999,
+      "condition_ci": "two-sided Student-t interval for the episode mean; sample standard deviation uses ddof=1",
+      "effect_size": "paired Cohen dz: mean within-pair score difference divided by its sample standard deviation",
+      "equivalence_testing": "omitted; no independently justified, pre-registered margin",
+      "p_value_correction": "Holm step-down family-wise correction across every pairwise condition comparison",
+      "paired_ci": "percentile paired bootstrap interval for the mean score difference, resampling matched episode pairs",
+      "paired_test": "two-sided paired sign-flip permutation test of the mean difference under within-pair exchangeability",
+      "permutation_resamples": 19999,
+      "random_seed": 20261106
+    }
+  },
+  "completed_at_utc": "2026-11-06T18:52:22.329138+00:00",
+  "condition_csv_sha256": {
+    "argon_high_followup_1": "dc2a1fca571ccede39c5d4b96f5a93a07a4ab00b092d990ffd177a112774a527",
+    "argon_high_followup_2": "6f2dff042bc9d47fd5d4d2c9caa11a920f6a2bc89d55061c4a3c88cbc08b6cd0",
+    "argon_high_original": "a6d14220c51b14e88e1288a3e396731aa3e4fa2e8fdd3f9895f115735cf0da1c"
+  },
+  "condition_registry_sha256": "c33893da22a74108472e3467f80563c430eafa0668ab0e24be2ba12e52e44f1d",
+  "conditions": [
+    {
+      "condition_class": "user_supplied_original_generation_excerpt",
+      "generation_provenance_limit": "Only the tensor assignment block was supplied inline; no provider response receipt or generation metadata was supplied for this exact tensor set.",
+      "id": "argon_high_original",
+      "label": "Argon High \u2014 Original first-prompt assignments",
+      "provider_identity_status": "not independently authenticated",
+      "recorded_model_attribution": "Gemini Argon High, as identified by the user",
+      "source_file": "source/argon_high_original_inline_v1.py",
+      "source_sha256": "153ee5b9867e947e397b30ea688dd220562ebe014318a34d9f6e311b461ddf93",
+      "stage": "first_prompt_original_as_user_identified",
+      "weight_path": "weights/argon_high_original.npz",
+      "weight_sha256": "53c65f6ba95090ef88999ebe0dcc23339390c8579e62ec50eaaffc008c1d90f9"
+    },
+    {
+      "condition_class": "iterative_development_intervention",
+      "generation_provenance_limit": "The supplied follow-up code is preserved exactly; the provider conversation/session is not independently verifiable from this repository.",
+      "id": "argon_high_followup_1",
+      "label": "Argon High \u2014 First follow-up",
+      "provider_identity_status": "not independently authenticated",
+      "recorded_model_attribution": "Gemini Argon High follow-up, as identified by the user",
+      "source_file": "source/argon_high_followup_1.py",
+      "source_sha256": "1460dcf411d31912a7de5286ee6b6b643230b7be4ba83c7dff045055ca8be317",
+      "stage": "researcher_directed_followup_1",
+      "weight_path": "weights/argon_high_followup_1.npz",
+      "weight_sha256": "9dbce900145f681fac6e081fa9cad927205a0ecbe7dfd181285eb0bc5209527f"
+    },
+    {
+      "condition_class": "iterative_development_intervention",
+      "generation_provenance_limit": "The complete supplied follow-up document is preserved byte-for-byte; the provider conversation/session is not independently verifiable from this repository.",
+      "id": "argon_high_followup_2",
+      "label": "Argon High \u2014 Second follow-up",
+      "provider_identity_status": "not independently authenticated",
+      "recorded_model_attribution": "Gemini Argon High follow-up, as identified by the user",
+      "source_file": "source/argon_high_followup_2.py",
+      "source_sha256": "bfb27cdde52250e720c83de02127a3c5e1782bd5d17b389ba127b553c6351639",
+      "stage": "researcher_directed_followup_2",
+      "weight_path": "weights/argon_high_followup_2.npz",
+      "weight_sha256": "a88ee43463374fc79ea38c1ecfeb55da736930c5b3d4f5e201eca066c8041205"
+    }
+  ],
+  "dataset": "argon_high_iterative_full",
+  "episodes_per_condition": 3000,
+  "episodes_total": 9000,
+  "evaluation_config": {
+    "base_episode_seed_generation": "numpy.random.RandomState(seed_group).randint(1, 2**31 - 1, size=episodes_per_seed_group)",
+    "comparison_condition_ids": [
+      "astra_local_reference",
+      "ppo_trained_baseline",
+      "random_action_control",
+      "zero_weight_control"
+    ],
+    "conditions_registry": "condition_registry.json",
+    "dataset_id": "phase2_corrected_evaluation",
+    "environment": {
+      "maximum_episode_steps": 10000,
+      "name": "MinAtar Breakout",
+      "reset_last_action": 0,
+      "sticky_action_probability": 0.1,
+      "version": "1.0.15"
+    },
+    "episode_rng_derivation": "numpy.random.SeedSequence(base_episode_seed).spawn(2); child 0 derives environment_seed, child 1 derives policy_seed as uint32",
+    "episodes_per_seed_group": 1000,
+    "excluded_researcher_intervention_ids": [
+      "deepseek_corrected"
+    ],
+    "matching": "same base episode seed vector and derived seed triplets for every condition",
+    "pilot_episodes_by_seed_group": {
+      "100": 3,
+      "200": 3,
+      "42": 4
+    },
+    "pilot_episodes_per_condition": 10,
+    "policy": {
+      "action_selection": "categorical sampling from stable softmax probabilities",
+      "sampler": "numpy.random.RandomState(policy_seed).choice(action_count, p=probabilities)",
+      "temperature": 1.0
+    },
+    "primary_zero_shot_condition_ids": [
+      "gemini_argon_4_medium",
+      "gpt6_original",
+      "claude_sonnet_55",
+      "deepseek_original",
+      "gpt6_luna_extra_high"
+    ],
+    "rng_implementation": {
+      "action_distribution": "categorical softmax sampling, temperature 1.0",
+      "environment_rng": "MinAtar 1.0.15 RandomState seeded by environment_seed",
+      "max_episode_steps": 10000,
+      "minatar_version": "1.0.15",
+      "policy_rng": "separate numpy.random.RandomState(policy_seed); np.random.choice(p=softmax, temperature=1.0)",
+      "rng_protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "sticky_action_probability": 0.1
+    },
+    "schema_version": 1,
+    "seed_groups": [
+      42,
+      100,
+      200
+    ]
+  },
+  "evaluation_config_sha256": "50292561321d3de7faf18cb6ba28ec02c294442be73ff80ae4744da474cc030b",
+  "failure_policy": "failed output is retained; no overwrite or implicit resume",
+  "group_id": "gemini_argon_high_iterative_development",
+  "pilot_is_software_validation_only": false,
+  "replay_checks": [],
+  "run_kind": "full",
+  "runtime_versions_observed_after_run": {
+    "minatar": "1.0.15",
+    "note": "Observed during final audit in the same project virtual environment; the runner did not capture versions in the run-start manifest.",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "pytest": "9.2.0",
+    "python": "3.12.15 (main, Oct  3 2026, 00:54:33) [Clang 22.1.3 ]",
+    "scipy": "1.18.1",
+    "torch": "2.15.0"
+  },
+  "schema_version": 1,
+  "seed_groups": [
+    42,
+    100,
+    200
+  ],
+  "source_commit": "e148ea353c3cf0307c69de43f5e49201d2c4478f",
+  "started_at_utc": "2026-11-06T18:48:03.784944+00:00",
+  "status": "analysis_complete"
+}

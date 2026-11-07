@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "dataset_id": "phase2_corrected_evaluation",
+  "seed_groups": [42, 100, 200],
+  "episodes_per_seed_group": 1000,
+  "pilot_episodes_per_condition": 10,
+  "pilot_episodes_by_seed_group": {
+    "42": 4,
+    "100": 3,
+    "200": 3
+  },
+  "base_episode_seed_generation": "numpy.random.RandomState(seed_group).randint(1, 2**31 - 1, size=episodes_per_seed_group)",
+  "episode_rng_derivation": "numpy.random.SeedSequence(base_episode_seed).spawn(2); child 0 derives environment_seed, child 1 derives policy_seed as uint32",
+  "environment": {
+    "name": "MinAtar Breakout",
+    "version": "1.0.15",
+    "sticky_action_probability": 0.1,
+    "maximum_episode_steps": 10000,
+    "reset_last_action": 0
+  },
+  "policy": {
+    "action_selection": "categorical sampling from stable softmax probabilities",
+    "temperature": 1.0,
+    "sampler": "numpy.random.RandomState(policy_seed).choice(action_count, p=probabilities)"
+  },
+  "matching": "same base episode seed vector and derived seed triplets for every condition",
+  "conditions_registry": "condition_registry.json",
+  "primary_zero_shot_condition_ids": [
+    "gemini_argon_4_medium",
+    "gpt6_original",
+    "claude_sonnet_55",
+    "deepseek_original",
+    "gpt6_luna_extra_high"
+  ],
+  "comparison_condition_ids": [
+    "astra_local_reference",
+    "ppo_trained_baseline",
+    "random_action_control",
+    "zero_weight_control"
+  ],
+  "excluded_researcher_intervention_ids": ["deepseek_corrected"]
+}

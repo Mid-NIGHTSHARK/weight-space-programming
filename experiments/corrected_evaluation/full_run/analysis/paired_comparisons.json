@@ -1,0 +1,809 @@
+{
+  "analysis_method": {
+    "bootstrap_resamples": 9999,
+    "condition_ci": "two-sided Student-t interval for the episode mean; sample standard deviation uses ddof=1",
+    "effect_size": "paired Cohen dz: mean within-pair score difference divided by its sample standard deviation",
+    "equivalence_testing": "omitted; no independently justified, pre-registered margin",
+    "p_value_correction": "Holm step-down family-wise correction across every pairwise condition comparison",
+    "paired_ci": "percentile paired bootstrap interval for the mean score difference, resampling matched episode pairs",
+    "paired_test": "two-sided paired sign-flip permutation test of the mean difference under within-pair exchangeability",
+    "permutation_resamples": 19999,
+    "random_seed": 20261106
+  },
+  "dataset": "phase2_corrected_full",
+  "matched_episode_count": 3000,
+  "pairwise_comparisons": [
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "gpt6_original",
+      "condition_b_label": "GPT-6 Original",
+      "difference_definition": "Gemini Argon 4 Medium minus GPT-6 Original",
+      "effect_size_cohen_dz": 0.8830429414801964,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 57.806,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        55.44931666666667,
+        60.17771666666667
+      ],
+      "paired_difference_sample_std": 65.46227514496971,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261107
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "claude_sonnet_55",
+      "condition_b_label": "Claude Sonnet 5.5",
+      "difference_definition": "Gemini Argon 4 Medium minus Claude Sonnet 5.5",
+      "effect_size_cohen_dz": 0.763913600676149,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 49.73533333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        47.390633333333334,
+        52.041016666666664
+      ],
+      "paired_difference_sample_std": 65.10596655081413,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261109
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "Gemini Argon 4 Medium minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.9143480725329047,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.82933333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.484,
+        62.2077
+      ],
+      "paired_difference_sample_std": 65.43387045985187,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261111
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "Gemini Argon 4 Medium minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.9030222441483968,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.092,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        56.780049999999996,
+        61.493383333333334
+      ],
+      "paired_difference_sample_std": 65.43803365079587,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261113
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "Gemini Argon 4 Medium minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -1.781194537076362,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -444.5303333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -453.4316166666666,
+        -435.47975
+      ],
+      "paired_difference_sample_std": 249.56865972819665,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261115
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Gemini Argon 4 Medium minus Trained PPO baseline",
+      "effect_size_cohen_dz": 0.8330919693650742,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 54.525,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        52.16665,
+        56.842400000000005
+      ],
+      "paired_difference_sample_std": 65.44895642380904,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261117
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Gemini Argon 4 Medium minus Random-action control",
+      "effect_size_cohen_dz": 0.9138670733903453,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.830333333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.53326666666666,
+        62.21
+      ],
+      "paired_difference_sample_std": 65.46940476952457,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261119
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Gemini Argon 4 Medium minus Zero-weight control",
+      "effect_size_cohen_dz": 0.9135371957994205,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.804,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.44195,
+        62.205333333333336
+      ],
+      "paired_difference_sample_std": 65.46422003941127,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261121
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "claude_sonnet_55",
+      "condition_b_label": "Claude Sonnet 5.5",
+      "difference_definition": "GPT-6 Original minus Claude Sonnet 5.5",
+      "effect_size_cohen_dz": -0.7066535358169137,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -8.070666666666666,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -8.48135,
+        -7.669316666666667
+      ],
+      "paired_difference_sample_std": 11.420966934435164,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261123
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "GPT-6 Original minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.9867151853339694,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 2.0233333333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.95,
+        2.097
+      ],
+      "paired_difference_sample_std": 2.050574840042118,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261125
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "GPT-6 Original minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.5536112294151238,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 1.286,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.20365,
+        1.369
+      ],
+      "paired_difference_sample_std": 2.322929759496798,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261127
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "GPT-6 Original minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.061484320677958,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -502.33633333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -510.98245000000003,
+        -493.4446833333334
+      ],
+      "paired_difference_sample_std": 243.67700898551126,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261129
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "GPT-6 Original minus Trained PPO baseline",
+      "effect_size_cohen_dz": -1.4929609592031041,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -3.281,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -3.3596666666666666,
+        -3.2019833333333336
+      ],
+      "paired_difference_sample_std": 2.1976462142394504,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261131
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "GPT-6 Original minus Random-action control",
+      "effect_size_cohen_dz": 0.9706094032496173,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 2.0243333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.9493333333333334,
+        2.098
+      ],
+      "paired_difference_sample_std": 2.0856312812917635,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261133
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "GPT-6 Original minus Zero-weight control",
+      "effect_size_cohen_dz": 0.9387243933711235,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 1.998,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.9226666666666667,
+        2.074
+      ],
+      "paired_difference_sample_std": 2.128420241456422,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261135
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "Claude Sonnet 5.5 minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.8941653653412867,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.094,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.68895,
+        10.488666666666667
+      ],
+      "paired_difference_sample_std": 11.288739635030824,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261137
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "Claude Sonnet 5.5 minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.82652269037493,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 9.356666666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        8.956333333333333,
+        9.765666666666666
+      ],
+      "paired_difference_sample_std": 11.320520023984175,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261139
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "Claude Sonnet 5.5 minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.024993096295057,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -494.2656666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -503.0586666666667,
+        -485.4159666666667
+      ],
+      "paired_difference_sample_std": 244.08264283516766,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261141
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Claude Sonnet 5.5 minus Trained PPO baseline",
+      "effect_size_cohen_dz": 0.42558596535420895,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 4.789666666666666,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        4.38665,
+        5.197666666666667
+      ],
+      "paired_difference_sample_std": 11.254287163065392,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261143
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Claude Sonnet 5.5 minus Random-action control",
+      "effect_size_cohen_dz": 0.8938138703340601,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.095,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.697616666666667,
+        10.510333333333334
+      ],
+      "paired_difference_sample_std": 11.294297767192878,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261145
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Claude Sonnet 5.5 minus Zero-weight control",
+      "effect_size_cohen_dz": 0.8903728982524397,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.068666666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.660666666666666,
+        10.478016666666667
+      ],
+      "paired_difference_sample_std": 11.308370556234053,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261147
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "DeepSeek Original minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": -0.5458064154603927,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.7373333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.7856666666666666,
+        -0.6883166666666669
+      ],
+      "paired_difference_sample_std": 1.3509063148541154,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261149
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "DeepSeek Original minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.070594882466266,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -504.35966666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -513.1491833333333,
+        -495.4793833333334
+      ],
+      "paired_difference_sample_std": 243.58201159365788,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261151
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "DeepSeek Original minus Trained PPO baseline",
+      "effect_size_cohen_dz": -5.176340111802136,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -5.304333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -5.34,
+        -5.2683333333333335
+      ],
+      "paired_difference_sample_std": 1.0247265865006379,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261153
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "DeepSeek Original minus Random-action control",
+      "effect_size_cohen_dz": 0.0012230138333448534,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.001,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.9633,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.028016666666666662,
+        0.030333333333333334
+      ],
+      "paired_difference_sample_std": 0.8176522396848719,
+      "paired_sign_flip_p_value": 0.9633,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261155
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "DeepSeek Original minus Zero-weight control",
+      "effect_size_cohen_dz": -0.029822527649369192,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.025333333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.31365,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.05566666666666667,
+        0.005
+      ],
+      "paired_difference_sample_std": 0.8494696905367505,
+      "paired_sign_flip_p_value": 0.10455,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261157
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "GPT-6 Luna Extra High minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.067862691410659,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -503.62233333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -512.39135,
+        -494.86923333333334
+      ],
+      "paired_difference_sample_std": 243.54727972279977,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261159
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "GPT-6 Luna Extra High minus Trained PPO baseline",
+      "effect_size_cohen_dz": -2.864261201922019,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -4.567,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -4.623333333333333,
+        -4.509
+      ],
+      "paired_difference_sample_std": 1.5944774858296387,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261161
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "GPT-6 Luna Extra High minus Random-action control",
+      "effect_size_cohen_dz": 0.5107288153811933,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.7383333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        0.6873166666666667,
+        0.7896666666666666
+      ],
+      "paired_difference_sample_std": 1.445646517481616,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261163
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "GPT-6 Luna Extra High minus Zero-weight control",
+      "effect_size_cohen_dz": 0.4808557344603105,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.712,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        0.6586666666666666,
+        0.7646666666666667
+      ],
+      "paired_difference_sample_std": 1.480693582242738,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261165
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Astra reference (local reevaluation) minus Trained PPO baseline",
+      "effect_size_cohen_dz": 2.0489506927912244,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 499.05533333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        490.26231666666666,
+        507.69506666666666
+      ],
+      "paired_difference_sample_std": 243.5662971730594,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261167
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Astra reference (local reevaluation) minus Random-action control",
+      "effect_size_cohen_dz": 2.070633800803814,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 504.36066666666665,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        495.6461666666667,
+        512.9625833333333
+      ],
+      "paired_difference_sample_std": 243.57791632246867,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261169
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Astra reference (local reevaluation) minus Zero-weight control",
+      "effect_size_cohen_dz": 2.07056600141074,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 504.33433333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        495.7882,
+        513.0033999999999
+      ],
+      "paired_difference_sample_std": 243.5731741899147,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261171
+      }
+    },
+    {
+      "condition_a_id": "ppo_trained_baseline",
+      "condition_a_label": "Trained PPO baseline",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Trained PPO baseline minus Random-action control",
+      "effect_size_cohen_dz": 4.516366252009705,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 5.3053333333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        5.262666666666667,
+        5.347333333333333
+      ],
+      "paired_difference_sample_std": 1.1746906777041282,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261173
+      }
+    },
+    {
+      "condition_a_id": "ppo_trained_baseline",
+      "condition_a_label": "Trained PPO baseline",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Trained PPO baseline minus Zero-weight control",
+      "effect_size_cohen_dz": 4.3845118516259,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 5.279,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        5.234666666666667,
+        5.321666666666666
+      ],
+      "paired_difference_sample_std": 1.204010886193043,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261175
+      }
+    },
+    {
+      "condition_a_id": "random_action_control",
+      "condition_a_label": "Random-action control",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Random-action control minus Zero-weight control",
+      "effect_size_cohen_dz": -0.025641887392529376,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.026333333333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.3318,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.06233333333333333,
+        0.010666666666666666
+      ],
+      "paired_difference_sample_std": 1.0269654854269974,
+      "paired_sign_flip_p_value": 0.1659,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261177
+      }
+    }
+  ]
+}

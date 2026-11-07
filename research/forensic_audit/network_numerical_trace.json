@@ -1,0 +1,32 @@
+{
+  "argon": {
+    "num_samples_evaluated": 6000,
+    "synthetic_samples": 5000,
+    "live_env_samples": 1000,
+    "max_absolute_logit_diff": 3.814697265625e-06,
+    "max_absolute_prob_diff": 0.0,
+    "max_kl_divergence": 0.0,
+    "argmax_action_match_rate": 1.0,
+    "fp32_tolerance_passed": true
+  },
+  "astra": {
+    "num_samples_evaluated": 6000,
+    "synthetic_samples": 5000,
+    "live_env_samples": 1000,
+    "max_absolute_logit_diff": 0.0026397705078125,
+    "max_absolute_prob_diff": 9.501592085825114e-19,
+    "max_kl_divergence": 0.0,
+    "argmax_action_match_rate": 1.0,
+    "fp32_tolerance_passed": false
+  },
+  "trained_ppo": {
+    "num_samples_evaluated": 6000,
+    "synthetic_samples": 5000,
+    "live_env_samples": 1000,
+    "max_absolute_logit_diff": 3.814697265625e-06,
+    "max_absolute_prob_diff": 7.748603820800781e-07,
+    "max_kl_divergence": 2.765708302376879e-07,
+    "argmax_action_match_rate": 1.0,
+    "fp32_tolerance_passed": true
+  }
+}

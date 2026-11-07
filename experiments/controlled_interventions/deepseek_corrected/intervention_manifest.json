@@ -1,0 +1,66 @@
+{
+  "condition_id": "deepseek_corrected",
+  "base_condition_id": "deepseek_zero_shot",
+  "condition_type": "researcher_modified_intervention",
+  "date": "2026-11-06",
+  "base_artifacts": {
+    "raw_response": "experiments/strict_replication/generation_004_deepseek/input/deepseek_raw_response.txt",
+    "raw_response_sha256": "e16d5a6fc4cfff6aa0184211d983bf53274c34b04af6f0501d2f91ed0d1e9de0",
+    "weights_path": "experiments/strict_replication/generation_004_deepseek/output/deepseek_weights.npz",
+    "weights_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+  },
+  "intervention_specification": {
+    "motivation": "DeepSeek assigned W3[0:20, 2]=-100, W3[0:20, 4]=-100, W3[0:20, 5]=-100 under the assumption that inactive Layer 2 units saturate to 0.0. In tanh networks, inactive units saturate to -1.0, generating ~+1900 logit contribution on inert actions (Up, Down, Fire) and 0% movement actions.",
+    "applied_changes": [
+      "W3[0:20, 2] = 0",
+      "W3[0:20, 4] = 0",
+      "W3[0:20, 5] = 0"
+    ],
+    "total_changed_scalars": 60,
+    "changed_tensors": [
+      "W3"
+    ],
+    "unchanged_tensors": [
+      "W1",
+      "b1",
+      "W2",
+      "b2",
+      "b3"
+    ]
+  },
+  "tensor_shapes": {
+    "W1": [
+      600,
+      32
+    ],
+    "b1": [
+      32
+    ],
+    "W2": [
+      32,
+      32
+    ],
+    "b2": [
+      32
+    ],
+    "W3": [
+      32,
+      6
+    ],
+    "b3": [
+      6
+    ]
+  },
+  "parameter_metrics": {
+    "total_parameters": 20486,
+    "base_nonzero_parameters": 786,
+    "corrected_nonzero_parameters": 726,
+    "base_sparsity": 0.9616323342770673,
+    "corrected_sparsity": 0.9645611637215659
+  },
+  "output_artifacts": {
+    "weights_path": "experiments/controlled_interventions/deepseek_corrected/output/deepseek_corrected_weights.npz",
+    "weights_sha256": "21078c485156850253744ed0c2e1efd54361cf06f603a5ad2fd32ffea3c1c8bc",
+    "size_bytes": 83382
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "episodes": 1000,
+  "mean": 7.137,
+  "median": 3.0,
+  "std": 9.342243226790261,
+  "se": 0.29542767051938196,
+  "min": 0.0,
+  "max": 58.0,
+  "mean_length": 101.736,
+  "median_length": 38.0,
+  "std_length": 175.90377039859163,
+  "total_bricks_destroyed": 7137,
+  "action_distribution": {
+    "0": 0.04893056538491783,
+    "1": 0.472723519698042,
+    "2": 0.0,
+    "3": 0.4783459149170402,
+    "4": 0.0,
+    "5": 0.0
+  },
+  "step_cutoffs_count": 0,
+  "metadata": {
+    "model_id": "deepseek_corrected",
+    "weight_sha256": "21078c485156850253744ed0c2e1efd54361cf06f603a5ad2fd32ffea3c1c8bc",
+    "episodes": 1000,
+    "sticky_action_prob": 0.1,
+    "max_steps": 10000,
+    "base_seed": 200,
+    "minatar_version": "1.0.15",
+    "total_eval_time_seconds": 2.82,
+    "timestamp": "2026-11-06T17:49:41.057633"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "reconstruction": "zero-initialized supplied assignments using project 600-32-32-6 architecture",
+  "schema_version": 1,
+  "versions": {
+    "argon_high_followup_1": {
+      "forward_max_abs_error_vs_pytorch": 0.0,
+      "nonzero_by_tensor": {
+        "W1": 623,
+        "W2": 7,
+        "W3": 4,
+        "b1": 7,
+        "b2": 2,
+        "b3": 4,
+        "total": 647
+      },
+      "source_file": "source/argon_high_followup_1.py",
+      "source_sha256": "1460dcf411d31912a7de5286ee6b6b643230b7be4ba83c7dff045055ca8be317",
+      "tensor_shapes": {
+        "W1": [
+          600,
+          32
+        ],
+        "W2": [
+          32,
+          32
+        ],
+        "W3": [
+          32,
+          6
+        ],
+        "b1": [
+          32
+        ],
+        "b2": [
+          32
+        ],
+        "b3": [
+          6
+        ]
+      },
+      "total_parameters": 20486,
+      "weight_file": "weights/argon_high_followup_1.npz",
+      "weight_max_abs": {
+        "W1": 1000.0,
+        "W2": 20.0,
+        "W3": 50.0,
+        "b1": 50.0,
+        "b2": 50.0,
+        "b3": 100.0
+      },
+      "weight_sha256": "9dbce900145f681fac6e081fa9cad927205a0ecbe7dfd181285eb0bc5209527f"
+    },
+    "argon_high_followup_2": {
+      "forward_max_abs_error_vs_pytorch": 0.0,
+      "nonzero_by_tensor": {
+        "W1": 647,
+        "W2": 18,
+        "W3": 4,
+        "b1": 15,
+        "b2": 2,
+        "b3": 4,
+        "total": 690
+      },
+      "source_file": "source/argon_high_followup_2.py",
+      "source_sha256": "bfb27cdde52250e720c83de02127a3c5e1782bd5d17b389ba127b553c6351639",
+      "tensor_shapes": {
+        "W1": [
+          600,
+          32
+        ],
+        "W2": [
+          32,
+          32
+        ],
+        "W3": [
+          32,
+          6
+        ],
+        "b1": [
+          32
+        ],
+        "b2": [
+          32
+        ],
+        "b3": [
+          6
+        ]
+      },
+      "total_parameters": 20486,
+      "weight_file": "weights/argon_high_followup_2.npz",
+      "weight_max_abs": {
+        "W1": 1000.0,
+        "W2": 20.0,
+        "W3": 50.0,
+        "b1": 50.0,
+        "b2": 110.0,
+        "b3": 100.0
+      },
+      "weight_sha256": "a88ee43463374fc79ea38c1ecfeb55da736930c5b3d4f5e201eca066c8041205"
+    },
+    "argon_high_original": {
+      "forward_max_abs_error_vs_pytorch": 0.0,
+      "nonzero_by_tensor": {
+        "W1": 617,
+        "W2": 5,
+        "W3": 4,
+        "b1": 5,
+        "b2": 2,
+        "b3": 4,
+        "total": 637
+      },
+      "source_file": "source/argon_high_original_inline_v1.py",
+      "source_sha256": "153ee5b9867e947e397b30ea688dd220562ebe014318a34d9f6e311b461ddf93",
+      "tensor_shapes": {
+        "W1": [
+          600,
+          32
+        ],
+        "W2": [
+          32,
+          32
+        ],
+        "W3": [
+          32,
+          6
+        ],
+        "b1": [
+          32
+        ],
+        "b2": [
+          32
+        ],
+        "b3": [
+          6
+        ]
+      },
+      "total_parameters": 20486,
+      "weight_file": "weights/argon_high_original.npz",
+      "weight_max_abs": {
+        "W1": 1000.0,
+        "W2": 20.0,
+        "W3": 50.0,
+        "b1": 50.0,
+        "b2": 10.0,
+        "b3": 100.0
+      },
+      "weight_sha256": "53c65f6ba95090ef88999ebe0dcc23339390c8579e62ec50eaaffc008c1d90f9"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "condition_id": "generation_003_sonnet55",
+  "model_family": "Claude",
+  "model_name": "Claude Sonnet 5.5",
+  "provider": "Anthropic",
+  "generation_date_utc": "2026-11-06T16:09:07Z",
+  "files": {
+    "prompt": {
+      "path": "experiments/strict_replication/generation_003_sonnet55/input/experiment_5_prompt.txt",
+      "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+      "size_bytes": 9973
+    },
+    "raw_response_txt": {
+      "path": "experiments/strict_replication/generation_003_sonnet55/input/sonnet55_raw_response.txt",
+      "sha256": "7b6a0461c2f775cc08604c65672f145aa3efc1adbb5ce51ac59244e036cb85ee",
+      "size_bytes": 3816
+    },
+    "parsed_weights_npz": {
+      "path": "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz",
+      "sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b",
+      "size_bytes": 83574
+    }
+  },
+  "parser_summary": {
+    "statements_total": 65,
+    "statements_applied": 65,
+    "entries_written": 65,
+    "nonzero_parameters": 551,
+    "total_parameters": 20486,
+    "parameter_sparsity_pct": 97.3103582934687,
+    "rejected_lines": 0
+  }
+}

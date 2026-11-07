@@ -1,0 +1,1978 @@
+{
+  "analysis_method": {
+    "bootstrap_resamples": 9999,
+    "condition_ci": "two-sided Student-t interval for the episode mean; sample standard deviation uses ddof=1",
+    "effect_size": "paired Cohen dz: mean within-pair score difference divided by its sample standard deviation",
+    "equivalence_testing": "omitted; no independently justified, pre-registered margin",
+    "p_value_correction": "Holm step-down family-wise correction across every pairwise condition comparison",
+    "paired_ci": "percentile paired bootstrap interval for the mean score difference, resampling matched episode pairs",
+    "paired_test": "two-sided paired sign-flip permutation test of the mean difference under within-pair exchangeability",
+    "permutation_resamples": 19999,
+    "random_seed": 20261106
+  },
+  "conditions": {
+    "astra_local_reference": {
+      "cutoff_count": 1484,
+      "cutoff_percentage": 49.46666666666666,
+      "episode_trajectory_set_sha256": "521092cdc7881d5679fbe3abbc2294bae7cf9a69d119c5099de05a9a588417b8",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 10939360,
+          "name": "no_op",
+          "proportion": 0.5064900730934788
+        },
+        "1": {
+          "count": 5328606,
+          "name": "left",
+          "proportion": 0.24671333994185674
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 5330404,
+          "name": "right",
+          "proportion": 0.24679658696466447
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 10000,
+      "maximum_score": 824.0,
+      "mean_episode_length": 7199.456666666667,
+      "mean_score": 504.8523333333333,
+      "median_episode_length": 9821.0,
+      "median_score": 642.0,
+      "metadata": {
+        "condition_class": "reference",
+        "episode_scores_sha256": "95739181a6b781ce3ef3318aef4a6660645038a91aec31b33e11bc69ceb56872",
+        "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 243.57454310177403,
+      "score_mean_ci_95": [
+        496.13277131300697,
+        513.5718953536597
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 10938851,
+          "name": "no_op",
+          "proportion": 0.506466506500259
+        },
+        "1": {
+          "count": 5328333,
+          "name": "left",
+          "proportion": 0.24670070009912784
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 5331186,
+          "name": "right",
+          "proportion": 0.2468327934006131
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 4.447042389695199
+    },
+    "claude_sonnet_55": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "47cabcd8e5b2294c0b7d4fe178f6932f193b38bf0ca2da2f2cce7420a609a778",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 33548,
+          "name": "no_op",
+          "proportion": 0.08987259030657622
+        },
+        "1": {
+          "count": 169167,
+          "name": "left",
+          "proportion": 0.4531857781206802
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 170569,
+          "name": "right",
+          "proportion": 0.45694163157274353
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 1096,
+      "maximum_score": 91.0,
+      "mean_episode_length": 124.428,
+      "mean_score": 10.586666666666666,
+      "median_episode_length": 70.0,
+      "median_score": 6.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "86d5a91027649e8d07f898d8ad3e145494880e5fc06e4fc6671efb0c8b7fc3db",
+        "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 11.283450756567374,
+      "score_mean_ci_95": [
+        10.18273796614529,
+        10.990595367188043
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 33165,
+          "name": "no_op",
+          "proportion": 0.08884656186710387
+        },
+        "1": {
+          "count": 169425,
+          "name": "left",
+          "proportion": 0.4538769408814736
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 170694,
+          "name": "right",
+          "proportion": 0.4572764972514225
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 0.2060066835290228
+    },
+    "deepseek_original": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "e879eb43e972a68ea8431f44fc403175b21bd55f67ee72e2b6c2e2edaf20f635",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 339,
+          "name": "no_op",
+          "proportion": 0.010341671751067724
+        },
+        "1": {
+          "count": 0,
+          "name": "left",
+          "proportion": 0.0
+        },
+        "2": {
+          "count": 10844,
+          "name": "up",
+          "proportion": 0.33081147040878583
+        },
+        "3": {
+          "count": 0,
+          "name": "right",
+          "proportion": 0.0
+        },
+        "4": {
+          "count": 10717,
+          "name": "down",
+          "proportion": 0.3269371568029286
+        },
+        "5": {
+          "count": 10880,
+          "name": "fire",
+          "proportion": 0.33190970103721784
+        }
+      },
+      "maximum_episode_length": 16,
+      "maximum_score": 1.0,
+      "mean_episode_length": 10.926666666666666,
+      "mean_score": 0.49266666666666664,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "80211f3504025b24197768fc648991342ae54747621afb0b89454b139795a6a8",
+        "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.5000295645366306,
+      "score_mean_ci_95": [
+        0.474766443004327,
+        0.5105668903290063
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 0,
+          "name": "no_op",
+          "proportion": 0.0
+        },
+        "1": {
+          "count": 0,
+          "name": "left",
+          "proportion": 0.0
+        },
+        "2": {
+          "count": 10976,
+          "name": "up",
+          "proportion": 0.3348383160463697
+        },
+        "3": {
+          "count": 0,
+          "name": "right",
+          "proportion": 0.0
+        },
+        "4": {
+          "count": 10900,
+          "name": "down",
+          "proportion": 0.3325198291641245
+        },
+        "5": {
+          "count": 10904,
+          "name": "fire",
+          "proportion": 0.3326418547895058
+        }
+      },
+      "standard_error_score": 0.00912924906387326
+    },
+    "gemini_argon_4_medium": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "e454ccc848b4f76f7f694f9b6d9523d8867cf2571bb6d2c7978c37d482d97963",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 282619,
+          "name": "no_op",
+          "proportion": 0.1029749976316614
+        },
+        "1": {
+          "count": 1230422,
+          "name": "left",
+          "proportion": 0.44831629344079515
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 1231499,
+          "name": "right",
+          "proportion": 0.4487087089275434
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7910,
+      "maximum_score": 475.0,
+      "mean_episode_length": 914.8466666666667,
+      "mean_score": 60.322,
+      "median_episode_length": 558.0,
+      "median_score": 38.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "382d63a7df6f412624aabb1d0391c2ae9c076e6f316dab1e7e0dd0612912e466",
+        "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 65.45762407478983,
+      "score_mean_ci_95": [
+        57.97872633291217,
+        62.66527366708784
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 282620,
+          "name": "no_op",
+          "proportion": 0.10297536199144483
+        },
+        "1": {
+          "count": 1230328,
+          "name": "left",
+          "proportion": 0.44828204362115326
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 1231592,
+          "name": "right",
+          "proportion": 0.4487425943874019
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 1.1950872422151873
+    },
+    "gpt6_luna_extra_high": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "be863a95f8b2104c6a1d5697668931bba75dd88f3aff403f4509e139e661f105",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 14499,
+          "name": "no_op",
+          "proportion": 0.258578256527322
+        },
+        "1": {
+          "count": 20077,
+          "name": "left",
+          "proportion": 0.35805749750321014
+        },
+        "2": {
+          "count": 4,
+          "name": "up",
+          "proportion": 7.133685261806249e-05
+        },
+        "3": {
+          "count": 21469,
+          "name": "right",
+          "proportion": 0.3828827222142959
+        },
+        "4": {
+          "count": 5,
+          "name": "down",
+          "proportion": 8.917106577257812e-05
+        },
+        "5": {
+          "count": 18,
+          "name": "fire",
+          "proportion": 0.0003210158367812812
+        }
+      },
+      "maximum_episode_length": 104,
+      "maximum_score": 9.0,
+      "mean_episode_length": 18.690666666666665,
+      "mean_score": 1.23,
+      "median_episode_length": 16.0,
+      "median_score": 1.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "205e8fd0085e4e6e3d8a83b4fc102a65a220743ca6a695c15ad073ef3a8e8788",
+        "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 1.270027948641332,
+      "score_mean_ci_95": [
+        1.1845351196200382,
+        1.2754648803799618
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 14328,
+          "name": "no_op",
+          "proportion": 0.25552860607789984
+        },
+        "1": {
+          "count": 20141,
+          "name": "left",
+          "proportion": 0.3591988871450992
+        },
+        "2": {
+          "count": 3,
+          "name": "up",
+          "proportion": 5.350263946354687e-05
+        },
+        "3": {
+          "count": 21580,
+          "name": "right",
+          "proportion": 0.38486231987444713
+        },
+        "4": {
+          "count": 6,
+          "name": "down",
+          "proportion": 0.00010700527892709374
+        },
+        "5": {
+          "count": 14,
+          "name": "fire",
+          "proportion": 0.0002496789841632187
+        }
+      },
+      "standard_error_score": 0.02318743187109567
+    },
+    "gpt6_original": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "199668720a3cae99e6d7d1d1c72bbdcb2f6869188c3d99a5b5fa96d48fdbef7f",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 58764,
+          "name": "no_op",
+          "proportion": 0.5986796527975875
+        },
+        "1": {
+          "count": 18980,
+          "name": "left",
+          "proportion": 0.1933656628224459
+        },
+        "2": {
+          "count": 2,
+          "name": "up",
+          "proportion": 2.0375728432291456e-05
+        },
+        "3": {
+          "count": 20406,
+          "name": "right",
+          "proportion": 0.2078935571946697
+        },
+        "4": {
+          "count": 1,
+          "name": "down",
+          "proportion": 1.0187864216145728e-05
+        },
+        "5": {
+          "count": 3,
+          "name": "fire",
+          "proportion": 3.056359264843718e-05
+        }
+      },
+      "maximum_episode_length": 178,
+      "maximum_score": 17.0,
+      "mean_episode_length": 32.718666666666664,
+      "mean_score": 2.516,
+      "median_episode_length": 28.0,
+      "median_score": 2.0,
+      "metadata": {
+        "condition_class": "primary_zero_shot",
+        "episode_scores_sha256": "300413380b0d284fb10968ff000f7eb9272ec816feda06729bd4e71a6e208002",
+        "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 1.9799959919259131,
+      "score_mean_ci_95": [
+        2.4451194488892796,
+        2.5868805511107205
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 58614,
+          "name": "no_op",
+          "proportion": 0.5971514731651657
+        },
+        "1": {
+          "count": 19096,
+          "name": "left",
+          "proportion": 0.1945474550715188
+        },
+        "2": {
+          "count": 2,
+          "name": "up",
+          "proportion": 2.0375728432291456e-05
+        },
+        "3": {
+          "count": 20440,
+          "name": "right",
+          "proportion": 0.20823994457801867
+        },
+        "4": {
+          "count": 1,
+          "name": "down",
+          "proportion": 1.0187864216145728e-05
+        },
+        "5": {
+          "count": 3,
+          "name": "fire",
+          "proportion": 3.056359264843718e-05
+        }
+      },
+      "standard_error_score": 0.036149615618254645
+    },
+    "ppo_trained_baseline": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "0a7932b3b8ccaebb6fdf46451374399fe66da0f51d4f52be738bc722093b04b8",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 35592,
+          "name": "no_op",
+          "proportion": 0.17506271211450494
+        },
+        "1": {
+          "count": 22044,
+          "name": "left",
+          "proportion": 0.10842555703113473
+        },
+        "2": {
+          "count": 35053,
+          "name": "up",
+          "proportion": 0.17241158821504107
+        },
+        "3": {
+          "count": 23522,
+          "name": "right",
+          "proportion": 0.11569524371649206
+        },
+        "4": {
+          "count": 41602,
+          "name": "down",
+          "proportion": 0.20462348138310954
+        },
+        "5": {
+          "count": 45497,
+          "name": "fire",
+          "proportion": 0.22378141753971767
+        }
+      },
+      "maximum_episode_length": 80,
+      "maximum_score": 7.0,
+      "mean_episode_length": 67.77,
+      "mean_score": 5.797,
+      "median_episode_length": 70.0,
+      "median_score": 6.0,
+      "metadata": {
+        "condition_class": "trained_baseline",
+        "episode_scores_sha256": "8076f8fedce248fbe865f084b8ff7dd287f2d158db0588b2b7ba8e75b67c59a1",
+        "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.9543381233877489,
+      "score_mean_ci_95": [
+        5.762836288352332,
+        5.831163711647667
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 35307,
+          "name": "no_op",
+          "proportion": 0.17366091190792385
+        },
+        "1": {
+          "count": 22127,
+          "name": "left",
+          "proportion": 0.10883380060006886
+        },
+        "2": {
+          "count": 35119,
+          "name": "up",
+          "proportion": 0.17273621563130195
+        },
+        "3": {
+          "count": 23601,
+          "name": "right",
+          "proportion": 0.1160838128965619
+        },
+        "4": {
+          "count": 41591,
+          "name": "down",
+          "proportion": 0.20456937681373272
+        },
+        "5": {
+          "count": 45565,
+          "name": "fire",
+          "proportion": 0.2241158821504107
+        }
+      },
+      "standard_error_score": 0.017423750588887288
+    },
+    "random_action_control": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "637f01360dbade47d10ace401eade731853d10be6531b121801da71d7fd15bba",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 5832,
+          "name": "no_op",
+          "proportion": 0.1765133171912833
+        },
+        "1": {
+          "count": 5585,
+          "name": "left",
+          "proportion": 0.16903753026634383
+        },
+        "2": {
+          "count": 5326,
+          "name": "up",
+          "proportion": 0.16119854721549637
+        },
+        "3": {
+          "count": 5476,
+          "name": "right",
+          "proportion": 0.16573849878934624
+        },
+        "4": {
+          "count": 5488,
+          "name": "down",
+          "proportion": 0.16610169491525423
+        },
+        "5": {
+          "count": 5333,
+          "name": "fire",
+          "proportion": 0.16141041162227604
+        }
+      },
+      "maximum_episode_length": 80,
+      "maximum_score": 7.0,
+      "mean_episode_length": 11.013333333333334,
+      "mean_score": 0.49166666666666664,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "random_control",
+        "episode_scores_sha256": "c47a86dbed6b1addf32ba7838a4c93ec6c3966c2f12170a65928bd284ce8cdcc",
+        "weight_sha256": null
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.7207198030906865,
+      "score_mean_ci_95": [
+        0.46586610088380964,
+        0.5174672324495236
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 5497,
+          "name": "no_op",
+          "proportion": 0.16637409200968523
+        },
+        "1": {
+          "count": 5641,
+          "name": "left",
+          "proportion": 0.17073244552058112
+        },
+        "2": {
+          "count": 5421,
+          "name": "up",
+          "proportion": 0.1640738498789346
+        },
+        "3": {
+          "count": 5524,
+          "name": "right",
+          "proportion": 0.16719128329297822
+        },
+        "4": {
+          "count": 5538,
+          "name": "down",
+          "proportion": 0.16761501210653754
+        },
+        "5": {
+          "count": 5419,
+          "name": "fire",
+          "proportion": 0.1640133171912833
+        }
+      },
+      "standard_error_score": 0.01315848312644835
+    },
+    "zero_weight_control": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "c191ce0ccc4a7c4c545e58c202108f4eac58b03f8a2cb7716817a06f20c9d5a6",
+      "episodes": 3000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 5903,
+          "name": "no_op",
+          "proportion": 0.17430461229551764
+        },
+        "1": {
+          "count": 5544,
+          "name": "left",
+          "proportion": 0.16370400992145515
+        },
+        "2": {
+          "count": 5589,
+          "name": "up",
+          "proportion": 0.16503277623575266
+        },
+        "3": {
+          "count": 5489,
+          "name": "right",
+          "proportion": 0.16207996220398038
+        },
+        "4": {
+          "count": 5828,
+          "name": "down",
+          "proportion": 0.17209000177168843
+        },
+        "5": {
+          "count": 5513,
+          "name": "fire",
+          "proportion": 0.16278863757160575
+        }
+      },
+      "maximum_episode_length": 60,
+      "maximum_score": 5.0,
+      "mean_episode_length": 11.288666666666666,
+      "mean_score": 0.518,
+      "median_episode_length": 6.0,
+      "median_score": 0.0,
+      "metadata": {
+        "condition_class": "zero_weight_control",
+        "episode_scores_sha256": "bd42aa85035b89085001a46d7842e879dcb747ac9d644c631ffb0d977871fbbe",
+        "weight_sha256": "in-memory-zero-tensors"
+      },
+      "minimum_score": 0.0,
+      "sample_std_score": 0.7553362458411665,
+      "score_mean_ci_95": [
+        0.49096022335527656,
+        0.5450397766447235
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 5602,
+          "name": "no_op",
+          "proportion": 0.16541664205988307
+        },
+        "1": {
+          "count": 5617,
+          "name": "left",
+          "proportion": 0.16585956416464892
+        },
+        "2": {
+          "count": 5706,
+          "name": "up",
+          "proportion": 0.16848756865292625
+        },
+        "3": {
+          "count": 5572,
+          "name": "right",
+          "proportion": 0.16453079785035138
+        },
+        "4": {
+          "count": 5845,
+          "name": "down",
+          "proportion": 0.1725919801570897
+        },
+        "5": {
+          "count": 5524,
+          "name": "fire",
+          "proportion": 0.1631134471151007
+        }
+      },
+      "standard_error_score": 0.01379049001161582
+    }
+  },
+  "corrected_vs_original_matched_seed_comparison": {
+    "astra_historical_4000_note": {
+      "text": "Astra's 4,000-episode local historical result includes an additional group 300. This matched comparison uses only groups 42, 100, and 200 (3,000 episodes). The paper's published 1,000-episode result is a separate sample and is not substituted here."
+    },
+    "astra_local_reference": {
+      "corrected_mean_score_on_matched_seeds": 504.8523333333333,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": -2.606333333333333,
+      "original_csv_paths": [
+        "experiments/reference_eval_runs/run_seed42/episode_scores.csv",
+        "experiments/reference_eval_runs/run_seed100/episode_scores.csv",
+        "experiments/reference_eval_runs/run_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/reference_eval_runs/run_seed100/episode_scores.csv": "db3fde434f9a5d274dc9ab2fbd2fb5559b8a91c1bedd2e5bfb5e7d45f7326fb4",
+        "experiments/reference_eval_runs/run_seed200/episode_scores.csv": "43fdcdc687a36cf6aab06ad9b76d87a4f25d73a583bb345911c139955a45b4bb",
+        "experiments/reference_eval_runs/run_seed42/episode_scores.csv": "9c9b80e2d9df0126f781b978e2fa7800ac540d848625f8ec77b8ccf04aea5aab"
+      },
+      "original_mean_score": 507.45866666666666,
+      "paired_bootstrap_ci_95_for_change": [
+        -14.960983333333333,
+        9.638549999999992
+      ]
+    },
+    "claude_sonnet_55": {
+      "corrected_mean_score_on_matched_seeds": 10.586666666666666,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": -0.37066666666666664,
+      "original_csv_paths": [
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/episode_scores.csv",
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/episode_scores.csv",
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/episode_scores.csv": "502e858e517efc359c5ba65fe747dd38c4bb9542c8dba4b2896b9495030f6e30",
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/episode_scores.csv": "2a828e1300a31d97abd72809bb3206086eaaa409d9184fd8e177aef759d32a27",
+        "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/episode_scores.csv": "85b07c559a834b425d2a377589fe5b2ef77c2c232f11fed02a82ad8f95d17b0b"
+      },
+      "original_mean_score": 10.957333333333333,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.9600166666666666,
+        0.232
+      ]
+    },
+    "deepseek_original": {
+      "corrected_mean_score_on_matched_seeds": 0.49266666666666664,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": 0.008333333333333333,
+      "original_csv_paths": [
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed42/episode_scores.csv",
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed100/episode_scores.csv",
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed100/episode_scores.csv": "761ef6641d0ab8cbb4a42e64d74479892c2b7caa71b6464a8632a6de97e36f3a",
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed200/episode_scores.csv": "7cdbbcd37351bb5835de367027e36bee8962c50992e0d201b05b2cc944a60a3f",
+        "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed42/episode_scores.csv": "6a54861914e86ba2cc08edf1a1f66341fb09843b802e03dc393ecda2f63ee88f"
+      },
+      "original_mean_score": 0.48433333333333334,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.017333333333333333,
+        0.033666666666666664
+      ]
+    },
+    "gemini_argon_4_medium": {
+      "corrected_mean_score_on_matched_seeds": 60.322,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": 2.456,
+      "original_csv_paths": [
+        "experiments/strict_replication/generation_001/eval_seed42/episode_scores.csv",
+        "experiments/strict_replication/generation_001/eval_seed100/episode_scores.csv",
+        "experiments/strict_replication/generation_001/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/strict_replication/generation_001/eval_seed100/episode_scores.csv": "002c2a27bd8dd87f21133bea82d6d1a4c2bc5807ffdeb04646c9043c772b58d8",
+        "experiments/strict_replication/generation_001/eval_seed200/episode_scores.csv": "5c7a63aaa2ca6a69ebe77a1df70db8935dfd2a34fd6ddbc9257c2fa5b53e3a6f",
+        "experiments/strict_replication/generation_001/eval_seed42/episode_scores.csv": "0213a94807bdfb08c6ad1ddf6e3ad36566a83807468f510778f97c3d786ef217"
+      },
+      "original_mean_score": 57.866,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.6776999999999999,
+        5.555366666666666
+      ]
+    },
+    "gpt6_luna_extra_high": {
+      "corrected_mean_score_on_matched_seeds": 1.23,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": -0.023,
+      "original_csv_paths": [
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed42/episode_scores.csv",
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed100/episode_scores.csv",
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed100/episode_scores.csv": "138ec44cd4365c3445a81adaa181c2befb1411e932e88bf6175d76ebc958e301",
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed200/episode_scores.csv": "8a70c55fffb374a2eb86282bb33cb5be9bc59ac6c145726fa64f567f6cf0a7aa",
+        "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed42/episode_scores.csv": "371001f4b80a0624c5fa9600a7a183c3808839e21199e094fe0d921edb596741"
+      },
+      "original_mean_score": 1.253,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.08733333333333333,
+        0.03966666666666667
+      ]
+    },
+    "gpt6_original": {
+      "corrected_mean_score_on_matched_seeds": 2.516,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": 0.023,
+      "original_csv_paths": [
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed42/episode_scores.csv",
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed100/episode_scores.csv",
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed100/episode_scores.csv": "3482045209ae607a2bf7f246388c0643091a5480e754b63d876103b0a3f1a4e0",
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed200/episode_scores.csv": "f8181cc432e551ef6dfed15d4da7dac1b377e8a5ad67b3a4170fbf3122232f9d",
+        "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed42/episode_scores.csv": "f8aa4009f7b2a4b5a80045c125fa2c691fd181481eed31c7042038e8c8d8f775"
+      },
+      "original_mean_score": 2.493,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.075,
+        0.12134999999999976
+      ]
+    },
+    "ppo_trained_baseline": {
+      "corrected_mean_score_on_matched_seeds": 5.797,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 3000,
+      "mean_paired_score_change_corrected_minus_original": 0.03966666666666667,
+      "original_csv_paths": [
+        "experiments/trained_baseline/eval_seed42/episode_scores.csv",
+        "experiments/trained_baseline/eval_seed100/episode_scores.csv",
+        "experiments/trained_baseline/eval_seed200/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 3000,
+      "original_csv_sha256": {
+        "experiments/trained_baseline/eval_seed100/episode_scores.csv": "ca8978a03ae54a99ef04d640a32e74d08d5dafef4275e58ed7ef29fba39cc5fd",
+        "experiments/trained_baseline/eval_seed200/episode_scores.csv": "069142f267cdfdfeb13d9981467c700201def155d3019facdd2898901365adbc",
+        "experiments/trained_baseline/eval_seed42/episode_scores.csv": "07b0b27097261997448ae95836d83093c679138f03d35900629e4ec23704b92d"
+      },
+      "original_mean_score": 5.757333333333333,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.01101666666666666,
+        0.09034999999999976
+      ]
+    },
+    "random_action_control": {
+      "corrected_mean_score_on_matched_seeds": 0.481,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 1000,
+      "mean_paired_score_change_corrected_minus_original": -0.004,
+      "original_csv_paths": [
+        "results/baselines/random/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 1000,
+      "original_csv_sha256": {
+        "results/baselines/random/episode_scores.csv": "29b94f999bd48b6cb8b612a10ec4d491ba1c5beae6a1ba8e603edba77da780ec"
+      },
+      "original_mean_score": 0.485,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.072,
+        0.064
+      ]
+    },
+    "zero_weight_control": {
+      "corrected_mean_score_on_matched_seeds": 0.528,
+      "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+      "matched_episode_count": 1000,
+      "mean_paired_score_change_corrected_minus_original": 0.011,
+      "original_csv_paths": [
+        "results/baselines/zero/episode_scores.csv"
+      ],
+      "original_csv_sample_size": 1000,
+      "original_csv_sha256": {
+        "results/baselines/zero/episode_scores.csv": "de50210fe910ec49a586ea1a0a3d1c8a67f819b35db8a2d3d2dd14b6bb4b3d61"
+      },
+      "original_mean_score": 0.517,
+      "paired_bootstrap_ci_95_for_change": [
+        -0.057,
+        0.078
+      ]
+    }
+  },
+  "dataset": "phase2_corrected_full",
+  "excluded_from_primary_zero_shot_ranking": [
+    "astra_local_reference",
+    "ppo_trained_baseline",
+    "random_action_control",
+    "zero_weight_control"
+  ],
+  "matched_episode_count": 3000,
+  "pairwise_comparisons": [
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "gpt6_original",
+      "condition_b_label": "GPT-6 Original",
+      "difference_definition": "Gemini Argon 4 Medium minus GPT-6 Original",
+      "effect_size_cohen_dz": 0.8830429414801964,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 57.806,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        55.44931666666667,
+        60.17771666666667
+      ],
+      "paired_difference_sample_std": 65.46227514496971,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261107
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "claude_sonnet_55",
+      "condition_b_label": "Claude Sonnet 5.5",
+      "difference_definition": "Gemini Argon 4 Medium minus Claude Sonnet 5.5",
+      "effect_size_cohen_dz": 0.763913600676149,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 49.73533333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        47.390633333333334,
+        52.041016666666664
+      ],
+      "paired_difference_sample_std": 65.10596655081413,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261109
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "Gemini Argon 4 Medium minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.9143480725329047,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.82933333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.484,
+        62.2077
+      ],
+      "paired_difference_sample_std": 65.43387045985187,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261111
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "Gemini Argon 4 Medium minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.9030222441483968,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.092,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        56.780049999999996,
+        61.493383333333334
+      ],
+      "paired_difference_sample_std": 65.43803365079587,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261113
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "Gemini Argon 4 Medium minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -1.781194537076362,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -444.5303333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -453.4316166666666,
+        -435.47975
+      ],
+      "paired_difference_sample_std": 249.56865972819665,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261115
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Gemini Argon 4 Medium minus Trained PPO baseline",
+      "effect_size_cohen_dz": 0.8330919693650742,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 54.525,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        52.16665,
+        56.842400000000005
+      ],
+      "paired_difference_sample_std": 65.44895642380904,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261117
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Gemini Argon 4 Medium minus Random-action control",
+      "effect_size_cohen_dz": 0.9138670733903453,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.830333333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.53326666666666,
+        62.21
+      ],
+      "paired_difference_sample_std": 65.46940476952457,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261119
+      }
+    },
+    {
+      "condition_a_id": "gemini_argon_4_medium",
+      "condition_a_label": "Gemini Argon 4 Medium",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Gemini Argon 4 Medium minus Zero-weight control",
+      "effect_size_cohen_dz": 0.9135371957994205,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 59.804,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        57.44195,
+        62.205333333333336
+      ],
+      "paired_difference_sample_std": 65.46422003941127,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261121
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "claude_sonnet_55",
+      "condition_b_label": "Claude Sonnet 5.5",
+      "difference_definition": "GPT-6 Original minus Claude Sonnet 5.5",
+      "effect_size_cohen_dz": -0.7066535358169137,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -8.070666666666666,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -8.48135,
+        -7.669316666666667
+      ],
+      "paired_difference_sample_std": 11.420966934435164,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261123
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "GPT-6 Original minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.9867151853339694,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 2.0233333333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.95,
+        2.097
+      ],
+      "paired_difference_sample_std": 2.050574840042118,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261125
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "GPT-6 Original minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.5536112294151238,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 1.286,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.20365,
+        1.369
+      ],
+      "paired_difference_sample_std": 2.322929759496798,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261127
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "GPT-6 Original minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.061484320677958,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -502.33633333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -510.98245000000003,
+        -493.4446833333334
+      ],
+      "paired_difference_sample_std": 243.67700898551126,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261129
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "GPT-6 Original minus Trained PPO baseline",
+      "effect_size_cohen_dz": -1.4929609592031041,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -3.281,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -3.3596666666666666,
+        -3.2019833333333336
+      ],
+      "paired_difference_sample_std": 2.1976462142394504,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261131
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "GPT-6 Original minus Random-action control",
+      "effect_size_cohen_dz": 0.9706094032496173,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 2.0243333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.9493333333333334,
+        2.098
+      ],
+      "paired_difference_sample_std": 2.0856312812917635,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261133
+      }
+    },
+    {
+      "condition_a_id": "gpt6_original",
+      "condition_a_label": "GPT-6 Original",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "GPT-6 Original minus Zero-weight control",
+      "effect_size_cohen_dz": 0.9387243933711235,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 1.998,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        1.9226666666666667,
+        2.074
+      ],
+      "paired_difference_sample_std": 2.128420241456422,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261135
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "deepseek_original",
+      "condition_b_label": "DeepSeek Original",
+      "difference_definition": "Claude Sonnet 5.5 minus DeepSeek Original",
+      "effect_size_cohen_dz": 0.8941653653412867,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.094,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.68895,
+        10.488666666666667
+      ],
+      "paired_difference_sample_std": 11.288739635030824,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261137
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "Claude Sonnet 5.5 minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": 0.82652269037493,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 9.356666666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        8.956333333333333,
+        9.765666666666666
+      ],
+      "paired_difference_sample_std": 11.320520023984175,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261139
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "Claude Sonnet 5.5 minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.024993096295057,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -494.2656666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -503.0586666666667,
+        -485.4159666666667
+      ],
+      "paired_difference_sample_std": 244.08264283516766,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261141
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Claude Sonnet 5.5 minus Trained PPO baseline",
+      "effect_size_cohen_dz": 0.42558596535420895,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 4.789666666666666,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        4.38665,
+        5.197666666666667
+      ],
+      "paired_difference_sample_std": 11.254287163065392,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261143
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Claude Sonnet 5.5 minus Random-action control",
+      "effect_size_cohen_dz": 0.8938138703340601,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.095,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.697616666666667,
+        10.510333333333334
+      ],
+      "paired_difference_sample_std": 11.294297767192878,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261145
+      }
+    },
+    {
+      "condition_a_id": "claude_sonnet_55",
+      "condition_a_label": "Claude Sonnet 5.5",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Claude Sonnet 5.5 minus Zero-weight control",
+      "effect_size_cohen_dz": 0.8903728982524397,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 10.068666666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        9.660666666666666,
+        10.478016666666667
+      ],
+      "paired_difference_sample_std": 11.308370556234053,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261147
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "gpt6_luna_extra_high",
+      "condition_b_label": "GPT-6 Luna Extra High",
+      "difference_definition": "DeepSeek Original minus GPT-6 Luna Extra High",
+      "effect_size_cohen_dz": -0.5458064154603927,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.7373333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.7856666666666666,
+        -0.6883166666666669
+      ],
+      "paired_difference_sample_std": 1.3509063148541154,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261149
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "DeepSeek Original minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.070594882466266,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -504.35966666666667,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -513.1491833333333,
+        -495.4793833333334
+      ],
+      "paired_difference_sample_std": 243.58201159365788,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261151
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "DeepSeek Original minus Trained PPO baseline",
+      "effect_size_cohen_dz": -5.176340111802136,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -5.304333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -5.34,
+        -5.2683333333333335
+      ],
+      "paired_difference_sample_std": 1.0247265865006379,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261153
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "DeepSeek Original minus Random-action control",
+      "effect_size_cohen_dz": 0.0012230138333448534,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.001,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.9633,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.028016666666666662,
+        0.030333333333333334
+      ],
+      "paired_difference_sample_std": 0.8176522396848719,
+      "paired_sign_flip_p_value": 0.9633,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261155
+      }
+    },
+    {
+      "condition_a_id": "deepseek_original",
+      "condition_a_label": "DeepSeek Original",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "DeepSeek Original minus Zero-weight control",
+      "effect_size_cohen_dz": -0.029822527649369192,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.025333333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.31365,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.05566666666666667,
+        0.005
+      ],
+      "paired_difference_sample_std": 0.8494696905367505,
+      "paired_sign_flip_p_value": 0.10455,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261157
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "astra_local_reference",
+      "condition_b_label": "Astra reference (local reevaluation)",
+      "difference_definition": "GPT-6 Luna Extra High minus Astra reference (local reevaluation)",
+      "effect_size_cohen_dz": -2.067862691410659,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -503.62233333333336,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -512.39135,
+        -494.86923333333334
+      ],
+      "paired_difference_sample_std": 243.54727972279977,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261159
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "GPT-6 Luna Extra High minus Trained PPO baseline",
+      "effect_size_cohen_dz": -2.864261201922019,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -4.567,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -4.623333333333333,
+        -4.509
+      ],
+      "paired_difference_sample_std": 1.5944774858296387,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261161
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "GPT-6 Luna Extra High minus Random-action control",
+      "effect_size_cohen_dz": 0.5107288153811933,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.7383333333333333,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        0.6873166666666667,
+        0.7896666666666666
+      ],
+      "paired_difference_sample_std": 1.445646517481616,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261163
+      }
+    },
+    {
+      "condition_a_id": "gpt6_luna_extra_high",
+      "condition_a_label": "GPT-6 Luna Extra High",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "GPT-6 Luna Extra High minus Zero-weight control",
+      "effect_size_cohen_dz": 0.4808557344603105,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 0.712,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        0.6586666666666666,
+        0.7646666666666667
+      ],
+      "paired_difference_sample_std": 1.480693582242738,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261165
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "ppo_trained_baseline",
+      "condition_b_label": "Trained PPO baseline",
+      "difference_definition": "Astra reference (local reevaluation) minus Trained PPO baseline",
+      "effect_size_cohen_dz": 2.0489506927912244,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 499.05533333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        490.26231666666666,
+        507.69506666666666
+      ],
+      "paired_difference_sample_std": 243.5662971730594,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261167
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Astra reference (local reevaluation) minus Random-action control",
+      "effect_size_cohen_dz": 2.070633800803814,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 504.36066666666665,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        495.6461666666667,
+        512.9625833333333
+      ],
+      "paired_difference_sample_std": 243.57791632246867,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261169
+      }
+    },
+    {
+      "condition_a_id": "astra_local_reference",
+      "condition_a_label": "Astra reference (local reevaluation)",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Astra reference (local reevaluation) minus Zero-weight control",
+      "effect_size_cohen_dz": 2.07056600141074,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 504.33433333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        495.7882,
+        513.0033999999999
+      ],
+      "paired_difference_sample_std": 243.5731741899147,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261171
+      }
+    },
+    {
+      "condition_a_id": "ppo_trained_baseline",
+      "condition_a_label": "Trained PPO baseline",
+      "condition_b_id": "random_action_control",
+      "condition_b_label": "Random-action control",
+      "difference_definition": "Trained PPO baseline minus Random-action control",
+      "effect_size_cohen_dz": 4.516366252009705,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 5.3053333333333335,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        5.262666666666667,
+        5.347333333333333
+      ],
+      "paired_difference_sample_std": 1.1746906777041282,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261173
+      }
+    },
+    {
+      "condition_a_id": "ppo_trained_baseline",
+      "condition_a_label": "Trained PPO baseline",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Trained PPO baseline minus Zero-weight control",
+      "effect_size_cohen_dz": 4.3845118516259,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": 5.279,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.0018000000000000002,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        5.234666666666667,
+        5.321666666666666
+      ],
+      "paired_difference_sample_std": 1.204010886193043,
+      "paired_sign_flip_p_value": 5e-05,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261175
+      }
+    },
+    {
+      "condition_a_id": "random_action_control",
+      "condition_a_label": "Random-action control",
+      "condition_b_id": "zero_weight_control",
+      "condition_b_label": "Zero-weight control",
+      "difference_definition": "Random-action control minus Zero-weight control",
+      "effect_size_cohen_dz": -0.025641887392529376,
+      "matched_episode_pairs": 3000,
+      "mean_paired_difference": -0.026333333333333334,
+      "p_value_holm_adjusted_all_pairwise_conditions": 0.3318,
+      "paired_difference_ci_95_percentile_bootstrap": [
+        -0.06233333333333333,
+        0.010666666666666666
+      ],
+      "paired_difference_sample_std": 1.0269654854269974,
+      "paired_sign_flip_p_value": 0.1659,
+      "pairwise_resamples": {
+        "bootstrap": 9999,
+        "permutation": 19999,
+        "random_seed": 20261177
+      }
+    }
+  ],
+  "ranking_all_conditions": [
+    {
+      "condition_class": "reference",
+      "condition_id": "astra_local_reference",
+      "cutoff_percentage": 49.46666666666666,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 504.8523333333333,
+      "model": "Astra reference (local reevaluation)",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 4.447042389695199,
+      "weight_sha256": "6e8d42658aed3704c7bf6fb67015e9468cc03f1d67cb8a4fd192e6534fcccb4a"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gemini_argon_4_medium",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 60.322,
+      "model": "Gemini Argon 4 Medium",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 1.1950872422151873,
+      "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "claude_sonnet_55",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 10.586666666666666,
+      "model": "Claude Sonnet 5.5",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.2060066835290228,
+      "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+    },
+    {
+      "condition_class": "trained_baseline",
+      "condition_id": "ppo_trained_baseline",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 5.797,
+      "model": "Trained PPO baseline",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.017423750588887288,
+      "weight_sha256": "9ca0c46d59cf41179b3db3cfe7b31bd48cd57ce54785e2b407b524c82450ea86"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gpt6_original",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 2.516,
+      "model": "GPT-6 Original",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.036149615618254645,
+      "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gpt6_luna_extra_high",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 1.23,
+      "model": "GPT-6 Luna Extra High",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.02318743187109567,
+      "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+    },
+    {
+      "condition_class": "zero_weight_control",
+      "condition_id": "zero_weight_control",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 0.518,
+      "model": "Zero-weight control",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.01379049001161582,
+      "weight_sha256": "in-memory-zero-tensors"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "deepseek_original",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 0.49266666666666664,
+      "model": "DeepSeek Original",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.00912924906387326,
+      "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+    },
+    {
+      "condition_class": "random_control",
+      "condition_id": "random_action_control",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 0.49166666666666664,
+      "model": "Random-action control",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.01315848312644835,
+      "weight_sha256": null
+    }
+  ],
+  "ranking_primary_zero_shot": [
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gemini_argon_4_medium",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 60.322,
+      "model": "Gemini Argon 4 Medium",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 1.1950872422151873,
+      "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "claude_sonnet_55",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 10.586666666666666,
+      "model": "Claude Sonnet 5.5",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.2060066835290228,
+      "weight_sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gpt6_original",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 2.516,
+      "model": "GPT-6 Original",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.036149615618254645,
+      "weight_sha256": "f15aa7d37cfefb76e25b7b8576751d4f155b960baf7eddc701c8f79af9bd3c3b"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "gpt6_luna_extra_high",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 1.23,
+      "model": "GPT-6 Luna Extra High",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.02318743187109567,
+      "weight_sha256": "1f275bbbecaf05bc16cc3d6c791768235ccc65c3c91285fe442836c2c27adce9"
+    },
+    {
+      "condition_class": "primary_zero_shot",
+      "condition_id": "deepseek_original",
+      "cutoff_percentage": 0.0,
+      "dataset": "phase2_corrected_full",
+      "episodes": 3000,
+      "mean_score": 0.49266666666666664,
+      "model": "DeepSeek Original",
+      "protocol": "numpy-seedsequence-spawn-two-randomstate-v1",
+      "se_score": 0.00912924906387326,
+      "weight_sha256": "5ea84b9b5d04292aef19f5b4e12bf8c553145714017753b9a843625f19d969d9"
+    }
+  ],
+  "run_manifest_sha256_before_analysis": "168fd27de24dfbec1ada85127d069ecda5a2117eebd75b2c7060999f7670a273",
+  "schema_version": 1
+}

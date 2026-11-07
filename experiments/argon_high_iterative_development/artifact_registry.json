@@ -1,0 +1,192 @@
+{
+  "file_count": 35,
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "c39773cfe0d7fb1d0ac9eeaa90fe09a4612d74f3900ad9c270d65612199b54de",
+      "size_bytes": 3677
+    },
+    {
+      "path": "analyze_evaluation.py",
+      "sha256": "156beb475143a405fe75c55ddfeafeed43ca42b67f94fd3ed0c96726ad28ce07",
+      "size_bytes": 14087
+    },
+    {
+      "path": "build_artifact_registry.py",
+      "sha256": "aa748451370823eed7800b6b75f9182232b1f7daca6c283645cca93956c12511",
+      "size_bytes": 2663
+    },
+    {
+      "path": "evaluation/evaluation_config.json",
+      "sha256": "50292561321d3de7faf18cb6ba28ec02c294442be73ff80ae4744da474cc030b",
+      "size_bytes": 1474
+    },
+    {
+      "path": "evaluation/full_run/analysis/analysis.json",
+      "sha256": "704a49550735cf08aa19e995d2072b63a6c6cc7c1cfbefab11615d03a6148a48",
+      "size_bytes": 51757
+    },
+    {
+      "path": "evaluation/full_run/analysis/analysis_report.md",
+      "sha256": "d99f625da5eb2f1840306f70586f7ea3c73a50d0e90312957e7e5ca67e325cd9",
+      "size_bytes": 3064
+    },
+    {
+      "path": "evaluation/full_run/analysis/condition_metrics.json",
+      "sha256": "e5c5ef1fa7bbc2d20bc2b6094ec7d7a7e6524d44daa7b6ea5460eb9ff2c715a2",
+      "size_bytes": 6718
+    },
+    {
+      "path": "evaluation/full_run/analysis/paired_comparisons.json",
+      "sha256": "70614c254e388c6dbd88fe2e53b11645ea9770f0234e6a5f4a6e2d4b0e938734",
+      "size_bytes": 2650
+    },
+    {
+      "path": "evaluation/full_run/analysis/per_seed_metrics.json",
+      "sha256": "38b42e007b561905690622f0d51748980f681c2406ed8cd7286d85bd70e0ebc2",
+      "size_bytes": 19040
+    },
+    {
+      "path": "evaluation/full_run/analysis/raw_recomputed_metrics.json",
+      "sha256": "82b9496386c548196c8e57096b678b4f0b955f19ec26f5277e13a6f3bdad91f2",
+      "size_bytes": 17262
+    },
+    {
+      "path": "evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+      "sha256": "dc2a1fca571ccede39c5d4b96f5a93a07a4ab00b092d990ffd177a112774a527",
+      "size_bytes": 487236
+    },
+    {
+      "path": "evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv",
+      "sha256": "6f2dff042bc9d47fd5d4d2c9caa11a920f6a2bc89d55061c4a3c88cbc08b6cd0",
+      "size_bytes": 487852
+    },
+    {
+      "path": "evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+      "sha256": "a6d14220c51b14e88e1288a3e396731aa3e4fa2e8fdd3f9895f115735cf0da1c",
+      "size_bytes": 485385
+    },
+    {
+      "path": "evaluation/full_run/episode_seeds.csv",
+      "sha256": "c55091415e8fd392f49a3efaa59923d84fe21308cae61fef6664c8168749d8a6",
+      "size_bytes": 121599
+    },
+    {
+      "path": "evaluation/full_run/run_manifest.json",
+      "sha256": "1165a98b4cbc6a86b205e16d69d50e90efd562dcb857d4ead8aa57c2c14f8a20",
+      "size_bytes": 7688
+    },
+    {
+      "path": "evaluation/pilot/conditions/argon_high_followup_1/episode_scores.csv",
+      "sha256": "9fe964e822f59c90b631f247b0a827cabc59589fe26b6935ded068378048d9d9",
+      "size_bytes": 2031
+    },
+    {
+      "path": "evaluation/pilot/conditions/argon_high_followup_2/episode_scores.csv",
+      "sha256": "52e8bb233029acdce12d94367c64118a179671e62401c9c7608d60566476619f",
+      "size_bytes": 2032
+    },
+    {
+      "path": "evaluation/pilot/conditions/argon_high_original/episode_scores.csv",
+      "sha256": "8eaadb8e2f23f2ae20e197352840a0048a44ebb32353d1c7e11574f0f177ac97",
+      "size_bytes": 2018
+    },
+    {
+      "path": "evaluation/pilot/episode_seeds.csv",
+      "sha256": "e4a0b74a79d6dde62d74035d773cc164859366c4244b3cc078d8b1d7d8666fce",
+      "size_bytes": 454
+    },
+    {
+      "path": "evaluation/pilot/run_manifest.json",
+      "sha256": "caeb9da3125729bb41de6c68264eaee29894456a48b13810211fec4c33e33c38",
+      "size_bytes": 7958
+    },
+    {
+      "path": "evaluation/representative_trajectories.json",
+      "sha256": "48e1d223354c1e0ead12f27c80da47eca75603ef40ac0f23c1ff40c714a93109",
+      "size_bytes": 3285831
+    },
+    {
+      "path": "export_website_data.py",
+      "sha256": "222345b89057cf8b7b1afaa0b8908c70e83bc86974872b6dfd80956116394b11",
+      "size_bytes": 5551
+    },
+    {
+      "path": "model_registry.json",
+      "sha256": "4c8ee877b6e5c802af5553a663b1a9e14aa18215f179b5e0dbfc4cdb8aa49877",
+      "size_bytes": 4831
+    },
+    {
+      "path": "reconstruct_networks.py",
+      "sha256": "d055131e2e9e04199a43e335a95bb9d7cd928c4812cd38ca793103b830fed721",
+      "size_bytes": 5010
+    },
+    {
+      "path": "reconstruction_manifest.json",
+      "sha256": "9206e12d189b05eeb0181a6f7b0406c735193d79f3deb7e2c59ed0bcd53b673e",
+      "size_bytes": 3294
+    },
+    {
+      "path": "report.md",
+      "sha256": "8ed63c5822ef90c4fd53c0408bbba8c4deeb9c7d5e0bbaa2015b51612678a577",
+      "size_bytes": 17597
+    },
+    {
+      "path": "run_evaluation.py",
+      "sha256": "2fb3cbad297e51ef801564a993c2b826595131da75d63ca93fc7564b291514a1",
+      "size_bytes": 9249
+    },
+    {
+      "path": "source/argon_high_followup_1.py",
+      "sha256": "1460dcf411d31912a7de5286ee6b6b643230b7be4ba83c7dff045055ca8be317",
+      "size_bytes": 7362
+    },
+    {
+      "path": "source/argon_high_followup_2.py",
+      "sha256": "bfb27cdde52250e720c83de02127a3c5e1782bd5d17b389ba127b553c6351639",
+      "size_bytes": 6693
+    },
+    {
+      "path": "source/argon_high_original_inline_v1.py",
+      "sha256": "153ee5b9867e947e397b30ea688dd220562ebe014318a34d9f6e311b461ddf93",
+      "size_bytes": 2911
+    },
+    {
+      "path": "trace_representative_episodes.py",
+      "sha256": "8eda9e4b3c51ed60bd38f7d84a57fa6fae209e9a19e86c1862f0d79ed1ddf0fe",
+      "size_bytes": 7786
+    },
+    {
+      "path": "website_model_records.json",
+      "sha256": "0255db6504a8f4bc1b221d560308c043b4a791e1e99044a3ceeaf788018e99b6",
+      "size_bytes": 57804
+    },
+    {
+      "path": "weights/argon_high_followup_1.npz",
+      "sha256": "9dbce900145f681fac6e081fa9cad927205a0ecbe7dfd181285eb0bc5209527f",
+      "size_bytes": 83574
+    },
+    {
+      "path": "weights/argon_high_followup_2.npz",
+      "sha256": "a88ee43463374fc79ea38c1ecfeb55da736930c5b3d4f5e201eca066c8041205",
+      "size_bytes": 83574
+    },
+    {
+      "path": "weights/argon_high_original.npz",
+      "sha256": "53c65f6ba95090ef88999ebe0dcc23339390c8579e62ec50eaaffc008c1d90f9",
+      "size_bytes": 83574
+    }
+  ],
+  "group_id": "gemini_argon_high_iterative_development",
+  "protected_baseline_integrity": {
+    "manifest_file_count": 180,
+    "manifest_path": "experiments/corrected_evaluation/preserved_artifacts_sha256.json",
+    "mismatch_count": 0,
+    "mismatched_paths": [],
+    "missing_count": 0,
+    "missing_paths": []
+  },
+  "schema_version": 1,
+  "scope": "All files in this additive experiment directory except artifact_registry.json itself.",
+  "source_commit": "e148ea353c3cf0307c69de43f5e49201d2c4478f"
+}

@@ -1,0 +1,195 @@
+{
+  "astra_historical_4000_note": {
+    "text": "Astra's 4,000-episode local historical result includes an additional group 300. This matched comparison uses only groups 42, 100, and 200 (3,000 episodes). The paper's published 1,000-episode result is a separate sample and is not substituted here."
+  },
+  "astra_local_reference": {
+    "corrected_mean_score_on_matched_seeds": 504.8523333333333,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": -2.606333333333333,
+    "original_csv_paths": [
+      "experiments/reference_eval_runs/run_seed42/episode_scores.csv",
+      "experiments/reference_eval_runs/run_seed100/episode_scores.csv",
+      "experiments/reference_eval_runs/run_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/reference_eval_runs/run_seed100/episode_scores.csv": "db3fde434f9a5d274dc9ab2fbd2fb5559b8a91c1bedd2e5bfb5e7d45f7326fb4",
+      "experiments/reference_eval_runs/run_seed200/episode_scores.csv": "43fdcdc687a36cf6aab06ad9b76d87a4f25d73a583bb345911c139955a45b4bb",
+      "experiments/reference_eval_runs/run_seed42/episode_scores.csv": "9c9b80e2d9df0126f781b978e2fa7800ac540d848625f8ec77b8ccf04aea5aab"
+    },
+    "original_mean_score": 507.45866666666666,
+    "paired_bootstrap_ci_95_for_change": [
+      -14.960983333333333,
+      9.638549999999992
+    ]
+  },
+  "claude_sonnet_55": {
+    "corrected_mean_score_on_matched_seeds": 10.586666666666666,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": -0.37066666666666664,
+    "original_csv_paths": [
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/episode_scores.csv",
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/episode_scores.csv",
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed100/episode_scores.csv": "502e858e517efc359c5ba65fe747dd38c4bb9542c8dba4b2896b9495030f6e30",
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed200/episode_scores.csv": "2a828e1300a31d97abd72809bb3206086eaaa409d9184fd8e177aef759d32a27",
+      "experiments/strict_replication/generation_003_sonnet55/evaluation/eval_seed42/episode_scores.csv": "85b07c559a834b425d2a377589fe5b2ef77c2c232f11fed02a82ad8f95d17b0b"
+    },
+    "original_mean_score": 10.957333333333333,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.9600166666666666,
+      0.232
+    ]
+  },
+  "deepseek_original": {
+    "corrected_mean_score_on_matched_seeds": 0.49266666666666664,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": 0.008333333333333333,
+    "original_csv_paths": [
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed42/episode_scores.csv",
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed100/episode_scores.csv",
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed100/episode_scores.csv": "761ef6641d0ab8cbb4a42e64d74479892c2b7caa71b6464a8632a6de97e36f3a",
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed200/episode_scores.csv": "7cdbbcd37351bb5835de367027e36bee8962c50992e0d201b05b2cc944a60a3f",
+      "experiments/strict_replication/generation_004_deepseek/evaluation/eval_seed42/episode_scores.csv": "6a54861914e86ba2cc08edf1a1f66341fb09843b802e03dc393ecda2f63ee88f"
+    },
+    "original_mean_score": 0.48433333333333334,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.017333333333333333,
+      0.033666666666666664
+    ]
+  },
+  "gemini_argon_4_medium": {
+    "corrected_mean_score_on_matched_seeds": 60.322,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": 2.456,
+    "original_csv_paths": [
+      "experiments/strict_replication/generation_001/eval_seed42/episode_scores.csv",
+      "experiments/strict_replication/generation_001/eval_seed100/episode_scores.csv",
+      "experiments/strict_replication/generation_001/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/strict_replication/generation_001/eval_seed100/episode_scores.csv": "002c2a27bd8dd87f21133bea82d6d1a4c2bc5807ffdeb04646c9043c772b58d8",
+      "experiments/strict_replication/generation_001/eval_seed200/episode_scores.csv": "5c7a63aaa2ca6a69ebe77a1df70db8935dfd2a34fd6ddbc9257c2fa5b53e3a6f",
+      "experiments/strict_replication/generation_001/eval_seed42/episode_scores.csv": "0213a94807bdfb08c6ad1ddf6e3ad36566a83807468f510778f97c3d786ef217"
+    },
+    "original_mean_score": 57.866,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.6776999999999999,
+      5.555366666666666
+    ]
+  },
+  "gpt6_luna_extra_high": {
+    "corrected_mean_score_on_matched_seeds": 1.23,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": -0.023,
+    "original_csv_paths": [
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed42/episode_scores.csv",
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed100/episode_scores.csv",
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed100/episode_scores.csv": "138ec44cd4365c3445a81adaa181c2befb1411e932e88bf6175d76ebc958e301",
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed200/episode_scores.csv": "8a70c55fffb374a2eb86282bb33cb5be9bc59ac6c145726fa64f567f6cf0a7aa",
+      "experiments/strict_replication/generation_005_gpt6_luna_extra_high/evaluation/eval_seed42/episode_scores.csv": "371001f4b80a0624c5fa9600a7a183c3808839e21199e094fe0d921edb596741"
+    },
+    "original_mean_score": 1.253,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.08733333333333333,
+      0.03966666666666667
+    ]
+  },
+  "gpt6_original": {
+    "corrected_mean_score_on_matched_seeds": 2.516,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": 0.023,
+    "original_csv_paths": [
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed42/episode_scores.csv",
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed100/episode_scores.csv",
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed100/episode_scores.csv": "3482045209ae607a2bf7f246388c0643091a5480e754b63d876103b0a3f1a4e0",
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed200/episode_scores.csv": "f8181cc432e551ef6dfed15d4da7dac1b377e8a5ad67b3a4170fbf3122232f9d",
+      "experiments/strict_replication/generation_002_gpt6/evaluation/eval_seed42/episode_scores.csv": "f8aa4009f7b2a4b5a80045c125fa2c691fd181481eed31c7042038e8c8d8f775"
+    },
+    "original_mean_score": 2.493,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.075,
+      0.12134999999999976
+    ]
+  },
+  "ppo_trained_baseline": {
+    "corrected_mean_score_on_matched_seeds": 5.797,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 3000,
+    "mean_paired_score_change_corrected_minus_original": 0.03966666666666667,
+    "original_csv_paths": [
+      "experiments/trained_baseline/eval_seed42/episode_scores.csv",
+      "experiments/trained_baseline/eval_seed100/episode_scores.csv",
+      "experiments/trained_baseline/eval_seed200/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 3000,
+    "original_csv_sha256": {
+      "experiments/trained_baseline/eval_seed100/episode_scores.csv": "ca8978a03ae54a99ef04d640a32e74d08d5dafef4275e58ed7ef29fba39cc5fd",
+      "experiments/trained_baseline/eval_seed200/episode_scores.csv": "069142f267cdfdfeb13d9981467c700201def155d3019facdd2898901365adbc",
+      "experiments/trained_baseline/eval_seed42/episode_scores.csv": "07b0b27097261997448ae95836d83093c679138f03d35900629e4ec23704b92d"
+    },
+    "original_mean_score": 5.757333333333333,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.01101666666666666,
+      0.09034999999999976
+    ]
+  },
+  "random_action_control": {
+    "corrected_mean_score_on_matched_seeds": 0.481,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 1000,
+    "mean_paired_score_change_corrected_minus_original": -0.004,
+    "original_csv_paths": [
+      "results/baselines/random/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 1000,
+    "original_csv_sha256": {
+      "results/baselines/random/episode_scores.csv": "29b94f999bd48b6cb8b612a10ec4d491ba1c5beae6a1ba8e603edba77da780ec"
+    },
+    "original_mean_score": 0.485,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.072,
+      0.064
+    ]
+  },
+  "zero_weight_control": {
+    "corrected_mean_score_on_matched_seeds": 0.528,
+    "interpretation_limit": "The paired change reflects the RNG protocol change and new random draws together; it does not isolate the causal contribution of stream coupling alone.",
+    "matched_episode_count": 1000,
+    "mean_paired_score_change_corrected_minus_original": 0.011,
+    "original_csv_paths": [
+      "results/baselines/zero/episode_scores.csv"
+    ],
+    "original_csv_sample_size": 1000,
+    "original_csv_sha256": {
+      "results/baselines/zero/episode_scores.csv": "de50210fe910ec49a586ea1a0a3d1c8a67f819b35db8a2d3d2dd14b6bb4b3d61"
+    },
+    "original_mean_score": 0.517,
+    "paired_bootstrap_ci_95_for_change": [
+      -0.057,
+      0.078
+    ]
+  }
+}

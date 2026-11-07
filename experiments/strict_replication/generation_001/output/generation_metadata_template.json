@@ -1,0 +1,20 @@
+{
+  "experiment_id": "breakout_gemini_argon_generation_001",
+  "model_name": "Gemini Argon",
+  "model_version_label": "",
+  "interface": "https://gemini.google.com/",
+  "timestamp_submitted_utc": "",
+  "timestamp_completed_utc": "",
+  "estimated_wall_clock_seconds": null,
+  "search_grounding_enabled": false,
+  "deep_research_enabled": false,
+  "code_interpreter_enabled": false,
+  "tools_enabled": false,
+  "one_shot": true,
+  "prompt_file": "experiment_5_prompt.txt",
+  "prompt_sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+  "archive_file": "argon_experiment_001.zip",
+  "archive_sha256": "976c17cd21bed3febb81e5f4f5b7c43467a7cf87230bb646c0135406d86bec64",
+  "researcher_notes": ""
+}
+

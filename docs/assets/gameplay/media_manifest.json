@@ -1,0 +1,324 @@
+{
+  "schema_version": 1,
+  "generated_by": "docs/scripts/gameplay/generate_media_manifest.py",
+  "note": "Gameplay recordings and deployed-site screenshots are recorded separately. Browser Arena media are demonstrations and do not reproduce the NumPy benchmark RNG streams; same seed labels do not assert synchronized trajectories.",
+  "assets": [
+    {
+      "file": "docs/assets/gameplay/screenshots/arena-active-gemini-argon-medium-seed42.jpg",
+      "description": "Browser screenshot of the actual deployed Arena with Gemini Argon 4 Medium selected, seed 42.",
+      "source": "Screenshot of the live GitHub Pages Arena in a browser.",
+      "format": "jpg",
+      "bytes": 75658,
+      "sha256": "43b9148c666aba40910890307cae7d4445d7d3b955bbd76b117c37e36e766872",
+      "resolution": {
+        "width": 865,
+        "height": 967
+      },
+      "model_label": "Gemini Argon 4 Medium",
+      "seed": 42
+    },
+    {
+      "file": "docs/assets/gameplay/screenshots/arena-frame-gemini-argon-4-medium-seed42.png",
+      "description": "Arena-generated PNG of the actual game frame and current policy inspector, Gemini Argon 4 Medium, seed 42.",
+      "source": "PNG downloaded from the Arena capture control; game state, observation and inference readouts are from the live browser implementation.",
+      "format": "png",
+      "bytes": 178503,
+      "sha256": "0fefae4df7301856b019a1bf34446bcfe83bb8a81cb7408631ba8b3293eba250",
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "model_label": "Gemini Argon 4 Medium",
+      "seed": 42
+    },
+    {
+      "file": "docs/assets/gameplay/screenshots/website-corrected-results-viewport.jpg",
+      "description": "Screenshot of the deployed Results section showing the corrected nine-condition episode summary.",
+      "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+      "format": "jpg",
+      "bytes": 90761,
+      "sha256": "389cbe7c974e3486694aa4554878015b3fb10327aaecd200d3d1cc0369515302",
+      "resolution": {
+        "width": 865,
+        "height": 967
+      }
+    },
+    {
+      "file": "docs/assets/gameplay/screenshots/website-visual-results-gallery.jpg",
+      "description": "Screenshot of the deployed Visual Results & Gameplay gallery with scientific figures and native video players.",
+      "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+      "format": "jpg",
+      "bytes": 93925,
+      "sha256": "5d3eeda4f774f159f8d0faa709c1c910c5178b82aa6384551e3a776e33feba9b",
+      "resolution": {
+        "width": 865,
+        "height": 967
+      }
+    },
+    {
+      "file": "docs/assets/gameplay/screenshots/website-methodology-viewport.jpg",
+      "description": "Screenshot of the deployed Methodology section describing the research question and MinAtar Breakout implementation.",
+      "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+      "format": "jpg",
+      "bytes": 96624,
+      "sha256": "bc127bd595f1a4af8baa5db75a853ab9b15c80f4a760b6d961da1f517142f6a1",
+      "resolution": {
+        "width": 865,
+        "height": 967
+      }
+    },
+    {
+      "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Gemini Argon 4 Medium, seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2794369,
+      "sha256": "f4e3bb1773cf487c00fe7aab23881d1b3dc394465164ffd39da5a4432839be77",
+      "model_label": "Gemini Argon 4 Medium",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "0/0",
+        "frame_count": 617,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 20.64,
+        "frames_per_timestamp_span_estimate": 29.893
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Gemini Argon 4 Medium seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 900790,
+      "sha256": "d2e982b3432d4e64c3b82663c7819c989de68fd707a7b2591fd8f227be78a567",
+      "model_label": "Gemini Argon 4 Medium",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 620,
+        "file_duration_seconds": 20.666016
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Claude Sonnet 5.5, seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2154697,
+      "sha256": "4f3f1def51fa2865d2d0881d48e555aea5d8c1e9e533fe471b264400e05548c7",
+      "model_label": "Claude Sonnet 5.5",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30000/1001",
+        "frame_count": 571,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 19.008,
+        "frames_per_timestamp_span_estimate": 30.04
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Claude Sonnet 5.5 seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 773981,
+      "sha256": "361ff8eac2e93d16d4e077b9564ffed82fe5ea56ae89197c934c630aa62db3a9",
+      "model_label": "Claude Sonnet 5.5",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 571,
+        "file_duration_seconds": 19.033008
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/astra_reference_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Astra reference (local reevaluation), seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2143864,
+      "sha256": "6a3d96379311cdd10def3f2446d8fed1c958224b3b323aa7a64e0aa565785463",
+      "model_label": "Astra reference (local reevaluation)",
+      "policy_classification": "Local reference controller; not an LLM-generated zero-shot policy.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30000/1001",
+        "frame_count": 463,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 15.406,
+        "frames_per_timestamp_span_estimate": 30.053
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Astra reference (local reevaluation) seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 778776,
+      "sha256": "7f0270b56603eea68ac8396a8d31de4c6bfe6fad478824234eab3c6a9d1ab72a",
+      "model_label": "Astra reference (local reevaluation)",
+      "policy_classification": "Local reference controller; not an LLM-generated zero-shot policy.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/astra_reference_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 464,
+        "file_duration_seconds": 15.466016
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/weight_space_programming_intro.mp4",
+      "description": "Thirty-second unvoiced introduction combining methodology title cards with actual Gemini Argon 4 Medium Arena gameplay and live inference readouts.",
+      "source": "Generated by docs/scripts/gameplay/compose_showcase_videos.py from preserved source capture(s): docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4.",
+      "format": "mp4",
+      "bytes": 944938,
+      "sha256": "2eee00cec86bfc75e0578cae30a1637b470fc9f8047eb3de43dc9a70c181c05d",
+      "policy_classification": "Uses a captured browser demonstration of the recorded Gemini Argon 4 Medium zero-shot condition label; provider identity is not independently authenticated.",
+      "derived_from": [
+        {
+          "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+          "bytes": 900790,
+          "sha256": "d2e982b3432d4e64c3b82663c7819c989de68fd707a7b2591fd8f227be78a567"
+        }
+      ],
+      "derivation": "Four 5/5/15/5-second segments; title cards and documented facts are composed with the first 15 seconds of the retained Arena capture at 1x and 30 fps.",
+      "composition_script": "docs/scripts/gameplay/compose_showcase_videos.py",
+      "audio": false,
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 900,
+        "file_duration_seconds": 30.0
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/zero_shot_side_by_side_comparison.mp4",
+      "description": "Side-by-side view of Gemini Argon 4 Medium and Claude Sonnet 5.5 browser Arena captures, aligned from the beginning and trimmed to 571 frames at native 30 fps.",
+      "source": "Generated by docs/scripts/gameplay/compose_showcase_videos.py from preserved source capture(s): docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4, docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.mp4.",
+      "format": "mp4",
+      "bytes": 807672,
+      "sha256": "28df68d25dd41ed9c7127b56238762062e102c9fc9e73a1183ec9c2f3f817915",
+      "policy_classification": "Two recorded primary zero-shot condition labels; provider/model identity is not independently authenticated.",
+      "derived_from": [
+        {
+          "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+          "bytes": 900790,
+          "sha256": "d2e982b3432d4e64c3b82663c7819c989de68fd707a7b2591fd8f227be78a567"
+        },
+        {
+          "file": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.mp4",
+          "bytes": 773981,
+          "sha256": "361ff8eac2e93d16d4e077b9564ffed82fe5ea56ae89197c934c630aa62db3a9"
+        }
+      ],
+      "derivation": "The two preserved 30 fps captures are placed side by side at native playback speed and trimmed to their common frame count; same seed 42 was selected, but stochastic stream matching was not verified.",
+      "composition_script": "docs/scripts/gameplay/compose_showcase_videos.py",
+      "audio": false,
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 571,
+        "file_duration_seconds": 19.033333
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/gemini_vs_astra_reference_comparison.mp4",
+      "description": "Side-by-side view of the Gemini Argon 4 Medium browser capture and the Astra handcrafted/reference-controller browser capture, aligned from the beginning and trimmed to 464 frames at native 30 fps.",
+      "source": "Generated by docs/scripts/gameplay/compose_showcase_videos.py from preserved source capture(s): docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4, docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4.",
+      "format": "mp4",
+      "bytes": 669633,
+      "sha256": "bdaba4750286042dcfcfaa088f47dfbeb6f2420c29f9021e2131475c50c3ffcc",
+      "policy_classification": "Gemini uses a recorded zero-shot condition label; Astra is a handcrafted/reference controller, not an LLM-generated policy.",
+      "derived_from": [
+        {
+          "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+          "bytes": 900790,
+          "sha256": "d2e982b3432d4e64c3b82663c7819c989de68fd707a7b2591fd8f227be78a567"
+        },
+        {
+          "file": "docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4",
+          "bytes": 778776,
+          "sha256": "7f0270b56603eea68ac8396a8d31de4c6bfe6fad478824234eab3c6a9d1ab72a"
+        }
+      ],
+      "derivation": "The two preserved 30 fps captures are placed side by side at native playback speed and trimmed to their common frame count; same seed 42 was selected, but stochastic stream matching was not verified.",
+      "composition_script": "docs/scripts/gameplay/compose_showcase_videos.py",
+      "audio": false,
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 464,
+        "file_duration_seconds": 15.466667
+      },
+      "benchmark_equivalent": false
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "experiment_id": "breakout_sonnet55_generation_003",
+  "model_name": "Claude Sonnet 5.5",
+  "model_identifier": "claude-sonnet-5-5-2026-11-06",
+  "provider": "Anthropic",
+  "interface": "Official Claude Web Interface (https://claude.ai/)",
+  "timestamp_recorded_utc": "2026-11-06T16:09:07Z",
+  "generation_type": "Zero-shot neural-network weight construction",
+  "training_type": "None (No gradients, no RL, no environment interaction during generation)",
+  "tools_enabled": false,
+  "search_grounding_enabled": false,
+  "code_interpreter_enabled": false,
+  "one_shot": true,
+  "raw_artifacts": {
+    "raw_response_text": "experiments/strict_replication/generation_003_sonnet55/input/sonnet55_raw_response.txt",
+    "raw_response_sha256": "7b6a0461c2f775cc08604c65672f145aa3efc1adbb5ce51ac59244e036cb85ee",
+    "experiment_prompt": "experiments/strict_replication/generation_003_sonnet55/input/experiment_5_prompt.txt",
+    "experiment_prompt_sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876"
+  },
+  "parsed_weights": {
+    "file": "experiments/strict_replication/generation_003_sonnet55/output/sonnet55_weights.npz",
+    "sha256": "2fb65f893087fa93eff087a3d8af2605c5c834b069c83bc8c8e08bf2fb60993b",
+    "total_parameters": 20486,
+    "nonzero_parameters": 551,
+    "parameter_sparsity_percent": 97.3103582934687,
+    "statements_total": 65,
+    "statements_applied": 65,
+    "errors": []
+  }
+}

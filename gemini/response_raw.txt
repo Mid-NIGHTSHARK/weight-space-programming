@@ -1,0 +1,1418 @@
+<message-content><h3>Policy Design and Architecture</h3>
+<h4>1. Game Mechanics &amp; Optimal Strategy</h4>
+<p>In MinAtar Breakout, the paddle sits at row 9 (<code>pos</code> \in \{0..9\}) and the ball travels diagonally along (dx, dy) \in \{(-1,-1), (+1,-1), (+1,+1), (-1,+1)\}.
+When the ball reaches <code>new_y == 9</code>, it is caught if and only if either <code>ball_x == pos</code> (sending it back up along the opposite horizontal direction if it was moving horizontally, i.e., vertical reflection <code>[3,2,1,0]</code>) or <code>new_x == pos</code> (corner hit, sending it back along the exact diagonal it came from <code>[2,3,0,1]</code>).</p>
+<p>However, because of <strong>10% sticky actions</strong> (where the environment repeats the previous action with probability 0.1), relying on a corner catch (<code>new_x == pos</code>) or moving at the last instant is risky: if the paddle was moving onto <code>pos</code> on the preceding step and a sticky action occurs when trying to stop, the paddle can overshoot, or if trying to move at the last step, a sticky no-op can prevent reaching the ball.
+Even more simply and robustly: <strong>tracking the ball&#39;s predicted next column <code>new_x</code> when moving down, or directly tracking <code>ball_x</code> with a lead</strong> ensures that the paddle arrives at the catch column early and stays still (<code>no-op</code>), making sticky actions completely harmless (repeating a <code>no-op</code> is still a <code>no-op</code>).</p>
+<p>Specifically:</p>
+<ul>
+<li>Let x_p be the paddle column (<code>channel 0</code>, row 9).</li>
+<li>Let x_b be the current ball column (<code>channel 3</code>) and x_{last} be the trail column (<code>channel 4</code>).</li>
+<li>In all normal travel steps, x_b - x_{last} \in \{-1, +1\} gives the horizontal velocity v_x of the ball (except right after a wall bounce at x_b \in \{0, 9\} where x_b = x_{last}, or at episode reset where x_b = x_{last} \in \{0, 9\}).</li>
+<li>If we target x_{target} = \text{clip}(x_b + 0.5 (x_b - x_{last}), 0, 9), or even simpler, compare x_p to x_b and the velocity v_x = x_b - x_{last}:<ul>
+<li>When x_b &gt; x_p: the ball is strictly to the right of the paddle \rightarrow move <strong>Right</strong> (<code>action 3</code>).</li>
+<li>When x_b &lt; x_p: the ball is strictly to the left of the paddle \rightarrow move <strong>Left</strong> (<code>action 1</code>).</li>
+<li>When x_b == x_p: the paddle is directly under the ball! Look at what happens if we take <strong>No-Op</strong> (<code>action 0</code>, or equally actions 2, 4, 5 which are all no-ops in <code>act()</code>):<ul>
+<li>If the ball is at <code>ball_y == 8</code> moving down (<code>new_y == 9</code>), and x_p == x_b, the condition <code>if (self.ball_x == self.pos):</code> in <code>act()</code> triggers <strong>regardless of whether the ball moves left or right to <code>new_x</code>!</strong> Wait—verify from the code:<pre>elif(new_y == 9):
+    if(np.count_nonzero(self.brick_map)==0):
+        self.brick_map[1:4,:] = 1
+    if(self.ball_x == self.pos):
+        self.ball_dir=[3,2,1,0][self.ball_dir]
+        new_y = self.last_y
+    elif(new_x == self.pos):
+        self.ball_dir=[2,3,0,1][self.ball_dir]
+        new_y = self.last_y
+    else:
+        self.terminal = True
+</pre>
+Look at <code>if(self.ball_x == self.pos):</code>!
+In <code>act(a)</code>, <code>self.pos</code> is updated first from action <code>a</code>, while <code>self.ball_x</code> is STILL the ball&#39;s column at <code>ball_y == 8</code> (before <code>self.ball_x = new_x</code> at the very end of <code>act</code>)!
+And if <code>self.ball_x == self.pos</code>, the ball reflects vertically (<code>[3,2,1,0][self.ball_dir]</code>), which keeps its horizontal direction unchanged (<code>dir 2 -&gt; 1</code>, <code>dir 3 -&gt; 0</code>) so the ball continues circulating across the board instead of retracing its exact path!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Let&#39;s double check this!</p>
+<ol>
+<li>Since both the ball and the paddle move at 1 column per step (\Delta x_b \in \{-1, 0, +1\}, \Delta x_p \in \{-1, 0, +1\}), if the paddle always moves toward x_b (and slightly anticipates v_x = x_b - x_{last} when far, or simply tracks x_b + 0.4(x_b - x_{last})), whenever x_p catches up to x_b:<ul>
+<li>If the ball is moving right (x_b - x_{last} = +1) and x_p = x_b: on the next step the ball will move to x_b + 1 (unless x_b = 9). If the ball is at y_b = 8, staying at x_p = x_b OR moving to x_p = x_b + 1 BOTH catch the ball (<code>ball_x == pos</code> catches at x_b, <code>new_x == pos</code> catches at x_b + 1)!</li>
+<li>Even better: if at y_b = 8 we have x_p = x_b and we move in the direction of the ball&#39;s horizontal motion (or stay at x_b), wait: if x_p = x_b and we take <code>no-op</code>, <code>pos</code> stays x_b, which satisfies <code>self.ball_x == self.pos</code>! What if a sticky action happens when we are at x_p = x_b?<ul>
+<li>Suppose the ball is moving right (v_x = +1) and the paddle has been moving right (<code>&#39;r&#39;</code>) alongside the ball (x_p = x_b).</li>
+<li>If the policy chooses <code>&#39;r&#39;</code> when x_p = x_b and v_x = +1 (for y_b &lt; 8), then the paddle moves to x_b + 1 at the exact same step the ball moves to x_b + 1! So on the next step, x_p is <em>still</em> equal to x_b!</li>
+<li>And because the policy keeps choosing <code>&#39;r&#39;</code> every step while the ball moves right, <strong>the previous action is always <code>&#39;r&#39;</code>, so the 10% sticky action repeats <code>&#39;r&#39;</code>, which is the exact same action!</strong></li>
+<li>What if the ball is at y_b = 8 moving right (v_x = +1) and x_p = x_b?<ul>
+<li>If the paddle chooses <code>&#39;r&#39;</code>, <code>pos</code> becomes x_b + 1 = \text{new\_x} (or \min(9, x_b+1) = \text{new\_x}). Then <code>new_x == self.pos</code> is TRUE (and at x_b=9, <code>new_x=9=ball_x=pos</code> is also TRUE)!</li>
+<li>Wait: what if <code>new_x == self.pos</code> triggers (<code>ball_dir = [2,3,0,1][ball_dir]</code>) vs <code>ball_x == self.pos</code> (<code>ball_dir = [3,2,1,0][ball_dir]</code>)?</li>
+<li>If <code>ball_x == self.pos</code> triggers (<code>[3,2,1,0]</code>), a ball moving down-right (<code>dir 2</code>) bounces up-right (<code>dir 1</code>), preserving horizontal velocity and avoiding infinite loops! If <code>new_x == self.pos</code> triggers (<code>[2,3,0,1]</code>), <code>dir 2</code> bounces to <code>dir 0</code> (up-left), retracing its trajectory.</li>
+<li>AND what if at y_b = 8, x_p = x_b, the agent chooses <code>no-op</code>, and a 10% sticky action repeats <code>&#39;r&#39;</code>?<ul>
+<li>If <code>no-op</code> executes (90% probability): <code>pos</code> stays x_b, so <code>ball_x == self.pos</code> is TRUE! Ball bounces via <code>[3,2,1,0]</code> (up-right)!</li>
+<li>If sticky <code>&#39;r&#39;</code> executes (10% probability): <code>pos</code> becomes x_b + 1 = \text{new\_x}, so <code>new_x == self.pos</code> is TRUE! The ball is STILL CAUGHT!</li>
+</ul>
+</li>
+<li>That means if x_p = x_b at y_b = 8 and the previous action was moving in the ball&#39;s direction, <strong>choosing <code>no-op</code> catches the ball with 100% probability whether or not a sticky action occurs!</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>Let&#39;s verify that remarkable property!
+Suppose the paddle tracks the target position:</p>
+<ul>
+<li>For y_b \le 7: target is the ball&#39;s next horizontal position x_{next} = x_b + v_x (clamped at walls).<ul>
+<li>Specifically, while the ball is in rows 0..7 and moving right (v_x = +1, x_b &lt; 9), if x_p = x_b, the paddle moves <strong>Right</strong> (<code>&#39;r&#39;</code>) so that on the next step x_p&#39; = x_b + 1 = x_b&#39;. Thus the paddle stays locked at x_p = x_b every single step!</li>
+<li>When the ball reaches y_b = 8 with x_p = x_b:<ul>
+<li>Now the paddle chooses <strong>No-Op</strong> (actions <code>0, 2, 4, 5</code>)!</li>
+<li>With 90% probability, <code>no-op</code> is executed: <code>self.pos</code> remains x_b = \text{self.ball\_x}, so <code>if (self.ball_x == self.pos):</code> catches the ball and reflects it forward (<code>[3,2,1,0]</code>)!</li>
+<li>With 10% probability, the sticky action repeats the previous step&#39;s action (<code>&#39;r&#39;</code> if moving right, <code>&#39;l&#39;</code> if moving left, or <code>no-op</code> if stationary):<ul>
+<li>If it repeats <code>&#39;r&#39;</code> (when v_x = +1) or <code>&#39;l&#39;</code> (when v_x = -1): <code>self.pos</code> becomes <code>new_x</code>, so <code>elif (new_x == self.pos):</code> catches the ball!</li>
+<li>If it repeats <code>no-op</code>: <code>self.pos</code> remains <code>ball_x</code>, catching the ball!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>What if at y_b = 8, the paddle is 1 step behind (x_p = x_b - 1 when v_x = +1, or simply x_p &lt; x_b)?<ul>
+<li>Then x_b - x_p \ge 1, so the paddle must still move toward x_b (<code>&#39;r&#39;</code> if x_b &gt; x_p, <code>&#39;l&#39;</code> if x_b &lt; x_p).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Let&#39;s check the wall bounce case at x_b \in \{0, 9\}:</p>
+<ul>
+<li>When the ball hits the left wall (x_b = 0, x_{last} = 0) or is at x_b = 0: on the next step it will move to x_b&#39; = 1 (since <code>ball_dir</code> was flipped at the wall to <code>1</code> or <code>2</code>).</li>
+<li>When the ball hits the right wall (x_b = 9, x_{last} = 9): on the next step it will move to x_b&#39; = 8 (since <code>ball_dir</code> was flipped at the wall to <code>0</code> or <code>3</code>).</li>
+<li>What if x_b = 0 and x_{last} = 1? In <code>act()</code>, when <code>new_x &lt; 0</code>, <code>new_x</code> is set to <code>0</code> and <code>ball_dir</code> is flipped. Since <code>last_x</code> was <code>0</code>, <code>ball_x</code> is <code>0</code> and <code>last_x</code> is <code>0</code>. On the step <em>before</em> hitting the wall, <code>last_x = 1</code> and <code>ball_x = 0</code>; on the step it hits the wall, <code>new_x</code> would be <code>-1</code>, which becomes <code>0</code>, so <code>ball_x = 0</code> and <code>last_x = 0</code>.<ul>
+<li>Wait: when <code>ball_x = 0</code> and <code>last_x = 1</code>, the ball is <em>currently</em> at column 0 moving left, so on the <em>next</em> step <code>new_x</code> will be <code>-1</code> which clamps to <code>0</code>! So the ball stays at column <code>0</code> for one step!</li>
+<li>And when <code>ball_x = 0</code> and <code>last_x = 0</code>, the ball already bounced and is moving right to column <code>1</code>!</li>
+<li>Similarly, when <code>ball_x = 9</code> and <code>last_x = 8</code>, on the next step <code>new_x</code> will clamp to <code>9</code> (stays at <code>9</code>), whereas when <code>ball_x = 9</code> and <code>last_x = 9</code>, on the next step it moves left to <code>8</code>!</li>
+</ul>
+</li>
+</ul>
+<p>Let&#39;s verify this from <code>act()</code> in <code>breakout.py</code>:
+Suppose <code>ball_x = 1, ball_dir = 3</code> (down-left).</p>
+<ul>
+<li>Step 1: <code>last_x = 1</code>, <code>new_x = 0</code>, not <code>&lt; 0</code>. End of step 1: <code>ball_x = 0, last_x = 1, ball_dir = 3</code>.</li>
+<li>Step 2: <code>last_x = 0</code>, <code>new_x = -1 &lt; 0</code> \rightarrow <code>new_x = 0</code>, <code>ball_dir = 2</code> (down-right). End of step 2: <code>ball_x = 0, last_x = 0, ball_dir = 2</code>.</li>
+<li>Step 3: <code>last_x = 0</code>, <code>new_x = 1</code>. End of step 3: <code>ball_x = 1, last_x = 0, ball_dir = 2</code>.</li>
+</ul>
+<p>Look how clean that is!
+In ALL three steps:</p>
+<ul>
+<li>Step 1 (<code>ball_x = 0, last_x = 1</code>): next <code>ball_x</code> is <code>0</code>.</li>
+<li>Step 2 (<code>ball_x = 0, last_x = 0</code>): next <code>ball_x</code> is <code>1</code>.</li>
+<li>Symmetric at right wall (<code>x = 9</code>):<ul>
+<li>When <code>ball_x = 9, last_x = 8</code>: next <code>ball_x</code> is <code>9</code>.</li>
+<li>When <code>ball_x = 9, last_x = 9</code>: next <code>ball_x</code> is <code>8</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Wait: let&#39;s check the formula for x_{next} (the exact column <code>new_x</code> of the ball after the next step) in terms of x_b and x_{last}:</p>
+<ul>
+<li>For 1 \le x_b \le 8:
+<code>x_{next} = x_b + (x_b - x_{last}) = 2 x_b - x_{last}</code>
+(Notice that at reset, x_b \in \{0, 9\}, so 1 \le x_b \le 8 always has |x_b - x_{last}| = 1!)</li>
+<li>For x_b = 0:<ul>
+<li>If x_{last} = 1: x_{next} = 0.</li>
+<li>If x_{last} = 0: x_{next} = 1.
+Notice that for x_b = 0, x_{next} = 1 - x_{last}!</li>
+</ul>
+</li>
+<li>For x_b = 9:<ul>
+<li>If x_{last} = 8: x_{next} = 9.</li>
+<li>If x_{last} = 9: x_{next} = 8.
+Notice that for x_b = 9, x_{next} = 17 - x_{last}!</li>
+</ul>
+</li>
+</ul>
+<p>Hold on! Let&#39;s check if that&#39;s true for EVERY state in the game!
+Wait: what if the ball bounces off a brick or the top wall or the paddle?</p>
+<ul>
+<li>Top wall (<code>new_y &lt; 0</code>) and bricks (<code>brick_map[new_y, new_x] == 1</code>) and <code>ball_x == pos</code> paddle bounce only change the vertical direction (<code>[3,2,1,0][ball_dir]</code>)! They NEVER change the horizontal direction!</li>
+<li>The only thing that reverses horizontal direction in the interior is a corner paddle bounce (<code>elif new_x == self.pos</code> at <code>new_y == 9</code>), which only happens at y_b = 8 \to 8 when the ball is moving UP right after hitting the paddle!</li>
+<li>Therefore, whenever the ball is anywhere in the grid (except the single step right after a corner paddle bounce where it is moving UP anyway), <strong>the linear function</strong>
+<code>x_{next} = \begin{cases} 2 x_b - x_{last} &amp; \text{if } 1 \le x_b \le 8 \\ 1 - x_{last} &amp; \text{if } x_b = 0 \\ 17 - x_{last} &amp; \text{if } x_b = 9 \end{cases}</code>
+<strong>computes the EXACT next horizontal coordinate <code>new_x</code> of the ball!</strong></li>
+</ul>
+<p>Wait—can we compute that exact x_{next} directly in Layer 1 using the one-hot column inputs of <code>ball</code> (<code>channel 3</code>) and <code>trail</code> (<code>channel 4</code>)?
+YES! Because <code>ball</code> has a single <code>1</code> at (y_b, x_b) and <code>trail</code> has a single <code>1</code> at (y_{last}, x_{last})!
+Wait: let&#39;s check if x_{next} = 1 - x_{last} at x_b = 0 and x_{next} = 17 - x_{last} at x_b = 9 requires knowing whether x_b = 0 or x_b = 9!
+Wait when x_b = 0, what can x_{last} possibly be?
+Since the ball moves at most 1 column per step, when x_b = 0, x_{last} can ONLY be 0 or 1!
+Wait: when x_b = 1, x_{last} can also be 0 or 2. So knowing x_{last} = 0 alone doesn&#39;t tell us whether x_b = 0 (where x_{next} = 1) or x_b = 1 (where x_{next} = 2(1) - 0 = 2).
+Wait: in both cases (x_b = 0, x_{last} = 0 \implies x_{next} = 1 and x_b = 1, x_{last} = 0 \implies x_{next} = 2), the difference from the linear formula 2 x_b - x_{last} is:
+Let&#39;s compare x_{next} with the pure linear formula L = 2 x_b - x_{last}:</p>
+<ul>
+<li>For 1 \le x_b \le 8: L = 2 x_b - x_{last} = x_{next} (exact!).</li>
+<li>For x_b = 0, x_{last} = 1: L = 2(0) - 1 = -1, whereas x_{next} = 0 (difference +1).</li>
+<li>For x_b = 0, x_{last} = 0: L = 2(0) - 0 = 0, whereas x_{next} = 1 (difference +1).
+-WAIT A SECOND!
+Look at the two rows above for x_b = 0:</li>
+<li>When x_b = 0, x_{last} = 1: x_{next} = 0, and 2 x_b - x_{last} = -1. Difference: x_{next} - (2 x_b - x_{last}) = +1!</li>
+<li>When x_b = 0, x_{last} = 0: x_{next} = 1, and 2 x_b - x_{last} = 0. Difference: x_{next} - (2 x_b - x_{last}) = +1!
+In BOTH cases when x_b = 0, x_{next} = 2 x_b - x_{last} + 1 = 1 - x_{last}!
+Now check x_b = 9:</li>
+<li>When x_b = 9, x_{last} = 8: x_{next} = 9, and 2 x_b - x_{last} = 18 - 8 = 10. Difference: -1!</li>
+<li>When x_b = 9, x_{last} = 9: x_{next} = 8, and 2 x_b - x_{last} = 18 - 9 = 9. Difference: -1!
+In BOTH cases when x_b = 9, x_{next} = 2 x_b - x_{last} - 1 = 17 - x_{last}!</li>
+</ul>
+<p>MIND BLOWN!
+Because 2 x_b - x_{last} + \mathbb{I}(x_b = 0) - \mathbb{I}(x_b = 9) only depends on x_b and x_{last} <strong>additively</strong>, we can define the effective ball column contribution:
+</p>
+<code>f(x_b) = \begin{cases} 1 &amp; \text{if } x_b = 0 \\ 2 x_b &amp; \text{if } 1 \le x_b \le 8 \\ 17 &amp; \text{if } x_b = 9 \end{cases}</code>
+<p>
+Then for <strong>EVERY SINGLE STATE IN THE ENTIRE GAME</strong> (x_b \in \{0..9\}):
+</p>
+<code>x_{next} = f(x_b) - x_{last}</code>
+<p>
+Let&#39;s verify this!</p>
+<ol>
+<li>x_b = 0, x_{last} = 1 \implies f(0) - 1 = 1 - 1 = 0. (Correct! <code>new_x</code> clamps from <code>-1</code> to <code>0</code>.)</li>
+<li>x_b = 0, x_{last} = 0 \implies f(0) - 0 = 1 - 0 = 1. (Correct! After clamping/bouncing at <code>0</code>, <code>new_x</code> is <code>1</code>.)</li>
+<li>1 \le x_b \le 8 \implies f(x_b) - x_{last} = 2 x_b - x_{last} = x_b + (x_b - x_{last}). (Correct!)</li>
+<li>x_b = 9, x_{last} = 8 \implies f(9) - 8 = 17 - 8 = 9. (Correct! <code>new_x</code> clamps from <code>10</code> to <code>9</code>.)</li>
+<li>x_b = 9, x_{last} = 9 \implies f(9) - 9 = 17 - 9 = 8. (Correct! After clamping/bouncing at <code>9</code>, <code>new_x</code> is <code>8</code>.)</li>
+</ol>
+<p>Wait: is that really exact for every column 0..9 without any interaction term between <code>ball</code> and <code>trail</code>?!
+YES! Because f(x_b) is ONLY a function of x_b (<code>channel 3</code> column), and -x_{last} is ONLY a function of x_{last} (<code>channel 4</code> column)!
+That means a <strong>SINGLE LINEAR DOT PRODUCT</strong> with the input vector x computes the exact next column x_{next} of the ball, including wall reflections!</p>
+<p>Let&#39;s pause and appreciate this:
+In <code>channel 3</code> (ball), if we set the weight for column c \in \{0..9\} to:
+</p>
+<code>w_{\text{ball}}(c) = [1, 2, 4, 6, 8, 10, 12, 14, 16, 17]_c</code>
+<p>
+and in <code>channel 4</code> (trail), we set the weight for column c \in \{0..9\} to:
+</p>
+<code>w_{\text{trail}}(c) = [0, -1, -2, -3, -4, -5, -6, -7, -8, -9]_c</code>
+<p>
+then for any input state x, the linear sum over <code>channel 3</code> and <code>channel 4</code> is <strong>literally the exact integer x_{next} \in \{0..9\}</strong>!</p>
+<p>Wait: what should the target paddle column x_{target} be at each row y_b?
+Let&#39;s check what happens at y_b = 8 vs y_b &lt; 8:</p>
+<ul>
+<li>Suppose for rows y_b \in \{0..7\}, the paddle targets x_{target} = x_{next} = f(x_b) - x_{last}.<ul>
+<li>Then while the ball is above row 8, at every step t, the paddle moves toward x_{next}(t) = x_b(t+1).</li>
+<li>Once the paddle catches up to the ball&#39;s horizontal coordinate, at step t we have x_p(t) = x_b(t).</li>
+<li>Since x_{target}(t) = x_{next}(t) = x_b(t+1), the paddle sees x_{target}(t) - x_p(t) = x_b(t+1) - x_b(t) \in \{-1, 0, +1\}, so the paddle moves by \Delta x_p = x_b(t+1) - x_b(t)!</li>
+<li>Consequently, at step t+1, the paddle is at x_p(t+1) = x_b(t+1)!</li>
+<li>In particular, when the ball arrives at row y_b = 8 (moving down from row 7), the paddle is ALREADY at x_p = x_b!</li>
+</ul>
+</li>
+<li>Now, what should x_{target} be when the ball is at row y_b = 8?<ul>
+<li>Let&#39;s check both possibilities at y_b = 8:<ul>
+<li><strong>Case A</strong>: At y_b = 8, we set x_{target} = x_b (instead of x_{next}), OR we set x_{target} = 0.5 x_b + 0.5 x_{next}?</li>
+<li>Wait: let&#39;s trace carefully! Suppose the ball is at y_b = 8 moving down-right (x_b = 5, x_{last} = 4, x_{next} = 6).<ul>
+<li><strong>Subcase 1</strong>: The paddle is already at x_p = 5 = x_b (which is the normal case because at y_b = 7 it targeted x_{next}(7) = 5).<ul>
+<li>If at y_b = 8 the policy chooses <strong>No-Op</strong> (because x_{target} = x_b = 5 = x_p):<ul>
+<li>With 90% probability (<code>no-op</code> executes): <code>self.pos</code> remains <code>5</code>. Since <code>self.ball_x == 5 == self.pos</code>, the ball is caught via <code>if (self.ball_x == self.pos):</code>! And better yet, <code>self.ball_dir = [3,2,1,0][2] = 1</code> (up-right), so the ball keeps moving right instead of retracing its path!</li>
+<li>With 10% probability (sticky action repeats the previous step&#39;s action, which was <code>&#39;r&#39;</code> since the paddle moved from 4 to 5 on the previous step): <code>self.pos</code> becomes <code>6</code>. Since <code>new_x == 6 == self.pos</code>, the ball is STILL CAUGHT via <code>elif (new_x == self.pos):</code>!</li>
+</ul>
+</li>
+<li>What if instead at y_b = 8 the policy targeted x_{next} = 6 (choosing <code>&#39;r&#39;</code>) when x_p = 5?<ul>
+<li>Then <code>self.pos</code> becomes <code>6 = new_x</code>, so <code>elif (new_x == self.pos):</code> always triggers (<code>ball_dir</code> reverses both horizontally and vertically, retracing its exact trajectory back to the same brick/wall, which can create closed loops!).</li>
+<li>Even worse: what if x_p was somehow ahead at x_p = 6 = x_{next} (e.g., if the ball bounced at a wall or paddle was approaching from the right)?<ul>
+<li>If x_p = 6 = x_{next} and the policy targets x_b = 5 (choosing <code>&#39;l&#39;</code>), then:<ul>
+<li>With 90% probability (<code>&#39;l&#39;</code> executes): <code>self.pos</code> becomes <code>5 = ball_x</code> \implies caught via <code>ball_x == pos</code>!</li>
+<li>With 10% probability (sticky action repeats <code>no-op</code> or <code>&#39;l&#39;</code>): if previous action was <code>no-op</code>, <code>self.pos</code> stays <code>6 = new_x</code> \implies caught via <code>new_x == pos</code>! Wait: what if the paddle was moving left from 7 to 6 on the previous step (so previous action was <code>&#39;l&#39;</code>), and at y_b = 8 it is at x_p = 6 = x_{next}?</li>
+<li>Let&#39;s trace that! Suppose at y_b = 7, the ball was at x_b = 4 \to 5, and the paddle was at x_p = 7. At y_b = 7, the paddle moved left (<code>&#39;l&#39;</code>) from 7 to 6. Now at y_b = 8, the ball is at x_b = 5 moving to x_{next} = 6, and the paddle is at x_p = 6!</li>
+<li>Look at what happens at y_b = 8 when x_b = 5, x_{next} = 6, x_p = 6 and previous action was <code>&#39;l&#39;</code>:<ul>
+<li>If the policy chooses <code>no-op</code>:<ul>
+<li>90% <code>no-op</code> \implies <code>pos = 6 = new_x</code> (CAUGHT!).</li>
+<li>10% sticky <code>&#39;l&#39;</code> \implies <code>pos = 5 = ball_x</code> (CAUGHT!).</li>
+</ul>
+</li>
+<li>Whereas if the policy chose <code>&#39;l&#39;</code> (to go to x_b = 5), both <code>&#39;l&#39;</code> and sticky <code>&#39;l&#39;</code> give <code>pos = 5 = ball_x</code> (ALSO CAUGHT!).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Subcase 2</strong>: What if at y_b = 8 (x_b = 5, x_{next} = 6), the paddle is behind at x_p = 4?<ul>
+<li>To have any chance of catching the ball, the paddle MUST move right (<code>&#39;r&#39;</code>) to reach <code>pos = 5 = ball_x</code>!</li>
+<li>Notice that for x_p = 4, BOTH x_b = 5 &gt; 4 and x_{next} = 6 &gt; 4 tell the paddle to move <strong>Right</strong> (<code>&#39;r&#39;</code>)!</li>
+</ul>
+</li>
+<li><strong>Subcase 3</strong>: What if at y_b = 8 (x_b = 5, x_{next} = 6), the paddle is at x_p = 7?<ul>
+<li>To catch the ball at <code>new_x = 6</code>, the paddle MUST move left (<code>&#39;l&#39;</code>) to reach <code>pos = 6 = new_x</code>!</li>
+<li>Notice that for x_p = 7, BOTH x_b = 5 &lt; 7 and x_{next} = 6 &lt; 7 tell the paddle to move <strong>Left</strong> (<code>&#39;l&#39;</code>)!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Look at the four possible relationships between x_p and \{x_b, x_{next}\} when the ball is at y_b = 8 (say with x_b = 5, x_{next} = 6):</p>
+<ol>
+<li>x_p \le 4 (x_p &lt; \min(x_b, x_{next})): MUST choose <strong>Right</strong> (<code>&#39;r&#39;</code>) so <code>pos</code> reaches <code>5 = ball_x</code>.</li>
+<li>x_p \ge 7 (x_p &gt; \max(x_b, x_{next})): MUST choose <strong>Left</strong> (<code>&#39;l&#39;</code>) so <code>pos</code> reaches <code>6 = new_x</code>.</li>
+<li>x_p = 5 (x_p = x_b):<ul>
+<li>Since the paddle was either at 4 moving right (<code>&#39;r&#39;</code>) or at 5 doing <code>no-op</code>, if we choose <strong>No-Op</strong>, then <code>no-op</code> gives <code>pos = 5 = ball_x</code> (CAUGHT, forward bounce!) and sticky <code>&#39;r&#39;</code> gives <code>pos = 6 = new_x</code> (CAUGHT!).</li>
+</ul>
+</li>
+<li>x_p = 6 (x_p = x_{next}):<ul>
+<li>Since the paddle was either at 7 moving left (<code>&#39;l&#39;</code>) or at 6 doing <code>no-op</code>, if we choose <strong>No-Op</strong> (or <code>&#39;l&#39;</code>), then <code>no-op</code> gives <code>pos = 6 = new_x</code> (CAUGHT!) and sticky <code>&#39;l&#39;</code> gives <code>pos = 5 = ball_x</code> (CAUGHT, forward bounce!).</li>
+</ul>
+</li>
+</ol>
+<p>HOLD EVERYTHING!
+Look at conditions 1, 2, 3, 4 at y_b = 8:
+At y_b = 8, the winning positions where <strong>No-Op</strong> catches the ball (even under sticky actions!) are <strong>BOTH x_p = x_b AND x_p = x_{next}</strong>!
+And what is the midpoint between x_b and x_{next}?
+</p>
+<code>x_{\text{mid}} = \frac{x_b + x_{next}}{2}</code>
+<p>
+Since |x_{next} - x_b| \le 1:</p>
+<ul>
+<li>If x_b = 5 and x_{next} = 6, then x_{\text{mid}} = 5.5!<ul>
+<li>For x_p \le 4: x_{\text{mid}} - x_p \ge +1.5 \implies <strong>Right</strong>!</li>
+<li>For x_p \ge 7: x_{\text{mid}} - x_p \le -1.5 \implies <strong>Left</strong>!</li>
+<li>For x_p = 5: x_{\text{mid}} - x_p = +0.5 \implies within deadzone [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+<li>For x_p = 6: x_{\text{mid}} - x_p = -0.5 \implies within deadzone [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+</ul>
+</li>
+<li>What if x_b = 0, x_{last} = 1 so x_{next} = 0? Then x_{\text{mid}} = 0:<ul>
+<li>For x_p = 0: x_{\text{mid}} - x_p = 0 \implies <strong>No-Op</strong>!</li>
+<li>For x_p \ge 1: x_{\text{mid}} - x_p \le -1 \implies <strong>Left</strong>!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A MINUTE!
+Let&#39;s check that!
+If at y_b = 8, the target is x_{\text{mid}} = \frac{x_b + x_{next}}{2} and our deadzone for <code>No-Op</code> is |x_{\text{target}} - x_p| &lt; 0.75:</p>
+<ul>
+<li>Whenever x_p \in \{x_b, x_{next}\} at y_b = 8, |x_{\text{mid}} - x_p| \le 0.5 &lt; 0.75, so the network outputs <strong>No-Op</strong>!
+-Wait: what if at y_b = 8, x_p = 6 = x_{next} (while x_b = 5), and on the previous step (y_b = 7) the paddle was at x_p = 5 and moved right (<code>&#39;r&#39;</code>) to 6?
+-Wait: why would the paddle move from 5 to 6 at y_b = 7 if the ball was at y_b = 7, x_b = 4 \to 5?<ul>
+<li>At y_b = 7, the ball was at x_b(7) = 4 with x_{next}(7) = 5. So at y_b = 7, if the paddle was at 5, x_{next}(7) - x_p(7) = 5 - 5 = 0, so the paddle did <strong>No-Op</strong> (not <code>&#39;r&#39;</code>)!</li>
+<li>The ONLY way the paddle could arrive at x_p(8) = 6 when x_b(8) = 5 is from x_p(7) = 7 (moving left <code>&#39;l&#39;</code>) or x_p(7) = 6 (<code>no-op</code>)!</li>
+<li>And the ONLY way the paddle could arrive at x_p(8) = 5 when x_b(8) = 5 is from x_p(7) = 4 (moving right <code>&#39;r&#39;</code>) or x_p(7) = 5 (<code>no-op</code>)!</li>
+<li>Therefore:<ul>
+<li>If x_p(8) = 5 = x_b, the previous action was <code>&#39;r&#39;</code> or <code>no-op</code> \implies <code>no-op</code> gives <code>pos = 5 = ball_x</code> (caught!) and sticky <code>&#39;r&#39;</code> gives <code>pos = 6 = new_x</code> (caught!).</li>
+<li>If x_p(8) = 6 = x_{next}, the previous action was <code>&#39;l&#39;</code> or <code>no-op</code> \implies <code>no-op</code> gives <code>pos = 6 = new_x</code> (caught!) and sticky <code>&#39;l&#39;</code> gives <code>pos = 5 = ball_x</code> (caught!).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Let&#39;s double check this! Is there ANY case at y_b = 7 \to 8 where x_p(8) = 6 could have come from <code>&#39;r&#39;</code> (i.e. x_p(7) = 5 moved right to 6)?
+Let&#39;s check! At y_b = 7, what is x_b(7) and x_{next}(7) when at y_b = 8 we have x_b(8) = 5, x_{next}(8) = 6?
+Since the ball moved from y_b = 7 to y_b = 8, x_b(8) IS x_{next}(7)!
+So at y_b = 7, x_{next}(7) = x_b(8) = 5!
+If the target at y_b = 7 is x_{next}(7) = 5, then a paddle at x_p(7) = 5 has error 5 - 5 = 0, so it chooses <strong>No-Op</strong>! It would NEVER move right to 6!
+And if the paddle at y_b = 7 was at x_p(7) = 4, it moves right (<code>&#39;r&#39;</code>) to x_p(8) = 5, where its previous action is <code>&#39;r&#39;</code>, and at y_b = 8 it is at x_p(8) = 5 = x_b(8), where both <code>no-op</code> (<code>pos=5</code>) and sticky <code>&#39;r&#39;</code> (<code>pos=6</code>) catch the ball!</p>
+<p>Wait: what if at y_b = 6, the paddle was at x_p(6) = 4, and at y_b = 6 (x_b(6)=3, x_{next}(6)=4) it chose <code>no-op</code>, etc.?
+Let&#39;s trace an entire downward trajectory of the ball from row 3 to row 8!
+Suppose the ball is moving down-right:</p>
+<ul>
+<li>t=0: y_b = 3, x_b = 0, x_{next} = 1. Target at y_b = 3 is x_{next} = 1.</li>
+<li>t=1: y_b = 4, x_b = 1, x_{next} = 2. Target at y_b = 4 is x_{next} = 2.</li>
+<li>t=2: y_b = 5, x_b = 2, x_{next} = 3. Target at y_b = 5 is x_{next} = 3.</li>
+<li>t=3: y_b = 6, x_b = 3, x_{next} = 4. Target at y_b = 6 is x_{next} = 4.</li>
+<li>t=4: y_b = 7, x_b = 4, x_{next} = 5. Target at y_b = 7 is x_{next} = 5.</li>
+<li>t=5: y_b = 8, x_b = 5, x_{next} = 6. Target at y_b = 8 is x_{\text{mid}} = 5.5.</li>
+</ul>
+<p>Now trace the paddle starting from <code>pos = 4</code> at reset (t=0):</p>
+<ul>
+<li>t=0 (y_b=3, target 1, x_p=4): error = 1 - 4 = -3 \implies chooses <code>&#39;l&#39;</code>. <code>pos</code> becomes 3.</li>
+<li>t=1 (y_b=4, target 2, x_p=3): error = 2 - 3 = -1 \implies chooses <code>&#39;l&#39;</code>. <code>pos</code> becomes 2.</li>
+<li>t=2 (y_b=5, target 3, x_p=2): error = 3 - 2 = +1 \implies chooses <code>&#39;r&#39;</code>. (Even if 10% sticky <code>&#39;l&#39;</code> happens here, <code>pos</code> becomes 1, and it still has 3 full steps t=3,4,5 to move right to 5!) Assuming <code>&#39;r&#39;</code>, <code>pos</code> becomes 3.</li>
+<li>t=3 (y_b=6, target 4, x_p=3): error = 4 - 3 = +1 \implies chooses <code>&#39;r&#39;</code>. <code>pos</code> becomes 4. (Previous action is now <code>&#39;r&#39;</code>.)</li>
+<li>t=4 (y_b=7, target 5, x_p=4): error = 5 - 4 = +1 \implies chooses <code>&#39;r&#39;</code>.<ul>
+<li>If <code>&#39;r&#39;</code> executes (90%): at t=5 (y_b=8), <code>pos = 5</code> and previous action is <code>&#39;r&#39;</code>. At t=5, error is 5.5 - 5 = +0.5 \in [-0.75, +0.75] \implies chooses <code>no-op</code>!<ul>
+<li>At t=5, if <code>no-op</code> executes (90%): <code>pos = 5 = ball_x</code> \implies <strong>CAUGHT (forward reflection <code>dir 2 -&gt; 1</code>)!</strong></li>
+<li>At t=5, if sticky <code>&#39;r&#39;</code> executes (10%): <code>pos = 6 = new_x</code> \implies <strong>CAUGHT (corner reflection <code>dir 2 -&gt; 0</code>)!</strong></li>
+</ul>
+</li>
+<li>What if at t=4 (y_b=7), a 10% sticky action happened?<ul>
+<li>Since the action at t=3 was ALREADY <code>&#39;r&#39;</code>, the sticky action at t=4 ALSO executes <code>&#39;r&#39;</code>! So <code>pos</code> STILL becomes 5 with 100% certainty (unless sticky <code>&#39;l&#39;</code> happened at BOTH t=2, t=3, and t=4, which has probability 0.1^3 = 0.001, and even then at t=5 <code>pos=4</code> chooses <code>&#39;r&#39;</code> to reach <code>pos=5</code>!).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Re-read that last bullet point!
+Because at t=2, 3, 4 the paddle is moving along with the ball at speed 1 (<code>pos = 2 -&gt; 3 -&gt; 4 -&gt; 5</code>), its chosen action at t=2, 3, 4 is <code>&#39;r&#39;</code>, <code>&#39;r&#39;</code>, <code>&#39;r&#39;</code>!
+So at t=3 and t=4, <strong>the previous action is ALREADY <code>&#39;r&#39;</code>, which means a 10% sticky action at t=3 or t=4 has ZERO effect on the paddle&#39;s movement!</strong>
+And then at t=5 (y_b = 8), <code>pos</code> is guaranteed to be 5 = x_b, where choosing <code>no-op</code> catches the ball whether <code>no-op</code> executes (<code>pos = 5 = ball_x</code>) OR sticky <code>&#39;r&#39;</code> executes (<code>pos = 6 = new_x</code>)!</p>
+<p>Let&#39;s check if there is ANY flaw with this!
+Wait: what if the ball started at x_b = 0 at y_b = 3 and went all the way down to y_b = 8 without any sticky <code>&#39;l&#39;</code> at t=2, vs what if a sticky <code>&#39;l&#39;</code> happened at t=2?
+Let&#39;s trace if a sticky <code>&#39;l&#39;</code> happened at t=2 (y_b = 5):</p>
+<ul>
+<li>At t=2, <code>pos</code> goes from 2 to 1 (instead of 3).</li>
+<li>At t=3 (y_b = 6, target 4, x_p = 1): chooses <code>&#39;r&#39;</code>, <code>pos</code> goes to 2.</li>
+<li>At t=4 (y_b = 7, target 5, x_p = 2): chooses <code>&#39;r&#39;</code>, <code>pos</code> goes to 3.</li>
+<li>At t=5 (y_b = 8, target 5.5, x_p = 3): chooses <code>&#39;r&#39;</code>, <code>pos</code> goes to 4 — wait: if <code>pos</code> went to 1 at t=2, it is 1 step too far left to reach 5 by t=5!
+Why did <code>pos</code> go to 2 at t=1 in the first place?
+Look at t=0 and t=1:
+At t=0, the ball is at x_b = 0 moving <strong>right</strong> toward x_b = 5 at y_b = 8, and the paddle started at x_p = 4!
+Why did the paddle move LEFT from 4 to 3 to 2, only to turn around and move RIGHT from 2 to 3 to 4 to 5?!
+Because at t=0 (y_b = 3), the ball was at x_b = 0, x_{next} = 1, and our naive target was x_{next} = 1 instead of accounting for the ball&#39;s horizontal velocity v_x = +1 over the remaining vertical distance!</li>
+</ul>
+<p>AHA!! Look what we just discovered:
+If the ball is at y_b = 3, x_b = 0 moving right (v_x = +1), and the paddle is at x_p = 4, moving left to x_p = 2 and then turning around to chase the ball back to x_p = 5 wastes movements and creates unnecessary direction reversals (where sticky actions could delay the turnaround)!
+Even more importantly: what if the ball is at the top of the screen (say y_b = 0, x_b = 0) moving down-right (v_x = +1), and the paddle is at x_p = 0? That&#39;s fine (8 steps to go 8 columns).
+What if the ball is at y_b = 4, x_b = 4 moving down-right (v_x = +1), so it will hit y_b = 9 at x = 9, and the paddle is currently at x_p = 0?
+The ball is at x_b = 4 &lt; 9, so x_{next} = 5 &gt; x_p = 0, which moves the paddle right at every step (5 steps to reach x_p = 5? Wait: if x_p = 0 and the ball is at y_b = 4, x_b = 4 moving down-right, the ball reaches y_b = 8, x_b = 8 in 4 steps, and the paddle can only move 5 columns in 5 steps, so why was the paddle at x_p = 0 when the ball was at y_b = 4, x_b = 4?).
+Because on the way UP and across the bricks, the paddle should ALSO track the ball&#39;s horizontal motion (with a lead in the direction of v_x)!</p>
+<p>Let&#39;s analyze how much horizontal lead \alpha v_x is optimal!
+Suppose we set the target column to:</p>
+<ul>
+<li>For y_b \le 7:
+<code>x_{\text{target}} = x_{next} + \alpha (x_{next} - x_{last\_eff})</code>
+or simply:
+<code>x_{\text{target}} = x_b + k \cdot v_x</code>
+where v_x is the horizontal velocity!
+Let&#39;s check what happens if k = 2 (or k = 1.5 or k = 1) for y_b \le 7:
+Wait: if k = 1 (so x_{\text{target}} = x_{next} = x_b + v_x):</li>
+<li>When the paddle catches up to the ball, x_p = x_b while the ball is in flight (y_b \le 7), and at y_b = 8, x_p = x_b.
+What if k = 2 (so x_{\text{target}} = x_b + 2 v_x) for y_b \le 6, k = 1 for y_b = 7, and k = 0.5 for y_b = 8?
+Wait: why would k &gt; 1 be better or worse than k = 1?
+Let&#39;s trace!
+Suppose the ball is moving right (v_x = +1).
+If x_{\text{target}} = x_b + 2 v_x for all y_b \le 7, then once the paddle catches up, the paddle travels at x_p = x_b + 1 = x_{next} (1 column ahead of x_b, i.e. directly at x_{next}!).
+Wait: if the paddle travels 1 column ahead of x_b, then when the ball is at y_b = 8 moving right (x_b = 5, x_{next} = 6), the paddle is at x_p = 6 = x_{next} (or if it moves one more step right, x_p = 7, which would OVERSHOOT x_{next} = 6!).
+We MUST NOT let the paddle overshoot x_{next} at y_b = 8!
+Why did x_{\text{target}} = x_{next} (k = 1) NEVER overshoot at y_b = 8?
+Let&#39;s check!
+With x_{\text{target}} = x_{next} (k = 1) for y_b \le 7:</li>
+<li>At step t (when y_b \le 7), the paddle compares x_p(t) to x_{next}(t) = x_b(t+1).</li>
+<li>Since the paddle can move at most 1 step toward x_b(t+1):<ul>
+<li>If x_p(t) &lt; x_b(t+1), the paddle moves right (<code>&#39;r&#39;</code>), so x_p(t+1) \le x_b(t+1).</li>
+<li>If x_p(t) = x_b(t+1), the paddle does <code>no-op</code> (with 90% prob) so x_p(t+1) = x_b(t+1), OR if sticky action repeats a previous <code>&#39;r&#39;</code> (10% prob), wait:</li>
+<li>Let&#39;s check what happens if x_p(t) = x_b(t+1) and a sticky <code>&#39;r&#39;</code> happens!<ul>
+<li>How could x_p(t) equal x_b(t+1) when the ball is moving right (x_b(t+1) = x_b(t) + 1)?</li>
+<li>Only if at step t, the paddle was ALREADY at x_b(t) + 1 (ahead of the ball), which means at step t-1 the paddle was at x_b(t) + 1 (doing <code>no-op</code>) or at x_b(t) + 2 (moving <code>&#39;l&#39;</code>)! It could NEVER have just moved <code>&#39;r&#39;</code> to reach x_b(t) + 1, because at step t-1 the target was x_{next}(t-1) = x_b(t)!</li>
+<li>Let&#39;s verify that by induction!
+<strong>Theorem</strong>: Under target x_{\text{target}}(t) = x_{next}(t) for y_b \le 7, if the ball is moving right (v_x = +1) and the paddle starts at x_p(t_0) \le x_b(t_0), then for all subsequent steps t, x_p(t) \le x_b(t) holds <strong>even with arbitrary sticky actions!</strong>
+<strong>Proof</strong>:<ul>
+<li>Suppose x_p(t) \le x_b(t). Since v_x = +1, x_{next}(t) = x_b(t) + 1 &gt; x_p(t).</li>
+<li>Whether the paddle moves right (\Delta x_p = +1) or does <code>no-op</code>/left (\Delta x_p \le 0) due to sticky actions, at the next step:
+<code>x_p(t+1) \le x_p(t) + 1 \le x_b(t) + 1 = x_b(t+1).</code>
+</li>
+<li>Therefore, x_p(t) NEVER exceeds x_b(t) while chasing from the left!</li>
+<li>And similarly, what if the paddle started to the RIGHT of a right-moving ball, say x_p(t_0) &gt; x_b(t_0) (like at episode reset where x_b = 0, x_p = 4)?<ul>
+<li>While x_p(t) &gt; x_{next}(t) = x_b(t) + 1, the paddle moves left (\Delta x_p = -1) toward the ball.</li>
+<li>As soon as the ball and paddle meet, either:<ul>
+<li>Case 1: They reach x_p(t) = x_{next}(t) = x_b(t) + 1. Then at step t, error is x_{next}(t) - x_p(t) = 0 \implies policy chooses <code>no-op</code>!<ul>
+<li>If <code>no-op</code> executes (90%): x_p(t+1) = x_b(t) + 1 = x_b(t+1), and the previous action is now <code>no-op</code>! From t+1 onward, x_p = x_b!</li>
+<li>If sticky <code>&#39;l&#39;</code> executes (10%): x_p(t+1) = x_b(t) = x_b(t+1) - 1 &lt; x_b(t+1), and at step t+1 (e.g. y_b = 5), the paddle is only 1 step behind x_b(t+1) with x_p(t+1) + 1 = x_b(t+1), so it moves right along with the ball!</li>
+</ul>
+</li>
+<li>Case 2: They cross from x_p(t-1) = x_b(t-1) + 2 = x_{next}(t-1) + 1 (moving <code>&#39;l&#39;</code>) directly to x_p(t) = x_b(t-1) + 1 = x_b(t).<ul>
+<li>Wait: look at Case 2! At step t-1, x_b(t-1) = 1, x_{next}(t-1) = 2, and x_p(t-1) = 3.</li>
+<li>Since x_p(t-1) = 3 &gt; x_{next}(t-1) = 2, at step t-1 the paddle chooses <code>&#39;l&#39;</code> and moves to x_p(t) = 2, while the ball moves to x_b(t) = 2!</li>
+<li>Then at step t, x_p(t) = 2 = x_b(t), and x_{next}(t) = 3, so the paddle reverses to <code>&#39;r&#39;</code> while its previous action at t-1 was <code>&#39;l&#39;</code>!</li>
+<li>Look why that turnaround happened at x_b = 2: because at step t-1, the paddle at x_p = 3 moved left to 2, and then at step t had to move right from 2 back to 3!</li>
+<li>If instead the paddle at x_p = 3 had waited (<code>no-op</code>) when x_{next}(t-1) = 2 and v_x = +1 (i.e. if the target for y_b \le 6 was x_b + 2 v_x = x_{next} + v_x), the paddle at x_p = 3 would see target 1 + 2 = 3 = x_p, so it would choose <strong>No-Op</strong> at step t-1, <strong>No-Op</strong> at step t (Wait: no, at step t the ball is at 2, moving to 3!), so the paddle would just sit at 3 doing <code>no-op</code> until the ball reaches 3, and NEVER move left at all!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Look at that example again!
+Suppose at t-1, the ball is at x_b = 1 moving right (x_{next} = 2, and at step t+1 it will be at x = 3), and the paddle is at x_p = 3.
+Why on earth should a paddle at x_p = 3 step left to 2 at step t-1 and then immediately step right back to 3 at step t?!
+Stepping 3 \to 2 \to 3 is completely pointless when the ball is coming to 3 anyway! Worse, stepping left to 2 sets the previous action to <code>&#39;l&#39;</code>, risking a sticky <code>&#39;l&#39;</code> to 1 right when the paddle needs to go right!
+Whereas if the paddle sees that the ball is moving right (v_x = +1) and is only 2 steps away from x_p = 3 while y_b \le 6, waiting at 3 (<code>no-op</code>) means:</p>
+<ol>
+<li>The paddle doesn&#39;t make a useless left- then right-turn!</li>
+<li>Its previous action is <code>no-op</code> instead of <code>&#39;l&#39;</code>!</li>
+</ol>
+<p>Let&#39;s check: WHY did x_{\text{target}} = x_{next} = x_b + v_x make the paddle step from 3 to 2 when x_b = 1, v_x = +1?
+Because x_{next} - x_p = 2 - 3 = -1, which only looks 1 step ahead (<code>new_x</code>) instead of having a wider &quot;wait for the ball if it&#39;s coming toward me&quot; zone, OR looking 1.5 steps ahead!
+Wait: what if for y_b \le 7, the target is:
+</p>
+<code>x_{\text{target}} = x_b + 1.5 v_x = 0.5 x_{next} + 0.5 (x_{next} + v_x) = x_{next} + 0.5 (x_{next} - x_b)</code>
+<p>
+Let&#39;s test x_{\text{target}} = x_{next} + 0.35 (x_{next} - x_b) (or let&#39;s test what happens with deadzone [-0.75, +0.75])!
+Hold on! Let&#39;s calculate the numbers with x_{\text{target}} = x_{next} = x_b + v_x vs x_{next} + 0.4 v_x:
+Suppose v_x = +1 (ball moving right, x_{next} = x_b + 1), and our <code>no-op</code> deadzone is |x_{\text{target}} - x_p| &lt; 0.75:
+Look at x_{\text{target}} = x_{next} + 0.4 (x_{next} - x_b) = x_b + 1.4 when v_x = +1:</p>
+<ul>
+<li>If x_p \le x_b: x_{\text{target}} - x_p \ge 1.4 &gt; 0.75 \implies <strong>Move Right (<code>&#39;r&#39;</code>)</strong>!</li>
+<li>If x_p = x_b + 1 = x_{next}: x_{\text{target}} - x_p = +0.4 \in [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+<li>If x_p = x_b + 2 = x_{next} + 1: x_{\text{target}} - x_p = -0.6 \in [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+<li>If x_p \ge x_b + 3 = x_{next} + 2: x_{\text{target}} - x_p \le -1.6 &lt; -0.75 \implies <strong>Move Left (<code>&#39;l&#39;</code>)</strong>!</li>
+</ul>
+<p>WAIT A SECOND!
+Look at those four lines for x_{\text{target}} = x_b + 1.4 v_x with deadzone 0.75:
+Let&#39;s trace what happens from reset (<code>ball_y = 3, ball_x = 0, dir = 2 (down-right), pos = 4</code>):</p>
+<ul>
+<li>t=0 (y_b=3, x_b=0, x_{next}=1, v_x=+1): x_{\text{target}} = 1.4.
+Paddle is at x_p = 4. x_{\text{target}} - x_p = 1.4 - 4 = -2.6 &lt; -0.75 \implies <strong>Move Left (<code>&#39;l&#39;</code>)</strong> to <code>pos = 3</code>.</li>
+<li>t=1 (y_b=4, x_b=1, x_{next}=2, v_x=+1): x_{\text{target}} = 2.4.
+Paddle is at x_p = 3. x_{\text{target}} - x_p = 2.4 - 3 = -0.6 \in [-0.75, +0.75] \implies <strong>No-Op</strong>! <code>pos</code> stays at <code>3</code>!</li>
+<li>t=2 (y_b=5, x_b=2, x_{next}=3, v_x=+1): x_{\text{target}} = 3.4.
+Paddle is at x_p = 3. x_{\text{target}} - x_p = 3.4 - 3 = +0.4 \in [-0.75, +0.75] \implies <strong>No-Op</strong>! <code>pos</code> stays at <code>3</code>!
+(And notice: even if at t=1 a 10% sticky <code>&#39;l&#39;</code> happened and moved <code>pos</code> to <code>2</code>, at t=2 we have x_p = 2 = x_b, so 3.4 - 2 = +1.4 &gt; 0.75 \implies <code>&#39;r&#39;</code>! And if <code>no-op</code> happened at t=1, the previous action at t=2 is now <code>no-op</code>, so at t=2 <code>pos</code> stays at <code>3</code> with 100% probability!)</li>
+<li>t=3 (y_b=6, x_b=3, x_{next}=4, v_x=+1): x_{\text{target}} = 4.4.
+Paddle is at x_p = 3 = x_b. x_{\text{target}} - x_p = 4.4 - 3 = +1.4 &gt; 0.75 \implies <strong>Move Right (<code>&#39;r&#39;</code>)</strong> to <code>pos = 4</code>!</li>
+<li>t=4 (y_b=7, x_b=4, x_{next}=5, v_x=+1): x_{\text{target}} = 5.4.
+Paddle is at x_p = 4 = x_b. x_{\text{target}} - x_p = 5.4 - 4 = +1.4 &gt; 0.75 \implies <strong>Move Right (<code>&#39;r&#39;</code>)</strong> to <code>pos = 5</code>!</li>
+<li>t=5 (y_b=8, x_b=5, x_{next}=6, v_x=+1):
+Wait: at y_b = 8, what should x_{\text{target}} be?
+If at y_b = 8, x_{\text{target}} = x_{\text{mid}} = x_b + 0.5 v_x = 5.5 (instead of x_b + 1.4 v_x = 6.4):<ul>
+<li>If x_p = 5 = x_b: 5.5 - 5 = +0.5 \in [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+<li>If x_p = 6 = x_{next}: 5.5 - 6 = -0.5 \in [-0.75, +0.75] \implies <strong>No-Op</strong>!</li>
+<li>If x_p \le 4: 5.5 - x_p \ge +1.5 &gt; 0.75 \implies <strong>Move Right (<code>&#39;r&#39;</code>)</strong>!</li>
+<li>If x_p \ge 7: 5.5 - x_p \le -1.5 &lt; -0.75 \implies <strong>Move Left (<code>&#39;l&#39;</code>)</strong>!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Look at what happens at y_b = 7 if x_p(7) = 6 = x_{next}(7) + 1 (i.e. x_p was sitting at x_b + 2 doing <code>no-op</code>):</p>
+<ul>
+<li>At t=4 (y_b = 7, x_b = 4, x_{next} = 5), if x_p = 6, then with x_{\text{target}}(7) = 5.4, 5.4 - 6 = -0.6 \in [-0.75, +0.75], so at y_b = 7 it does <strong>No-Op</strong> and stays at x_p = 6!</li>
+<li>Then at t=5 (y_b = 8, x_b = 5, x_{next} = 6), the paddle is ALREADY at x_p = 6 = x_{next}(8), with previous action <code>no-op</code>, and at y_b = 8 it ALSO does <strong>No-Op</strong> and catches the ball at <code>pos = 6 = new_x</code> with 100% probability!</li>
+<li>WAIT: what if at y_b = 7, the ball was at x_b(7) = 9, x_{last}(7) = 8, so x_{next}(7) = 9, and at y_b = 8 the ball is at x_b(8) = 9, x_{last}(8) = 9, so x_{next}(8) = 8?
+Let&#39;s check the wall bounce near y_b = 7, 8!
+This is super important—let&#39;s trace EVERY wall bounce case near the bottom (y_b = 6, 7, 8)!</li>
+</ul>
+<h4>2. Exact Analysis of Wall Bounces Near the Bottom (y_b = 6, 7, 8)</h4>
+<p>Let&#39;s trace all possible wall bounces when the ball is moving down-right (<code>dir = 2</code>, symmetric to down-left <code>dir = 3</code>):</p>
+<p><strong>Wall Case 1: Ball hits column 9 at y_b = 8</strong></p>
+<ul>
+<li>y_b = 6: <code>ball_x = 7, last_x = 6</code> (x_{next} = 8).</li>
+<li>y_b = 7: <code>ball_x = 8, last_x = 7</code> (x_{next} = 9).</li>
+<li>y_b = 8: <code>ball_x = 9, last_x = 8</code>.
+In <code>act()</code> from y_b = 8: <code>new_x = 10 &gt; 9</code> \implies <code>new_x = 9</code>, <code>ball_dir</code> becomes <code>3</code> (down-left), and then <code>elif (new_y == 9):</code> checks <code>if (self.ball_x == self.pos):</code> (<code>pos == 9</code>) <code>elif (new_x == self.pos):</code> (<code>pos == 9</code>)!
+Notice that here, at y_b = 8, BOTH <code>ball_x</code> and <code>new_x</code> are <code>9</code>! So at y_b = 8, <code>pos</code> MUST be <code>9</code>!
+Let&#39;s check what our formula gives:<ul>
+<li>At y_b = 6: x_b = 7, x_{next} = 8.</li>
+<li>At y_b = 7: x_b = 8, x_{next} = 9.</li>
+<li>At y_b = 8: x_b = 9, x_{last} = 8 \implies x_{next} = f(9) - 8 = 17 - 8 = 9!
+And x_{\text{mid}}(8) = \frac{x_b + x_{next}}{2} = \frac{9 + 9}{2} = 9!</li>
+<li>Wait: if at y_b = 6 (x_b = 7, x_{next} = 8), the paddle was at x_p = 7, it moves right to 8.</li>
+<li>At y_b = 7 (x_b = 8, x_{next} = 9), what if x_p = 8?<ul>
+<li>We NEED the paddle at y_b = 7, x_p = 8 to move right (<code>&#39;r&#39;</code>) to 9, OR at y_b = 8, x_p = 8 to move right (<code>&#39;r&#39;</code>) to 9!</li>
+<li>Look at y_b = 8: x_{\text{mid}}(8) = 9. If x_p(8) = 8, then x_{\text{mid}}(8) - x_p(8) = 9 - 8 = +1.0 &gt; 0.75 \implies moves right (<code>&#39;r&#39;</code>) to <code>9</code>!</li>
+<li>Even better: if at y_b = 7 (x_b = 8, x_{next} = 9), x_{\text{target}}(7) \ge 9, then at y_b = 7 a paddle at x_p = 8 ALREADY moves right (<code>&#39;r&#39;</code>) to <code>9</code>, so by y_b = 8 the paddle is ALREADY at <code>pos = 9</code>! And at y_b = 8, even if a sticky <code>&#39;r&#39;</code> repeats, \min(9, 9+1) = 9, so it stays at <code>9</code> with 100% probability!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Wall Case 2: Ball hits column 9 at y_b = 7</strong></p>
+<ul>
+<li>y_b = 5: <code>ball_x = 7, last_x = 6</code> (x_{next} = 8).</li>
+<li>y_b = 6: <code>ball_x = 8, last_x = 7</code> (x_{next} = 9).</li>
+<li>y_b = 7: <code>ball_x = 9, last_x = 8</code> (x_{next} = f(9) - 8 = 9).
+In <code>act()</code> from y_b = 7: <code>new_x</code> clamps from <code>10</code> to <code>9</code> and <code>ball_dir</code> becomes <code>3</code> (down-left).</li>
+<li>y_b = 8: <code>ball_x = 9, last_x = 9</code> (x_{next} = f(9) - 9 = 8).
+In <code>act()</code> from y_b = 8: <code>ball_x = 9</code>, <code>new_x = 8</code>.
+So at y_b = 8, <code>pos = 9</code> (<code>ball_x</code>) AND <code>pos = 8</code> (<code>new_x</code>) BOTH catch the ball!
+And look what our formula gives:<ul>
+<li>At y_b = 6: x_{next} = 9 \implies paddle moves to 8 or 9.</li>
+<li>At y_b = 7: x_b = 9, x_{next} = 9 \implies paddle is at 8 or 9 (and if at 9, target is 9 \implies <code>no-op</code>!).</li>
+<li>At y_b = 8: x_b = 9, x_{next} = 8 \implies x_{\text{mid}}(8) = 8.5!<ul>
+<li>Whether x_p(8) = 8 or x_p(8) = 9, |8.5 - x_p(8)| = 0.5 &lt; 0.75 \implies <strong>No-Op</strong>, catching the ball!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>Wall Case 3: Ball hits column 9 at y_b = 6</strong></p>
+<ul>
+<li>y_b = 6: <code>ball_x = 9, last_x = 8</code> (x_{next} = 9).</li>
+<li>y_b = 7: <code>ball_x = 9, last_x = 9</code> (x_{next} = 8).
+Wait: look at y_b = 7 in Wall Case 3!
+At y_b = 7, <code>ball_x = 9, last_x = 9</code>, so x_b = 9 and x_{next} = 8 (the ball is now moving LEFT: x_{next} - x_b = 8 - 9 = -1)!
+And at y_b = 8: <code>ball_x = 8, last_x = 9</code>, so x_b = 8 and x_{next} = 7!
+Let&#39;s trace the paddle in Wall Case 3:<ul>
+<li>At y_b = 6, the paddle reached x_p = 8 or 9.</li>
+<li>At y_b = 7 (x_b = 9, x_{next} = 8):<ul>
+<li>If at y_b = 7 the target is x_{next} = 8 (or x_{next} + 0.4(x_{next} - x_b) = 7.6):<ul>
+<li>If x_p(7) = 9: 7.6 - 9 = -1.4 &lt; -0.75 \implies paddle moves LEFT (<code>&#39;l&#39;</code>) to x_p(8) = 8!</li>
+<li>If x_p(7) = 8: 7.6 - 8 = -0.4 \in [-0.75, +0.75] \implies paddle does <strong>No-Op</strong> and stays at x_p(8) = 8!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Then at y_b = 8 (x_b = 8, x_{next} = 7, x_{\text{mid}} = 7.5):<ul>
+<li>In BOTH cases, x_p(8) = 8 = x_b(8) (with previous action <code>&#39;l&#39;</code> or <code>no-op</code>)!</li>
+<li>At y_b = 8, x_{\text{mid}} - x_p = 7.5 - 8 = -0.5 \in [-0.75, +0.75] \implies chooses <strong>No-Op</strong>!</li>
+<li>If <code>no-op</code> executes (90%): <code>pos = 8 = ball_x</code> \implies CAUGHT!</li>
+<li>If sticky <code>&#39;l&#39;</code> executes (10%): <code>pos = 7 = new_x</code> \implies CAUGHT!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Check that again!
+In Wall Case 3, why did x_{next} + 0.4(x_{next} - x_b) work seamlessly at y_b = 7 when <code>ball_x = 9, last_x = 9</code>?
+Because we expressed the velocity lead in terms of:
+</p>
+<code>v_x = x_{next} - x_b</code>
+<p>
+instead of x_b - x_{last}!
+LOOK AT WHY THAT MATTERS:
+When <code>ball_x = 9, last_x = 9</code>, x_b - x_{last} = 0, whereas x_{next} - x_b = (17 - 9) - 9 = 8 - 9 = -1, which is the TRUE velocity after the wall reflection!
+And when <code>ball_x = 9, last_x = 8</code>, x_{next} - x_b = (17 - 8) - 9 = 9 - 9 = 0, because the ball is clamping at the wall (<code>new_x = 9</code>) for one step before moving left!
+And since x_{next} = f(x_b) - x_{last} is ALREADY linear in the input channels (<code>ball</code> and <code>trail</code>), ANY linear combination:
+</p>
+<code>x_{\text{target}} = (1 + \alpha) x_{next} - \alpha x_b = (1 + \alpha) f(x_b) - \alpha x_b - (1 + \alpha) x_{last}</code>
+<p>
+is <strong>STILL A SINGLE LINEAR COMBINATION OF THE INPUT CHANNELS!</strong></p>
+<p>Let&#39;s verify this!
+For any \alpha:
+</p>
+<code>(1 + \alpha) x_{next} - \alpha x_b = x_{next} + \alpha (x_{next} - x_b)</code>
+<p>
+uses ONLY the one-hot column of <code>ball</code> (with weight (1 + \alpha) f(c) - \alpha c) and the one-hot column of <code>trail</code> (with weight -(1 + \alpha) c)!
+Let&#39;s check the values of x_{next} + \alpha(x_{next} - x_b) across all cases:</p>
+<ol>
+<li>Interior moving right (1 \le x_b \le 8, x_{last} = x_b - 1 \implies x_{next} = x_b + 1):
+<code>x_{\text{target}} = x_b + 1 + \alpha</code>
+</li>
+<li>Interior moving left (1 \le x_b \le 8, x_{last} = x_b + 1 \implies x_{next} = x_b - 1):
+<code>x_{\text{target}} = x_b - 1 - \alpha</code>
+</li>
+<li>Right wall before clamp (x_b = 9, x_{last} = 8 \implies x_{next} = 9):
+<code>x_{\text{target}} = 9 + \alpha(9 - 9) = 9</code>
+</li>
+<li>Right wall after clamp (x_b = 9, x_{last} = 9 \implies x_{next} = 8):
+<code>x_{\text{target}} = 8 + \alpha(8 - 9) = 8 - \alpha</code>
+</li>
+<li>Left wall before clamp (x_b = 0, x_{last} = 1 \implies x_{next} = 0):
+<code>x_{\text{target}} = 0 + \alpha(0 - 0) = 0</code>
+</li>
+<li>Left wall after clamp (x_b = 0, x_{last} = 0 \implies x_{next} = 1):
+<code>x_{\text{target}} = 1 + \alpha(1 - 0) = 1 + \alpha</code>
+</li>
+</ol>
+<p>Look at cases 1–6:</p>
+<ul>
+<li>For y_b \le 7, if we choose \alpha = 0 (or \alpha = 0.25? Wait—let&#39;s compare \alpha = 0 vs \alpha = 0.25 for y_b \le 7!):
+Wait: let&#39;s check what happens at y_b = 7 under \alpha = 0 vs \alpha = 0.25!
+Suppose the ball is in the interior at y_b = 7 moving right: x_b(7) = 4, x_{next}(7) = 5.
+And on the next step (y_b = 8), the ball will be at x_b(8) = 5, x_{next}(8) = 6, where the winning paddle positions at y_b = 8 are x_p(8) \in \{5, 6\} (provided that if x_p(8) = 6, the previous action at y_b = 7 was NOT <code>&#39;r&#39;</code>)!
+Wait: read that parenthetical again!
+<strong>&quot;provided that if x_p(8) = 6, the previous action at y_b = 7 was NOT <code>&#39;r&#39;</code>!&quot;</strong>
+Let&#39;s check why!
+Suppose at y_b = 8 (x_b(8) = 5, x_{next}(8) = 6), the paddle is at x_p(8) = 6, and at y_b = 8 the policy chooses <code>no-op</code>.<ul>
+<li>If the previous action (at y_b = 7) was <code>&#39;r&#39;</code>, then at y_b = 8 a 10% sticky action would repeat <code>&#39;r&#39;</code>, moving the paddle from 6 to 7, which would MISS the ball (<code>ball_x = 5, new_x = 6, pos = 7</code>)!</li>
+<li>How could the paddle be at x_p(8) = 6 with previous action <code>&#39;r&#39;</code>?
+ONLY if at y_b = 7, the paddle was at x_p(7) = 5 = x_{next}(7) and chose <code>&#39;r&#39;</code>!</li>
+<li>And when does a paddle at x_p(7) = 5 = x_{next}(7) NOT choose <code>&#39;r&#39;</code>?
+Whenever at y_b = 7, x_p = x_{next}(7) = 5 is inside the <code>no-op</code> deadzone!</li>
+<li>Let&#39;s check! If the deadzone is |x_{\text{target}} - x_p| &lt; 0.75, and at y_b = 7 we have x_p = x_{next}(7) = 5:<ul>
+<li>For \alpha = 0: x_{\text{target}}(7) = x_{next}(7) = 5. Then x_{\text{target}}(7) - x_p(7) = 5 - 5 = 0 \in [-0.75, +0.75] \implies chooses <strong>No-Op</strong>!</li>
+<li>For \alpha = 0.4: x_{\text{target}}(7) = 5.4. Then x_{\text{target}}(7) - x_p(7) = 5.4 - 5 = +0.4 \in [-0.75, +0.75] \implies STILL chooses <strong>No-Op</strong>!</li>
+</ul>
+</li>
+<li>In BOTH cases (\alpha = 0 and \alpha = 0.4), a paddle at x_p(7) = 5 = x_{next}(7) chooses <strong>No-Op</strong>, so it NEVER moves from 5 to 6 via <code>&#39;r&#39;</code> at y_b = 7!</li>
+</ul>
+</li>
+</ul>
+<p>Wait: what about at y_b = 6?
+Suppose at y_b = 6 (x_b(6) = 3, x_{next}(6) = 4), the paddle is at x_p(6) = 5, and at y_b = 5 it moved right (<code>&#39;r&#39;</code>) from 4 to 5?
+No, at y_b = 5 (x_b(5) = 2, x_{next}(5) = 3), x_p = 4 was already \ge x_{next}(5) + 1, so it couldn&#39;t have moved <code>&#39;r&#39;</code> from 4 to 5 either!
+Wait: what if at y_b = 6 (x_b(6) = 3, x_{next}(6) = 4), the paddle was at x_p(6) = 5 because at y_b = 5 it was at x_p(5) = 6 and moved left (<code>&#39;l&#39;</code>) to 5, and at y_b = 6 (with \alpha = 0.4, x_{\text{target}}(6) = 4.4) it sees 4.4 - 5 = -0.6 \in [-0.75, +0.75] and chooses <code>no-op</code>?</p>
+<ul>
+<li>If <code>no-op</code> executes at y_b = 6 (90%): at y_b = 7, x_p(7) = 5 and previous action is <code>no-op</code>!</li>
+<li>If sticky <code>&#39;l&#39;</code> executes at y_b = 6 (10%): at y_b = 7, x_p(7) = 4 = x_b(7), so at y_b = 7 it sees 5.4 - 4 = +1.4 &gt; 0.75 and moves <code>&#39;r&#39;</code> to 5!</li>
+</ul>
+<p>Let&#39;s check if there is ANY case where \alpha = 0 (i.e. x_{\text{target}} = x_{next} for all y_b \le 7, and x_{\text{target}} = x_{\text{mid}} = \frac{x_b + x_{next}}{2} for y_b = 8) vs \alpha = 0.25 for y_b \le 7 differs!
+Let&#39;s compare \alpha = 0 vs \alpha = 0.25 for y_b \le 7 with deadzone 0.75:
+Look at the error e = x_{\text{target}} - x_p when x_b, x_{next}, x_p are integers:</p>
+<ul>
+<li>If \alpha = 0 for y_b \le 7:
+Then x_{\text{target}} = x_{next} is an <strong>integer</strong>!
+And since x_p is also an <strong>integer</strong>, the error e = x_{next} - x_p is ALWAYS an <strong>integer</strong> \in \{\dots, -2, -1, 0, +1, +2, \dots\}!<ul>
+<li>When x_p = x_{next}: e = 0.</li>
+<li>When x_p = x_{next} - 1: e = +1.</li>
+<li>When x_p = x_{next} + 1: e = -1.
+And at y_b = 8, x_{\text{target}} = \frac{x_b + x_{next}}{2} = x_{next} - 0.5 (x_{next} - x_b) is a <strong>half-integer</strong> (when x_{next} \ne x_b):</li>
+<li>When x_p \in \{x_b, x_{next}\}: e \in \{-0.5, 0, +0.5\}.</li>
+<li>When x_p &lt; \min(x_b, x_{next}): e \ge +1.5 (or \ge +1.0 if x_b = x_{next} at wall).</li>
+<li>When x_p &gt; \max(x_b, x_{next}): e \le -1.5 (or \le -1.0 if x_b = x_{next} at wall).</li>
+</ul>
+</li>
+</ul>
+<p>HOLD ON!
+Look at the margins around the threshold 0.75 when \alpha = 0 for y_b \le 7 and \alpha = -0.5 (i.e. x_{\text{mid}}) for y_b = 8:</p>
+<ul>
+<li>For y_b \le 7:<ul>
+<li><code>No-Op</code> occurs only when e = 0 (|e| = 0 \ll 0.75).</li>
+<li><code>Left</code>/<code>Right</code> occurs when |e| \ge 1.0 &gt; 0.75.</li>
+<li>Every single state has a massive margin of at least 0.25 (and 0.75 for <code>No-Op</code>) from the threshold 0.75!</li>
+</ul>
+</li>
+<li>For y_b = 8:<ul>
+<li><code>No-Op</code> occurs when x_p \in \{x_b, x_{next}\}, where |e| \le 0.5 &lt; 0.75 (margin 0.25).</li>
+<li><code>Left</code>/<code>Right</code> occurs when x_p \notin \{x_b, x_{next}\}, where |e| \ge 1.0 &gt; 0.75 (at wall) or |e| \ge 1.5 &gt; 0.75 (in interior)!</li>
+<li>Every single state at y_b = 8 ALSO has a margin of at least 0.25 (and 0.75 in the interior) from the threshold 0.75!</li>
+</ul>
+</li>
+</ul>
+<p>Wait: let&#39;s check what happens if we use \alpha = 0.25 for y_b \le 6, \alpha = 0 for y_b = 7, and \alpha = -0.5 for y_b = 8!
+Wait: why would we even want \alpha = 0.25 vs \alpha = 0 for y_b \le 6?
+With deadzone 0.75, if |\alpha| &lt; 0.25, since x_{next} - x_p is an integer, adding 0.25 (x_{next} - x_b) keeps e \in [-0.25, +0.25] when x_p = x_{next} and |e| \ge 0.75 when x_p \ne x_{next}, so it produces the EXACT same discrete actions unless \alpha &gt; 0.25!
+And what if \alpha = 0.5 for y_b \le 6 (so x_{\text{target}} = x_{next} + 0.5 (x_{next} - x_b))?
+Let&#39;s check! If \alpha = 0.5 for y_b \le 6, then:</p>
+<ul>
+<li>When the ball is moving right (x_{next} = x_b + 1), x_{\text{target}} = x_b + 1.5.</li>
+<li>With deadzone 0.75:<ul>
+<li>For x_p = x_b + 1 = x_{next}: e = +0.5 \in (-0.75, +0.75) \implies <strong>No-Op</strong>!</li>
+<li>For x_p = x_b + 2 = x_{next} + 1: e = -0.5 \in (-0.75, +0.75) \implies <strong>No-Op</strong>!</li>
+<li>For x_p \le x_b: e \ge +1.5 &gt; 0.75 \implies <strong>Right</strong>!</li>
+<li>For x_p \ge x_b + 3: e \le -1.5 &lt; -0.75 \implies <strong>Left</strong>!</li>
+<li>And at the wall before clamp (x_{next} = x_b \in \{0, 9\}), x_{\text{target}} = x_b \in \{0, 9\}, so |e| = 0 at the wall and |e| \ge 1.0 &gt; 0.75 away from the wall!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Compare \alpha = 0 vs \alpha = 0.5 for y_b \le 6!
+Let&#39;s trace what happens at reset (<code>ball_y = 3, ball_x = 0, dir = 2, pos = 4</code>) under:</p>
+<ul>
+<li><strong>Design 1</strong>:<ul>
+<li>Rows y_b \in \{0..6\}: \alpha = 0.5 \implies x_{\text{target}} = 1.5 x_{next} - 0.5 x_b</li>
+<li>Row y_b = 7: \alpha = 0 \implies x_{\text{target}} = x_{next}</li>
+<li>Row y_b = 8: \alpha = -0.5 \implies x_{\text{target}} = 0.5 x_{next} + 0.5 x_b</li>
+</ul>
+</li>
+<li><strong>Design 2</strong>:<ul>
+<li>Rows y_b \in \{0..7\}: \alpha = 0 \implies x_{\text{target}} = x_{next}</li>
+<li>Row y_b = 8: \alpha = -0.5 \implies x_{\text{target}} = 0.5 x_{next} + 0.5 x_b</li>
+</ul>
+</li>
+</ul>
+<p>Wait: CAN a linear input layer compute different \alpha for different rows y_b?
+Hold on! Let&#39;s check!
+In the input x (600 units):</p>
+<ul>
+<li><code>channel 3</code> (<code>ball</code>) has 100 cells: <code>(row, col)</code> for <code>row</code> \in \{0..9\} and <code>col</code> \in \{0..9\}!
+So <code>W1</code> CAN set different weights on <code>(row, col, channel 3)</code> for every <code>row</code> y_b!</li>
+<li>What about <code>channel 4</code> (<code>trail</code>)?
+In <code>channel 4</code>, the active cell is <code>(last_y, last_x)</code>!
+And when the ball is at row y_b = 8 moving down, what is <code>last_y</code>?
+<code>last_y</code> is 7!
+Wait: what if the ball is at row y_b = 6 moving UP (<code>new_y = 5</code>), vs at row y_b = 8 moving DOWN?<ul>
+<li>When the ball is at y_b = 8 moving down, <code>ball_y</code> is 8 and <code>last_y</code> is 7 (or 8 right after a brick/paddle bounce, though there are no bricks at row 8 and after a paddle bounce at row 8 the ball is at row 8 moving UP).</li>
+<li>Wait: if we change the coefficient of x_{next} = f(x_b) - x_{last}, that changes the weight on x_{last} (<code>trail</code>) as well as x_b (<code>ball</code>)!</li>
+<li>Can we change x_{\text{target}} at y_b = 8 WITHOUT changing the weight on x_{last}?
+Wait: let&#39;s check what x_{\text{mid}} = \frac{x_b + x_{next}}{2} is!
+<code>x_{\text{mid}} = \frac{x_b + f(x_b) - x_{last}}{2} = \frac{x_b + f(x_b)}{2} - 0.5 x_{last}</code>
+Notice that in x_{\text{mid}}, the coefficient on x_{last} is -0.5, whereas in x_{next} = f(x_b) - x_{last} the coefficient on x_{last} is -1.0!
+Why? Because x_{next} - x_b = (f(x_b) - x_b) - x_{last} depends on x_{last}!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Thank goodness we checked this!
+Look at why:
+In a single linear unit, the weight on <code>trail</code> at <code>(last_y, last_x)</code> depends on <code>last_y</code> and <code>last_x</code>, NOT on <code>ball_y</code> (<code>y_b</code>)!
+Wait: when the ball is at <code>ball_y = 8</code>, what is <code>last_y</code>?
+Let&#39;s check <code>breakout.py</code>!</p>
+<ul>
+<li>The ball only reaches <code>ball_y = 8</code> in two ways:<ol>
+<li>Moving DOWN from <code>last_y = 7</code> to <code>ball_y = 8</code>!</li>
+<li>Just bounced off the paddle at <code>new_y == 9</code> (<code>new_y = self.last_y = 8</code>), so <code>ball_y = 8</code> and <code>last_y = 8</code> (and now the ball is moving UP to <code>ball_y = 7</code>)!</li>
+</ol>
+</li>
+<li>Wait: when <code>last_y = 7</code>, can <code>ball_y</code> be anything other than <code>6</code> (moving up) or <code>8</code> (moving down)?
+No! Because there are no bricks at rows 6, 7, 8 (bricks are only at rows <code>1:4</code>, i.e., rows 1, 2, 3)!</li>
+<li>Wait even simpler: we have <strong>32 hidden units in Layer 1 and 32 hidden units in Layer 2</strong>!
+We don&#39;t have to cram everything into a single linear unit!
+Let&#39;s see why:
+In Layer 1 (<code>h1</code>), we can have:</li>
+</ul>
+<ol>
+<li>Units that compute x_{next} - x_p = f(x_b) - x_{last} - x_p (the exact 1-step-ahead tracking error)!</li>
+<li>Units that compute x_b - x_p (the exact 0-step tracking error, i.e., current ball column minus paddle column)!</li>
+<li>Units that detect whether the ball is at row y_b = 8 (or we can gate the units using y_b = 8)!</li>
+</ol>
+<p>HOLD ON!
+Look at those two quantities:</p>
+<ul>
+<li><code>E_1 = x_{next} - x_p = f(x_b) - x_{last} - x_p</code>
+</li>
+<li>E_0 = x_b - x_p
+What is their average?
+<code>\frac{E_1 + E_0}{2} = \frac{x_{next} + x_b}{2} - x_p = x_{\text{mid}} - x_p!</code>
+Read that again!</li>
+<li>E_1 = f(x_b) - x_{last} - x_p has fixed weights on <code>ball</code> (f(x_b)), <code>trail</code> (-x_{last}), and <code>paddle</code> (-x_p) across all rows!</li>
+<li>E_0 = x_b - x_p has fixed weights on <code>ball</code> (x_b) and <code>paddle</code> (-x_p) across all rows (and ZERO weights on <code>trail</code>)!</li>
+<li>Look at what happens when we combine E_1 and E_0:<ul>
+<li>For y_b \le 7: if we use E_1 = x_{next} - x_p (or even simpler, what if we use \frac{E_1 + E_0}{2} everywhere vs E_1 for y_b \le 7 and \frac{E_1 + E_0}{2} at y_b = 8?):</li>
+<li>Wait: in Layer 1, if unit u_1 is active for y_b \le 7 (computing E_1) and gated off at y_b = 8, OR if unit u_0 is ALWAYS active (computing E_0 = x_b - x_p) and unit u_1 is ALWAYS active (computing E_1 = x_{next} - x_p), wait:</li>
+<li>What if we don&#39;t even gate them by y_b = 8?!
+WAIT A SECOND!
+What happens if we ALWAYS use E_1 + E_0 (i.e., x_{\text{mid}} - x_p = \frac{x_{next} + x_b}{2} - x_p) at EVERY row y_b \in \{0..9\}, without even depending on y_b?!</li>
+</ul>
+</li>
+</ul>
+<p>STOP AND TRACE THIS!
+What happens if at <strong>EVERY</strong> row y_b \in \{0..9\}, the policy uses:
+</p>
+<code>e = x_{\text{mid}} - x_p = \frac{x_{next} + x_b}{2} - x_p</code>
+<p>
+with <code>No-Op</code> when |e| &lt; 0.75, <code>Right</code> when e &gt; 0.75, and <code>Left</code> when e &lt; -0.75?!
+Let&#39;s trace!
+Suppose the ball is moving right (x_{next} = x_b + 1), so x_{\text{mid}} = x_b + 0.5:</p>
+<ul>
+<li>When x_p \le x_b - 1:
+e = (x_b + 0.5) - x_p \ge +1.5 &gt; 0.75 \implies <strong>Move Right (<code>&#39;r&#39;</code>)</strong>!</li>
+<li>When x_p = x_b:
+e = (x_b + 0.5) - x_b = +0.5 \in (-0.75, +0.75) \implies <strong>No-Op</strong>!</li>
+<li>When x_p = x_b + 1 = x_{next}:
+e = (x_b + 0.5) - (x_b + 1) = -0.5 \in (-0.75, +0.75) \implies <strong>No-Op</strong>!</li>
+<li>When x_p \ge x_b + 2 = x_{next} + 1:
+e = (x_b + 0.5) - x_p \le -1.5 &lt; -0.75 \implies <strong>Move Left (<code>&#39;l&#39;</code>)</strong>!</li>
+</ul>
+<p>Wait: what if the ball is moving right (x_b(t) = 3 \to 4 \to 5 \to 6), and at step t we have x_p(t) = 3 = x_b(t)?
+If the policy chooses <strong>No-Op</strong> when x_p(t) = x_b(t) = 3, then at step t+1 the ball is at x_b(t+1) = 4 while the paddle stayed at x_p(t+1) = 3 = x_b(t+1) - 1!
+Then at step t+1 (y_b = 8), the paddle is at x_p = 3 = x_b - 1 instead of x_p = 4 = x_b, so at y_b = 8 it HAS to move right (<code>&#39;r&#39;</code>) from 3 to 4, and if a 10% sticky <code>no-op</code> happens at y_b = 8 (because it did <code>no-op</code> at y_b = 7), the paddle stays at 3 and <strong>MISSES THE BALL</strong>!</p>
+<p>BINGO!! Look how critical that trace was!
+Let&#39;s repeat why that happened:</p>
+<ul>
+<li>If the paddle does <code>no-op</code> at y_b = 7 when x_p(7) = x_b(7), then at y_b = 8 the ball has moved to x_b(8) = x_b(7) + v_x, so at y_b = 8 the paddle is 1 step behind (x_p(8) = x_b(8) - v_x) AND its previous action (at y_b = 7) was <code>no-op</code>!</li>
+<li>Then at y_b = 8, the paddle MUST move to catch the ball, and a 10% sticky action at y_b = 8 repeats the <code>no-op</code> from y_b = 7, causing a 10% death rate!</li>
+<li>Whereas if for y_b \le 7, the paddle moves to x_{next}(t) (so at y_b = 7 it targets x_{next}(7) = x_b(8)):<ul>
+<li>When x_p(7) = x_b(7), it moves in direction v_x (<code>&#39;r&#39;</code> or <code>&#39;l&#39;</code>) to x_p(8) = x_{next}(7) = x_b(8)!</li>
+<li>And if x_p(7) was ALREADY at x_{next}(7) = x_b(8), it does <code>no-op</code> at y_b = 7 and is STILL at x_p(8) = x_b(8) at y_b = 8!</li>
+<li>Therefore, at y_b = 8, the paddle is ALREADY at x_p(8) = x_b(8), AND its previous action at y_b = 7 was either moving in direction v_x (which moves to <code>new_x</code> if sticky at y_b = 8) or <code>no-op</code> (which stays at <code>ball_x</code> if sticky at y_b = 8)!</li>
+<li>In BOTH cases, at y_b = 8 the ball is caught with <strong>100% probability</strong>!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Look at the relationship between y_b = 7 and y_b = 8 in the paragraph above:
+At y_b = 7, the paddle wants to be in \{x_{next}(7)\} (or \{x_{next}(7), x_{next}(7) + v_x\})!
+Wait: what ARE \{x_{next}(7), x_{next}(7) + v_x\} when the ball steps from y_b = 7 to y_b = 8?
+At y_b = 8, x_b(8) = x_{next}(7) and x_{next}(8) = x_{next}(7) + v_x!
+Wait: if at y_b \le 7 the paddle targets x_{next}, let&#39;s check what happens when x_p tracks x_{next} at every row y_b \le 7 AND at y_b = 8 it targets x_{\text{mid}} = \frac{x_b + x_{next}}{2}:
+Let&#39;s trace:</p>
+<ul>
+<li>At y_b = 6: target is x_{next}(6) = x_b(7). So by y_b = 7, x_p(7) = x_b(7).</li>
+<li>At y_b = 7: target is x_{next}(7) = x_b(8). Since x_p(7) = x_b(7), at y_b = 7 the paddle moves in direction v_x (<code>&#39;r&#39;</code> if v_x = +1, <code>&#39;l&#39;</code> if v_x = -1) to x_p(8) = x_b(8)!</li>
+<li>At y_b = 8: now x_p(8) = x_b(8), and the previous action (from y_b = 7) is v_x (<code>&#39;r&#39;</code> or <code>&#39;l&#39;</code>).
+Since at y_b = 8 the target is x_{\text{mid}}(8) = x_b(8) + 0.5 v_x, the error at y_b = 8 is:
+<code>e(8) = x_{\text{mid}}(8) - x_p(8) = +0.5 v_x \in \{-0.5, 0, +0.5\} \subset (-0.75, +0.75)!</code>
+So at y_b = 8, the network chooses <strong>No-Op</strong>!<ul>
+<li>With 90% probability, <code>no-op</code> executes: <code>pos</code> stays at x_b(8) = \text{ball\_x} \implies <strong>CAUGHT via <code>ball_x == pos</code> (forward reflection <code>[3,2,1,0]</code>)!</strong></li>
+<li>With 10% probability, sticky action repeats the action from y_b = 7, which was v_x (<code>&#39;r&#39;</code> or <code>&#39;l&#39;</code>): <code>pos</code> moves to x_b(8) + v_x = x_{next}(8) = \text{new\_x} \implies <strong>CAUGHT via <code>new_x == pos</code> (corner reflection <code>[2,3,0,1]</code>)!</strong></li>
+</ul>
+</li>
+</ul>
+<p>HOLD EVERYTHING!
+Look at that 3-step sequence (y_b = 6 \to 7 \to 8):</p>
+<ol>
+<li>At y_b \le 7: target is x_{next} (so error is E_1 = x_{next} - x_p).</li>
+<li>At y_b = 8: target is x_{\text{mid}} = \frac{x_b + x_{next}}{2} (so error is E_{\text{mid}} = \frac{E_0 + E_1}{2} = \frac{x_b + x_{next}}{2} - x_p).</li>
+</ol>
+<p>Wait: CAN x_b alone be modified at row y_b = 8 in <code>W1</code> so that a SINGLE formula computes E_1 for y_b \ne 8 and E_{\text{mid}} for y_b = 8?
+Wait earlier we asked if a single linear function can compute E_1 for y_b \ne 8 and E_{\text{mid}} for y_b = 8. Let&#39;s check why:
+</p>
+<code>E_{\text{mid}} = E_1 - \frac{1}{2}(x_{next} - x_b)</code>
+<p>
+Wait: at y_b = 8, what is x_{next} - x_b?
+It is +1 if the ball is moving right, -1 if the ball is moving left, and 0 if x_b = 9, x_{last} = 8 or x_b = 0, x_{last} = 1.
+Why did E_{\text{mid}} seem to need different weights on <code>trail</code>? Because x_{next} - x_b = f(x_b) - x_b - x_{last} involves x_{last} (<code>trail</code>).
+AND when the ball is moving down at <code>ball_y = 8</code>, what row is <code>trail</code> (<code>last_y</code>) in?
+<strong><code>last_y</code> is ALWAYS row 7!</strong>
+Wait: is <code>last_y</code> EVER row 7 when <code>ball_y</code> is NOT 8 and the ball is near the bottom?
+Let&#39;s check!
+When <code>last_y == 7</code>, what can <code>ball_y</code> possibly be?</p>
+<ul>
+<li>Either <code>ball_y == 8</code> (the ball is at row 8 moving DOWN!)</li>
+<li>Or <code>ball_y == 6</code> (the ball is at row 6 moving UP, 12 steps away from returning to row 8!)
+Wait: if <code>ball_y == 6</code> and the ball is moving UP (away from the paddle!), does it hurt at all if at <code>ball_y == 6</code> (moving up) the weight on <code>trail</code> at row 7 is slightly different for that single step while the ball is heading up toward the bricks?!
+NO! When the ball is at row 6 moving UP, it is at least 11 steps away from returning to the bottom row!
+WAIT A SECOND!
+Even better: we don&#39;t even have to approximate at <code>ball_y == 6</code> if we use Layer 1 + Layer 2, OR let&#39;s check both!
+First, let&#39;s check how easy it is to do it <strong>EXACTLY</strong> using Layer 1 (<code>h1</code>) and Layer 2 (<code>h2</code>), with ZERO approximation at any row!</li>
+</ul>
+<h4>3. Exact Implementation Using Layer 1 and Layer 2</h4>
+<p>Let&#39;s see! We have 32 hidden units in Layer 1 (<code>h1</code>) and 32 hidden units in Layer 2 (<code>h2</code>).
+Suppose in Layer 1 (<code>h1</code>), we compute:</p>
+<ol>
+<li><strong>For y_b \ne 8 (<code>ball</code> in rows 0..7 and 9)</strong>:
+We want the policy to act on E_1 = x_{next} - x_p = f(x_b) - x_{last} - x_p:<ul>
+<li>Move <strong>Right</strong> (<code>action 3</code>) if E_1 \ge 1 (i.e. E_1 &gt; 0.5)</li>
+<li>Move <strong>Left</strong> (<code>action 1</code>) if E_1 \le -1 (i.e. E_1 &lt; -0.5)</li>
+<li><strong>No-Op</strong> (<code>action 0</code>) if E_1 = 0 (i.e. -0.5 &lt; E_1 &lt; 0.5)
+Wait: can two <code>tanh</code> units in Layer 1 directly threshold E_1 at +0.5 and -0.5, AND be suppressed when <code>ball_y == 8</code>?
+YES! Look how:
+Suppose in unit <code>h1[0]</code> (Right detector for y_b \ne 8):</li>
+<li>Input is s \cdot (E_1 - 0.5 - 20 \cdot \mathbb{I}(y_b = 8)) where s = 10!</li>
+<li>When y_b \ne 8:<ul>
+<li>If E_1 \ge 1: s(E_1 - 0.5) \ge +5 \implies \tanh(\ge 5) \approx +1.0!</li>
+<li>If E_1 \le 0: s(E_1 - 0.5) \le -5 \implies \tanh(\le -5) \approx -1.0!</li>
+</ul>
+</li>
+<li>When y_b = 8:<ul>
+<li>Since E_1 \le 9, E_1 - 0.5 - 20 \le -11.5 \implies \tanh(\le -115) = -1.0 (completely OFF)!
+And in unit <code>h1[1]</code> (Left detector for y_b \ne 8):</li>
+</ul>
+</li>
+<li>Input is s \cdot (-E_1 - 0.5 - 20 \cdot \mathbb{I}(y_b = 8)) where s = 10!</li>
+<li>When y_b \ne 8:<ul>
+<li>If E_1 \le -1: s(-E_1 - 0.5) \ge +5 \implies \tanh(\ge 5) \approx +1.0!</li>
+<li>If E_1 \ge 0: s(-E_1 - 0.5) \le -5 \implies \tanh(\le -5) \approx -1.0!</li>
+</ul>
+</li>
+<li>When y_b = 8:<ul>
+<li>Completely OFF (\tanh = -1.0)!</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Now look at y_b = 8 (<code>ball</code> in row 8)</strong>:
+When y_b = 8, what is the exact condition for moving <strong>Right</strong> (<code>action 3</code>), <strong>Left</strong> (<code>action 1</code>), and <strong>No-Op</strong> (<code>action 0</code>)?
+Remember: at y_b = 8, we want:<ul>
+<li><strong>Right</strong> (<code>action 3</code>) iff E_{\text{mid}} = \frac{x_{next} + x_b}{2} - x_p &gt; 0.75 \iff (x_{next} + x_b - 2 x_p) \ge 2 (since x_{next} + x_b - 2 x_p is an integer: it is \ge 2 when x_p &lt; \min(x_b, x_{next}), and \le 1 when x_p \ge \min(x_b, x_{next}))!</li>
+<li><strong>Left</strong> (<code>action 1</code>) iff E_{\text{mid}} = \frac{x_{next} + x_b}{2} - x_p &lt; -0.75 \iff (x_{next} + x_b - 2 x_p) \le -2 (it is \le -2 when x_p &gt; \max(x_b, x_{next}), and \ge -1 when x_p \le \max(x_b, x_{next}))!</li>
+<li><strong>No-Op</strong> (<code>action 0</code>) iff |x_{next} + x_b - 2 x_p| \le 1, which holds if and only if x_p \in \{x_b, x_{next}\}!</li>
+</ul>
+</li>
+</ol>
+<p>WAIT A SECOND!
+Look at the expression inside the y_b = 8 detector:
+</p>
+<code>2 E_{\text{mid}} = x_{next} + x_b - 2 x_p = (f(x_b) + x_b) - x_{last} - 2 x_p</code>
+<p>
+IT IS ALSO COMPLETELY LINEAR IN THE INPUT x!
+Let&#39;s check that!
+In unit <code>h1[2]</code> (Right detector for y_b = 8):</p>
+<ul>
+<li>We set its weights on <code>channel 3</code> (<code>ball</code>) at row 8, column c to f(c) + c, and at rows y_b \ne 8 to -20!</li>
+<li>We set its weights on <code>channel 4</code> (<code>trail</code>) at all rows, column c to -c!</li>
+<li>We set its weights on <code>channel 0</code> (<code>paddle</code>) at row 9, column c to -2c!</li>
+<li>We set its bias to -1.5 (all scaled by s = 10)!
+Let&#39;s check what <code>h1[2]</code> computes!</li>
+<li>When y_b \ne 8:
+Since <code>ball</code> is at some row y_b \ne 8 where the weight is -20, and -x_{last} - 2x_p - 1.5 \le -1.5, the pre-activation is 10 \cdot (-20 - x_{last} - 2x_p - 1.5) \le -215 \implies \tanh = -1.0 (completely OFF)!</li>
+<li>When y_b = 8:
+The <code>ball</code> is at row 8, column x_b, so the pre-activation of <code>h1[2]</code> is literally:
+<code>10 \cdot \big((f(x_b) + x_b) - x_{last} - 2 x_p - 1.5\big) = 10 \cdot (2 E_{\text{mid}} - 1.5)!</code>
+<ul>
+<li>If x_p &lt; \min(x_b, x_{next}): the integer 2 E_{\text{mid}} = x_{next} + x_b - 2 x_p \ge 2, so 10(2 E_{\text{mid}} - 1.5) \ge +5 \implies \tanh(\ge 5) \approx +1.0 (ON)!</li>
+<li>If x_p \ge \min(x_b, x_{next}): the integer 2 E_{\text{mid}} \le 1, so 10(2 E_{\text{mid}} - 1.5) \le -5 \implies \tanh(\le -5) \approx -1.0 (OFF)!</li>
+</ul>
+</li>
+</ul>
+<p>And in unit <code>h1[3]</code> (Left detector for y_b = 8):</p>
+<ul>
+<li>We set its weights on <code>channel 3</code> (<code>ball</code>) at row 8, column c to -(f(c) + c), and at rows y_b \ne 8 to -40!</li>
+<li>We set its weights on <code>channel 4</code> (<code>trail</code>) at all rows, column c to +c!</li>
+<li>We set its weights on <code>channel 0</code> (<code>paddle</code>) at row 9, column c to +2c!</li>
+<li>We set its bias to -1.5 (all scaled by s = 10)!
+Let&#39;s check what <code>h1[3]</code> computes!</li>
+<li>When y_b \ne 8:
+Since <code>ball</code> has weight -40 and x_{last} + 2 x_p - 1.5 \le 9 + 18 - 1.5 = 25.5, the pre-activation is 10 \cdot (-40 + 25.5) = -145 \implies \tanh = -1.0 (completely OFF)!</li>
+<li>When y_b = 8:
+The pre-activation of <code>h1[3]</code> is literally:
+<code>10 \cdot \big(-(f(x_b) + x_b) + x_{last} + 2 x_p - 1.5\big) = 10 \cdot (-2 E_{\text{mid}} - 1.5)!</code>
+<ul>
+<li>If x_p &gt; \max(x_b, x_{next}): the integer -2 E_{\text{mid}} \ge 2, so 10(-2 E_{\text{mid}} - 1.5) \ge +5 \implies \tanh(\ge 5) \approx +1.0 (ON)!</li>
+<li>If x_p \le \max(x_b, x_{next}): the integer -2 E_{\text{mid}} \le 1, so 10(-2 E_{\text{mid}} - 1.5) \le -5 \implies \tanh(\le -5) \approx -1.0 (OFF)!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Look at <code>h1[0]</code>, <code>h1[1]</code>, <code>h1[2]</code>, <code>h1[3]</code>:
+In <strong>Layer 1 alone</strong>, using just <strong>4 hidden units</strong>, we have computed:</p>
+<ul>
+<li><code>h1[0]</code> \in \{-1, +1\}: Move Right when y_b \ne 8 (E_1 \ge 1)</li>
+<li><code>h1[1]</code> \in \{-1, +1\}: Move Left when y_b \ne 8 (E_1 \le -1)</li>
+<li><code>h1[2]</code> \in \{-1, +1\}: Move Right when y_b = 8 (2 E_{\text{mid}} \ge 2)</li>
+<li><code>h1[3]</code> \in \{-1, +1\}: Move Left when y_b = 8 (2 E_{\text{mid}} \le -2)</li>
+</ul>
+<p>Wait: let&#39;s check! Can both <code>h1[0]</code> and <code>h1[2]</code> ever be +1 at the same time?
+No, because <code>h1[0]</code> is only +1 when y_b \ne 8, and <code>h1[2]</code> is only +1 when y_b = 8!
+So for EVERY state in the game:</p>
+<ul>
+<li><strong>Move Right</strong> holds iff <code>h1[0] + h1[2] == 0</code> (one of them is +1, the other is -1); otherwise both are -1 so <code>h1[0] + h1[2] == -2</code>!</li>
+<li><strong>Move Left</strong> holds iff <code>h1[1] + h1[3] == 0</code> (one of them is +1, the other is -1); otherwise both are -1 so <code>h1[1] + h1[3] == -2</code>!</li>
+<li><strong>No-Op</strong> holds iff ALL FOUR of <code>h1[0], h1[1], h1[2], h1[3]</code> are -1!</li>
+</ul>
+<p>HOLD ON!
+Before we celebrate, let&#39;s check if there are any edge cases or subtle details in the game dynamics that we can make even stronger!
+Let&#39;s check every possible edge case:</p>
+<h4>4. Checking Edge Cases in <code>breakout.py</code></h4>
+<h5>Edge Case 1: What happens at y_b = 8 right after the ball bounces off the paddle?</h5>
+<p>Let&#39;s trace <code>act()</code> when the ball is at y_b = 8 moving DOWN (<code>new_y == 9</code>) and hits the paddle:</p>
+<ul>
+<li>Before <code>act()</code>: <code>ball_y = 8</code>, <code>last_y = 7</code>.</li>
+<li>Inside <code>act()</code>:<ul>
+<li><code>self.last_x = self.ball_x</code></li>
+<li><code>self.last_y = self.ball_y</code> (which is <code>8</code>!)</li>
+<li><code>new_y</code> becomes <code>9</code>.</li>
+<li>Under <code>elif (new_y == 9):</code>, the paddle catches the ball:<ul>
+<li><code>self.ball_dir</code> is flipped to <code>0</code> or <code>1</code> (moving UP!).</li>
+<li><code>new_y = self.last_y</code> (which is <code>8</code>!).</li>
+</ul>
+</li>
+<li>At the end of <code>act()</code>:<ul>
+<li><code>self.ball_x = new_x</code></li>
+<li><code>self.ball_y = new_y</code> (which is <code>8</code>!).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Look at the state right AFTER the paddle bounce:<ul>
+<li><code>ball_y = 8</code> AND <code>last_y = 8</code>!</li>
+<li>Now the ball is at <code>ball_y = 8</code> moving UP (so on the next step <code>new_y</code> will be <code>7</code>)!</li>
+<li>What does our <code>h1[2], h1[3]</code> do on this step (<code>ball_y = 8, last_y = 8</code>)?<ul>
+<li>If <code>new_x == pos</code> triggered (corner bounce, e.g. from sticky action), then <code>ball_dir</code> reversed horizontally as well as vertically (<code>[2,3,0,1]</code>). On this step (<code>ball_y = 8, last_y = 8</code>), the ball is moving UP to row 7, so it doesn&#39;t matter at all what action the paddle takes on this single step (it has 16 steps before the ball comes back down!).</li>
+<li>If <code>ball_x == pos</code> triggered (normal bounce, <code>[3,2,1,0]</code>), <code>ball_dir</code> kept its horizontal velocity, so <code>f(x_b) - x_{last}</code> is STILL the exact <code>new_x</code> as the ball moves up to row 7!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5>Edge Case 2: What happens if <code>ball_y = 9</code>?</h5>
+<p>Can <code>ball_y</code> ever be <code>9</code> in a non-terminal state?
+In <code>act()</code>, if <code>new_y == 9</code> and the ball is caught, <code>new_y</code> is reset to <code>self.last_y</code> (<code>8</code>). If it is not caught, <code>self.terminal = True</code>. So <code>ball_y = 9</code> only occurs in a terminal state where <code>act()</code> immediately returns <code>0, True</code>.</p>
+<h5>Edge Case 3: What if at y_b = 7, the paddle is at x_p = x_b + 2 v_x (1 step ahead of x_{next}(7))?</h5>
+<p>Wait: let&#39;s trace this carefully!
+Suppose at y_b = 6, the ball is at x_b(6) = 3 moving right (x_{next}(6) = 4), and the paddle was at x_p(6) = 6.</p>
+<ul>
+<li>At y_b = 6: E_1(6) = 4 - 6 = -2 \le -1 \implies paddle moves <strong>Left (<code>&#39;l&#39;</code>)</strong> to x_p(7) = 5.</li>
+<li>Now at y_b = 7: the ball is at x_b(7) = 4 moving right (x_{next}(7) = 5), and the paddle is at x_p(7) = 5 = x_{next}(7)!
+Look at what happens at y_b = 7 when x_p(7) = 5 = x_{next}(7):<ul>
+<li>Since E_1(7) = x_{next}(7) - x_p(7) = 5 - 5 = 0, at y_b = 7 our network chooses <strong>No-Op</strong>!</li>
+<li>What if <code>no-op</code> executes at y_b = 7 (90% probability)?<ul>
+<li>Then at y_b = 8, the paddle is at x_p(8) = 5 = x_b(8), AND its previous action (at y_b = 7) was <strong>No-Op</strong>!</li>
+<li>Then at y_b = 8, the network ALSO chooses <strong>No-Op</strong>, and whether <code>no-op</code> executes (90%) or sticky <code>no-op</code> executes (10%), <code>pos</code> stays at 5 = x_b(8) \implies <strong>CAUGHT with 100% probability!</strong></li>
+</ul>
+</li>
+<li>What if at y_b = 7, a 10% sticky action repeats the <code>&#39;l&#39;</code> from y_b = 6?<ul>
+<li>Then <code>pos</code> moves from 5 to 4 at y_b = 7, so at y_b = 8 the paddle is at x_p(8) = 4 while x_b(8) = 5, x_{next}(8) = 6!</li>
+<li>Then at y_b = 8, the paddle is at 4 &lt; 5, so it has to move <code>&#39;r&#39;</code> while its previous action was <code>&#39;l&#39;</code>, which risks a 10% sticky <code>&#39;l&#39;</code> at y_b = 8 (0.1 \times 0.1 = 1\% chance)!</li>
+</ul>
+</li>
+<li>WAIT A SECOND!
+Why did the paddle move <code>&#39;l&#39;</code> at y_b = 6 from x_p(6) = 6 to x_p(7) = 5 when the ball was moving right toward x_b(8) = 5, x_{next}(8) = 6?!
+Look at x_p(6) = 6:
+When the ball is at y_b = 6, x_b = 3 moving down-right (v_x = +1), where will the ball be when it reaches y_b = 8?
+At y_b = 8, the ball will be at x_b(8) = 5, x_{next}(8) = 6!
+So x_p = 6 is <strong>ALREADY a winning catch position for y_b = 8</strong>!
+Wait: why did the paddle even happen to be at x_p(6) = 6? Because e.g. at y_b = 5 (x_b = 2, x_{next} = 3) it was at x_p(5) = 7 moving left!
+Once the paddle moving left reaches x_p = 6 (or in general, once a paddle moving against the ball&#39;s horizontal motion reaches the ball&#39;s future landing column), if it stops 1 step earlier (<code>no-op</code>), its previous action becomes <code>no-op</code> earlier!
+Wait: if at y_b = 7 (x_b(7) = 4, x_{next}(7) = 5), a paddle at x_p(7) = 6 = x_{next}(7) + v_x does <strong>No-Op</strong> instead of <code>&#39;l&#39;</code>, let&#39;s see what happens!
+Trace this!
+Suppose at y_b = 7 (x_b(7) = 4, x_{next}(7) = 5, v_x = +1), the paddle is at x_p(7) = 6:<ul>
+<li>If at y_b = 7, the paddle at x_p(7) = 6 chooses <strong>No-Op</strong> (instead of <code>&#39;l&#39;</code>):<ul>
+<li>Case A (90% <code>no-op</code> at y_b = 7): At y_b = 8, x_p(8) = 6 = x_{next}(8) AND the previous action is now <code><strong>no-op</strong></code>!
+Then at y_b = 8, choosing <code>no-op</code> gives <code>pos = 6 = new_x</code> under BOTH <code>no-op</code> (90%) AND sticky <code>no-op</code> (10%) \implies <strong>100% CAUGHT!</strong></li>
+<li>Case B (10% sticky <code>&#39;l&#39;</code> at y_b = 7): At y_b = 8, x_p(8) = 5 = x_b(8) AND the previous action is <code>&#39;l&#39;</code>.
+Wait: if at y_b = 8, x_p(8) = 5 = x_b(8) and previous action is <code>&#39;l&#39;</code>, then if at y_b = 8 it chose <code>no-op</code>, a sticky <code>&#39;l&#39;</code> would move it to 4!
+Whereas with our original rule (at y_b = 7, x_p(7) = 6 moves <code>&#39;l&#39;</code> to 5, and at y_b = 7, x_p(7) = 5 does <code>no-op</code>), the paddle reaches 5 at y_b = 6 \to 7, does <code>no-op</code> at y_b = 7 (90% <code>no-op</code> \implies 100% caught at y_b = 8), and even if sticky <code>&#39;l&#39;</code> happens at y_b = 7 (moving it to 4), at y_b = 8 it moves <code>&#39;r&#39;</code> back to 5 (90% caught)!
+So BOTH give 99% catch rate even in that rare crossing scenario, and the original rule (E_1 = x_{next} - x_p for y_b \le 7) also guarantees <code>ball_x == pos</code> (the forward reflection <code>[3,2,1,0]</code>) instead of <code>new_x == pos</code> (the retracing reflection <code>[2,3,0,1]</code>)!</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Wait: let&#39;s check why <code>ball_x == pos</code> (<code>[3,2,1,0]</code>) is SO MUCH BETTER than <code>new_x == pos</code> (<code>[2,3,0,1]</code>) for scoring points in Breakout!
+In Breakout:</p>
+<ul>
+<li>When <code>ball_x == pos</code> triggers, a ball coming down-right (<code>dir 2</code>) bounces up-right (<code>dir 1</code>), continuing across the board to hit new columns of bricks!</li>
+<li>When <code>new_x == pos</code> triggers, a ball coming down-right (<code>dir 2</code>) bounces up-left (<code>dir 0</code>), sending the ball back along the EXACT diagonal it just came from (where the brick was already broken!).</li>
+<li>With our rule:<ul>
+<li>For y_b \le 7, the paddle tracks x_{next}, so at y_b = 8 the paddle is at x_p(8) = x_{next}(7) = x_b(8) = \text{ball\_x}!</li>
+<li>At y_b = 8, the paddle chooses <code>no-op</code>, so 90% of the time <code>pos</code> stays at <code>ball_x</code> (triggering <code>ball_x == pos</code>, forward bounce!), and 10% of the time sticky action moves <code>pos</code> to <code>new_x</code> (triggering <code>new_x == pos</code>, corner bounce, which saves the life AND mixes up the trajectory by 10% randomness so the ball can never get stuck in a deterministic brick-free loop)!</li>
+</ul>
+</li>
+</ul>
+<p>WAIT A SECOND!
+Read that last sentence again!</p>
+<ol>
+<li>90% of paddle bounces hit <code>ball_x == pos</code> (reflecting vertically via <code>[3,2,1,0]</code> so the ball sweeps across the board breaking bricks rapidly).</li>
+<li>10% of paddle bounces (when a sticky action occurs at y_b = 8) hit <code>new_x == pos</code> (reflecting diagonally via <code>[2,3,0,1]</code>), which <strong>automatically breaks any cycle</strong> where the ball would otherwise bounce in a closed loop missing remaining bricks, while STILL catching the ball 100% of the time!</li>
+</ol>
+<p>Let&#39;s double check if there&#39;s any situation where the ball is in a closed loop with <code>no-op</code> at y_b = 8:
+Suppose the ball bounces straight up and down or in a symmetric loop where x_p was already at x_b(8) for several steps (so the previous action at y_b = 7 was <code>no-op</code>).
+Wait: if the ball is moving diagonally, at y_b = 6 its target is x_{next}(6) = x_b(7), and at y_b = 7 its target is x_{next}(7) = x_b(8) = x_b(7) + v_x \ne x_b(7)!
+So at y_b = 7, the paddle ALWAYS took a step in direction v_x (unless the ball bounced off the wall at y_b = 7, x_b \in \{0, 9\}, where x_{next}(7) = x_b(7))!
+Therefore, for every interior catch (1 \le x_b(8) \le 8), the action at y_b = 7 was v_x \in \{\text{&#39;l&#39;}, \text{&#39;r&#39;}\}, so at y_b = 8 there is ALWAYS a 90% forward bounce (<code>ball_x == pos</code>) and 10% corner bounce (<code>new_x == pos</code>), giving both <strong>100% survival</strong> and <strong>automatic loop-breaking</strong>!</p>
+<h4>5. Verifying All Action Logits and Softmax Temperature</h4>
+<p>Let&#39;s check the actions in <code>breakout.py</code>:
+<code>self.action_map = [&#39;n&#39;, &#39;l&#39;, &#39;u&#39;, &#39;r&#39;, &#39;d&#39;, &#39;f&#39;]</code></p>
+<ul>
+<li>Action <code>0</code>: <code>&#39;n&#39;</code> (no-op)</li>
+<li>Action <code>1</code>: <code>&#39;l&#39;</code> (left)</li>
+<li>Action <code>2</code>: <code>&#39;u&#39;</code> (no-op)</li>
+<li>Action <code>3</code>: <code>&#39;r&#39;</code> (right)</li>
+<li>Action <code>4</code>: <code>&#39;d&#39;</code> (no-op)</li>
+<li>Action <code>5</code>: <code>&#39;f&#39;</code> (no-op)</li>
+</ul>
+<p>Notice that actions <code>0, 2, 4, 5</code> ALL act as <code>no-op</code> in <code>breakout.py</code>, while ONLY action <code>1</code> moves left (<code>&#39;l&#39;</code>) and ONLY action <code>3</code> moves right (<code>&#39;r&#39;</code>)!
+And how are actions chosen during evaluation?
+&quot;each action sampled from the softmax of the logits (with the sticky actions above)&quot;.
+Because actions are <strong>sampled from the softmax of the logits</strong>, we want the winning action&#39;s logit to be much larger than all other logits (e.g., difference \ge 40) so that softmax assigns probability \approx 1.0 (&gt; 1 - 10^{-17}) to the intended action and 0 to wrong actions!
+Specifically:</p>
+<ul>
+<li>When moving <strong>Right</strong>, we want <code>logits[3]</code> to be very large (e.g., +50) and all other logits (<code>0, 1, 2, 4, 5</code>) to be very negative (e.g., -50).</li>
+<li>When moving <strong>Left</strong>, we want <code>logits[1]</code> to be very large (e.g., +50) and all other logits (<code>0, 2, 3, 4, 5</code>) to be very negative (e.g., -50).</li>
+<li>When doing <strong>No-Op</strong>, we can make <code>logits[0]</code> (and/or <code>2, 4, 5</code>, since all four are <code>no-op</code>!) very large (e.g., +50) and <code>logits[1], logits[3]</code> very negative (e.g., -50). Making <code>logits[0]</code> +50 and <code>logits[1..5]</code> -50 already gives \mathbb{P}(\text{action } 0) = \frac{e^{50}}{e^{50} + 5 e^{-50}} = 1 - 5 e^{-100} = 1.0 in float64/float32!</li>
+</ul>
+<p>Let&#39;s check the network equations and parameter bounds:</p>
+<ul>
+<li><code>h1 = tanh(x @ W1 + b1)</code> (<code>W1</code>: 600 \times 32, <code>b1</code>: 32)</li>
+<li><code>h2 = tanh(h1 @ W2 + b2)</code> (<code>W2</code>: 32 \times 32, <code>b2</code>: 32)</li>
+<li><code>logits = h2 @ W3 + b3</code> (<code>W3</code>: 32 \times 6, <code>b3</code>: 6)</li>
+<li>All values must satisfy |v| \le 10^6.</li>
+</ul>
+<p>Let&#39;s trace the exact numerical values of <code>h1</code>, <code>h2</code>, and <code>logits</code> to make sure there is zero chance of arithmetic error.</p>
+<h4>6. Exact Weights Calculation</h4>
+<h5>Layer 1 (<code>W1</code>, <code>b1</code>)</h5>
+<p>Recall input index i = (\text{row} \times 10 + \text{col}) \times 6 + \text{channel}:</p>
+<ul>
+<li><code>channel 0</code> (paddle): row 9 has indices 540 + 6c for c = 0..9. (Or we can set all rows c \times 6 + 0 : 600 : 60 since the paddle is only ever at row 9).</li>
+<li><code>channel 3</code> (ball): column c across all 10 rows is slice <code>c*6+3 : 600 : 60</code>. Row r across all 10 columns is slice <code>r*60+3 : r*60+60 : 6</code>.</li>
+<li><code>channel 4</code> (trail): column c across all 10 rows is slice <code>c*6+4 : 600 : 60</code>.</li>
+</ul>
+<p>Let&#39;s check the vector of column values for c = 0..9:</p>
+<ul>
+<li><code>c = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</code>
+</li>
+<li><code>f(c) = [1, 2, 4, 6, 8, 10, 12, 14, 16, 17]</code>
+</li>
+<li><code>f(c) + c = [1, 3, 6, 9, 12, 15, 18, 21, 24, 26]</code>
+</li>
+</ul>
+<p>Let&#39;s verify f(c) + c for every c \in \{0..9\}:</p>
+<ul>
+<li><code>c=0: 1 + 0 = 1</code>
+</li>
+<li><code>c=1: 2 + 1 = 3</code>
+</li>
+<li><code>c=2: 4 + 2 = 6</code>
+</li>
+<li><code>c=3: 6 + 3 = 9</code>
+</li>
+<li><code>c=4: 8 + 4 = 12</code>
+</li>
+<li><code>c=5: 10 + 5 = 15</code>
+</li>
+<li><code>c=6: 12 + 6 = 18</code>
+</li>
+<li><code>c=7: 14 + 7 = 21</code>
+</li>
+<li><code>c=8: 16 + 8 = 24</code>
+</li>
+<li><code>c=9: 17 + 9 = 26</code>
+</li>
+</ul>
+<p>Now let&#39;s check our 4 units in Layer 1 (using scale factor s = 10):</p>
+<ol>
+<li><strong>Unit 0 (<code>h1[0]</code>): Right detector for y_b \ne 8</strong>
+We want pre-activation z_0 = 10 \cdot (f(x_b) - x_{last} - x_p - 0.5) when y_b \ne 8, and \le -100 when y_b = 8.<ul>
+<li>For each column c \in \{0..9\}:<ul>
+<li><code>W1[c*6+3 : 600 : 60, 0] = 10 * f(c)</code> \rightarrow <code>[10, 20, 40, 60, 80, 100, 120, 140, 160, 170]</code></li>
+<li><code>W1[c*6+4 : 600 : 60, 0] = -10 * c</code> \rightarrow <code>[0, -10, -20, -30, -40, -50, -60, -70, -80, -90]</code></li>
+<li><code>W1[c*6+0 : 600 : 60, 0] = -10 * c</code> \rightarrow <code>[0, -10, -20, -30, -40, -50, -60, -70, -80, -90]</code></li>
+</ul>
+</li>
+<li>Overwrite row 8 of <code>channel 3</code> (<code>ball</code> at y_b = 8, which is indices <code>483 : 543 : 6</code>):<ul>
+<li><code>W1[483:543:6, 0] = -200</code></li>
+</ul>
+</li>
+<li>Bias:<ul>
+<li><code>b1[0] = -5</code></li>
+</ul>
+</li>
+<li>Let&#39;s verify <code>z_0</code>:<ul>
+<li>When y_b \ne 8: z_0 = 10(f(x_b) - x_{last} - x_p) - 5 = 10(E_1 - 0.5).<ul>
+<li>Since E_1 = x_{next} - x_p is an integer:<ul>
+<li>If E_1 \ge 1 \implies z_0 \ge +5 \implies h_1[0] = \tanh(z_0) \ge 0.999909.</li>
+<li>If E_1 \le 0 \implies z_0 \le -5 \implies h_1[0] = \tanh(z_0) \le -0.999909.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>When y_b = 8: z_0 = -200 - 10 x_{last} - 10 x_p - 5 \le -205 \implies h_1[0] = -1.0.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Unit 1 (<code>h1[1]</code>): Left detector for y_b \ne 8</strong>
+We want pre-activation z_1 = 10 \cdot (-f(x_b) + x_{last} + x_p - 0.5) when y_b \ne 8, and \le -100 when y_b = 8.<ul>
+<li>For each column c \in \{0..9\}:<ul>
+<li><code>W1[c*6+3 : 600 : 60, 1] = -10 * f(c)</code> \rightarrow <code>[-10, -20, -40, -60, -80, -100, -120, -140, -160, -170]</code></li>
+<li><code>W1[c*6+4 : 600 : 60, 1] = 10 * c</code> \rightarrow <code>[0, 10, 20, 30, 40, 50, 60, 70, 80, 90]</code></li>
+<li><code>W1[c*6+0 : 600 : 60, 1] = 10 * c</code> \rightarrow <code>[0, 10, 20, 30, 40, 50, 60, 70, 80, 90]</code></li>
+</ul>
+</li>
+<li>Overwrite row 8 of <code>channel 3</code> (<code>483 : 543 : 6</code>):<ul>
+<li><code>W1[483:543:6, 1] = -400</code></li>
+</ul>
+</li>
+<li>Bias:<ul>
+<li><code>b1[1] = -5</code></li>
+</ul>
+</li>
+<li>Let&#39;s verify <code>z_1</code>:<ul>
+<li>When y_b \ne 8: z_1 = 10(-f(x_b) + x_{last} + x_p) - 5 = 10(-E_1 - 0.5).<ul>
+<li>If E_1 \le -1 \implies z_1 \ge +5 \implies h_1[1] \ge 0.999909.</li>
+<li>If E_1 \ge 0 \implies z_1 \le -5 \implies h_1[1] \le -0.999909.</li>
+</ul>
+</li>
+<li>When y_b = 8: z_1 = -400 + 10 x_{last} + 10 x_p - 5 \le -400 + 90 + 90 - 5 = -225 \implies h_1[1] = -1.0.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Unit 2 (<code>h1[2]</code>): Right detector for y_b = 8</strong>
+We want pre-activation z_2 = 10 \cdot ((f(x_b) + x_b) - x_{last} - 2 x_p - 1.5) when y_b = 8, and \le -100 when y_b \ne 8.<ul>
+<li>First set all cells of <code>channel 3</code> (<code>ball</code>) to <code>-200</code>:<ul>
+<li><code>W1[3:600:6, 2] = -200</code></li>
+</ul>
+</li>
+<li>Then overwrite row 8 of <code>channel 3</code> (<code>483 : 543 : 6</code>) with 10(f(c) + c):<ul>
+<li><code>W1[483:543:6, 2] = [10, 30, 60, 90, 120, 150, 180, 210, 240, 260]</code></li>
+</ul>
+</li>
+<li>For each column c \in \{0..9\}, set <code>channel 4</code> (<code>trail</code>) to -10c and <code>channel 0</code> (<code>paddle</code>) to -20c:<ul>
+<li><code>W1[c*6+4 : 600 : 60, 2] = -10 * c</code></li>
+<li><code>W1[c*6+0 : 600 : 60, 2] = -20 * c</code></li>
+</ul>
+</li>
+<li>Bias:<ul>
+<li><code>b1[2] = -15</code></li>
+</ul>
+</li>
+<li>Let&#39;s verify <code>z_2</code>:<ul>
+<li>When y_b \ne 8: z_2 = -200 - 10 x_{last} - 20 x_p - 15 \le -215 \implies h_1[2] = -1.0.</li>
+<li>When y_b = 8: z_2 = 10(f(x_b) + x_b - x_{last} - 2 x_p) - 15 = 10(x_{next} + x_b - 2 x_p - 1.5).<ul>
+<li>Since x_{next} + x_b - 2 x_p is an integer:<ul>
+<li>If x_p &lt; \min(x_b, x_{next}): x_{next} + x_b - 2 x_p \ge 2 \implies z_2 \ge +5 \implies h_1[2] \ge 0.999909.</li>
+<li>If x_p \ge \min(x_b, x_{next}): x_{next} + x_b - 2 x_p \le 1 \implies z_2 \le -5 \implies h_1[2] \le -0.999909.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Unit 3 (<code>h1[3]</code>): Left detector for y_b = 8</strong>
+We want pre-activation z_3 = 10 \cdot (-(f(x_b) + x_b) + x_{last} + 2 x_p - 1.5) when y_b = 8, and \le -100 when y_b \ne 8.<ul>
+<li>First set all cells of <code>channel 3</code> (<code>ball</code>) to <code>-400</code>:<ul>
+<li><code>W1[3:600:6, 3] = -400</code></li>
+</ul>
+</li>
+<li>Then overwrite row 8 of <code>channel 3</code> (<code>483 : 543 : 6</code>) with -10(f(c) + c):<ul>
+<li><code>W1[483:543:6, 3] = [-10, -30, -60, -90, -120, -150, -180, -210, -240, -260]</code></li>
+</ul>
+</li>
+<li>For each column c \in \{0..9\}, set <code>channel 4</code> (<code>trail</code>) to +10c and <code>channel 0</code> (<code>paddle</code>) to +20c:<ul>
+<li><code>W1[c*6+4 : 600 : 60, 3] = 10 * c</code></li>
+<li><code>W1[c*6+0 : 600 : 60, 3] = 20 * c</code></li>
+</ul>
+</li>
+<li>Bias:<ul>
+<li><code>b1[3] = -15</code></li>
+</ul>
+</li>
+<li>Let&#39;s verify <code>z_3</code>:<ul>
+<li>When y_b \ne 8: z_3 = -400 + 10 x_{last} + 20 x_p - 15 \le -400 + 90 + 180 - 15 = -145 \implies h_1[3] = -1.0.</li>
+<li>When y_b = 8: z_3 = 10(-(f(x_b) + x_b) + x_{last} + 2 x_p) - 15 = 10(-(x_{next} + x_b) + 2 x_p - 1.5).<ul>
+<li>Since -(x_{next} + x_b) + 2 x_p is an integer:<ul>
+<li>If x_p &gt; \max(x_b, x_{next}): -(x_{next} + x_b) + 2 x_p \ge 2 \implies z_3 \ge +5 \implies h_1[3] \ge 0.999909.</li>
+<li>If x_p \le \max(x_b, x_{next}): -(x_{next} + x_b) + 2 x_p \le 1 \implies z_3 \le -5 \implies h_1[3] \le -0.999909.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h5>Layer 2 (<code>W2</code>, <code>b2</code>) and Output Layer (<code>W3</code>, <code>b3</code>)</h5>
+<p>Let&#39;s check how <code>h2</code> and <code>logits</code> combine <code>h1[0..3]</code>:</p>
+<ul>
+<li>Define <code>h2[0]</code> = <strong>Right command</strong> (\in \{-1, +1\}):
+We want <code>h2[0]</code> \approx +1 when <code>h1[0] + h1[2] == 0</code> (Right is active) and <code>h2[0]</code> \approx -1 when <code>h1[0] + h1[2] == -2</code> (Right is inactive).
+Since \text{h1}[0] + \text{h1}[2] is either 0 (active) or -2 (inactive), its midpoint is -1:<ul>
+<li><code>W2[0, 0] = 10</code>, <code>W2[2, 0] = 10</code>, <code>b2[0] = 10</code>.</li>
+<li>When Right is active: 10(1 - 1) + 10 = +10 \implies h_2[0] = \tanh(10) \approx +1.0.</li>
+<li>When Right is inactive: 10(-1 - 1) + 10 = -10 \implies h_2[0] = \tanh(-10) \approx -1.0.</li>
+</ul>
+</li>
+<li>Define <code>h2[1]</code> = <strong>Left command</strong> (\in \{-1, +1\}):
+Similarly, \text{h1}[1] + \text{h1}[3] is either 0 (Left is active) or -2 (Left is inactive):<ul>
+<li><code>W2[1, 1] = 10</code>, <code>W2[3, 1] = 10</code>, <code>b2[1] = 10</code>.</li>
+<li>When Left is active: 10(1 - 1) + 10 = +10 \implies h_2[1] = \tanh(10) \approx +1.0.</li>
+<li>When Left is inactive: 10(-1 - 1) + 10 = -10 \implies h_2[1] = \tanh(-10) \approx -1.0.</li>
+</ul>
+</li>
+<li>Define <code>h2[2]</code> = <strong>No-Op command</strong> (\in \{-1, +1\}):
+No-Op is active iff ALL FOUR of <code>h1[0], h1[1], h1[2], h1[3]</code> are -1 (sum is -4), and inactive when one of them is +1 (sum is -2). The midpoint between -4 and -2 is -3:<ul>
+<li><code>W2[0:4, 2] = -10</code>, <code>b2[2] = -30</code>.</li>
+<li>When No-Op is active (<code>h1[0:4]</code> all -1): -10(-4) - 30 = +10 \implies h_2[2] = \tanh(10) \approx +1.0.</li>
+<li>When Right or Left is active (sum is -2): -10(-2) - 30 = -10 \implies h_2[2] = \tanh(-10) \approx -1.0.</li>
+</ul>
+</li>
+</ul>
+<p>Now look at <code>W3</code> and <code>b3</code>:</p>
+<ul>
+<li>For <strong>Action 3 (<code>&#39;r&#39;</code>, Right)</strong>:<ul>
+<li><code>W3[0, 3] = 50</code></li>
+</ul>
+</li>
+<li>For <strong>Action 1 (<code>&#39;l&#39;</code>, Left)</strong>:<ul>
+<li><code>W3[1, 1] = 50</code></li>
+</ul>
+</li>
+<li>For <strong>Action 0 (<code>&#39;n&#39;</code>, No-Op)</strong>:<ul>
+<li><code>W3[2, 0] = 50</code></li>
+</ul>
+</li>
+<li>For unused duplicate No-Op actions <code>2, 4, 5</code> (<code>&#39;u&#39;, &#39;d&#39;, &#39;f&#39;</code>):<ul>
+<li><code>b3[2] = -50</code>, <code>b3[4] = -50</code>, <code>b3[5] = -50</code> (so their logits are always -50).</li>
+</ul>
+</li>
+</ul>
+<p>Let&#39;s check the resulting <code>logits</code> in all three cases:</p>
+<ol>
+<li><strong>Right active</strong> (<code>h2[0] = +1, h2[1] = -1, h2[2] = -1</code>):
+<code>logits = [-50, -50, -50, +50, -50, -50]</code> \implies \mathbb{P}(\text{action } 3) = 1.0.</li>
+<li><strong>Left active</strong> (<code>h2[0] = -1, h2[1] = +1, h2[2] = -1</code>):
+<code>logits = [-50, +50, -50, -50, -50, -50]</code> \implies \mathbb{P}(\text{action } 1) = 1.0.</li>
+<li><strong>No-Op active</strong> (<code>h2[0] = -1, h2[1] = -1, h2[2] = +1</code>):
+<code>logits = [+50, -50, -50, -50, -50, -50]</code> \implies \mathbb{P}(\text{action } 0) = 1.0.</li>
+</ol>
+<p>Everything is verified, exact, and adheres strictly to the <code>edits</code> syntax.</p>
+<h3>Network Design Summary</h3>
+<ol>
+<li><strong>Strategy</strong>:<ul>
+<li>The ball&#39;s exact next horizontal position x_{\text{next}} \in \{0..9\} (including wall reflections at columns 0 and 9) is a linear function of the current ball column x_b (<code>channel 3</code>) and trail column x_{\text{last}} (<code>channel 4</code>):
+<code>x_{\text{next}} = f(x_b) - x_{\text{last}}, \quad \text{where } f(c) = [1, 2, 4, 6, 8, 10, 12, 14, 16, 17]_c.</code>
+</li>
+<li>When the ball is above row 8 (y_b \ne 8), the paddle tracks x_{\text{next}} by moving right (<code>action 3</code>) if x_{\text{next}} - x_p \ge 1, moving left (<code>action 1</code>) if x_{\text{next}} - x_p \le -1, and taking <code>no-op</code> (<code>action 0</code>) when x_p = x_{\text{next}}. This keeps the paddle moving in sync with the ball so that it arrives at x_p = x_b when the ball reaches row 8.</li>
+<li>When the ball is at row 8 (y_b = 8), both x_p = x_b (<code>ball_x == pos</code>) and x_p = x_{\text{next}} (<code>new_x == pos</code>) catch the ball. By targeting the midpoint x_{\text{mid}} = \frac{x_b + x_{\text{next}}}{2} with a deadzone holding both x_b and x_{\text{next}}, the policy outputs <code>no-op</code> whenever x_p \in \{x_b, x_{\text{next}}\}. Because the paddle moved in the ball&#39;s horizontal direction at y_b = 7 to reach x_p(8) = x_b(8), choosing <code>no-op</code> at y_b = 8 catches the ball with 100% reliability even under 10% sticky actions (90% <code>no-op</code> catches via <code>ball_x == pos</code> for a forward reflection, and 10% sticky action catches via <code>new_x == pos</code> for a corner reflection that also prevents infinite trajectories).</li>
+</ul>
+</li>
+<li><strong>Hidden Units Computation</strong>:<ul>
+<li><code><strong>h1[0]</strong></code>: Detects x_{\text{next}} - x_p \ge 1 when y_b \ne 8 (move Right when ball is not at row 8).</li>
+<li><code><strong>h1[1]</strong></code>: Detects x_{\text{next}} - x_p \le -1 when y_b \ne 8 (move Left when ball is not at row 8).</li>
+<li><code><strong>h1[2]</strong></code>: Detects x_{\text{next}} + x_b - 2x_p \ge 2 when y_b = 8 (move Right when ball is at row 8 and x_p &lt; \min(x_b, x_{\text{next}})).</li>
+<li><code><strong>h1[3]</strong></code>: Detects x_{\text{next}} + x_b - 2x_p \le -2 when y_b = 8 (move Left when ball is at row 8 and x_p &gt; \max(x_b, x_{\text{next}})).</li>
+<li><code><strong>h2[0]</strong></code>: Logical OR of <code>h1[0]</code> and <code>h1[2]</code> (overall Right command), routed to <code>logits[3]</code>.</li>
+<li><code><strong>h2[1]</strong></code>: Logical OR of <code>h1[1]</code> and <code>h1[3]</code> (overall Left command), routed to <code>logits[1]</code>.</li>
+<li><code><strong>h2[2]</strong></code>: Logical NOR of <code>h1[0..3]</code> (overall No-Op command), routed to <code>logits[0]</code>.</li>
+</ul>
+</li>
+</ol>
+<pre># Layer 1, Unit 0: Right detector for y_b != 8 (f(x_b) - x_last - x_p &gt;= 1)
+W1[3:600:60, 0] = 10
+W1[9:600:60, 0] = 20
+W1[15:600:60, 0] = 40
+W1[21:600:60, 0] = 60
+W1[27:600:60, 0] = 80
+W1[33:600:60, 0] = 100
+W1[39:600:60, 0] = 120
+W1[45:600:60, 0] = 140
+W1[51:600:60, 0] = 160
+W1[57:600:60, 0] = 170
+W1[483:543:6, 0] = -200
+W1[4:600:60, 0] = 0
+W1[10:600:60, 0] = -10
+W1[16:600:60, 0] = -20
+W1[22:600:60, 0] = -30
+W1[28:600:60, 0] = -40
+W1[34:600:60, 0] = -50
+W1[40:600:60, 0] = -60
+W1[46:600:60, 0] = -70
+W1[52:600:60, 0] = -80
+W1[58:600:60, 0] = -90
+W1[540:600:6, 0] = [0, -10, -20, -30, -40, -50, -60, -70, -80, -90]
+b1[0] = -5
+# Layer 1, Unit 1: Left detector for y_b != 8 (f(x_b) - x_last - x_p &lt;= -1)
+W1[3:600:60, 1] = -10
+W1[9:600:60, 1] = -20
+W1[15:600:60, 1] = -40
+W1[21:600:60, 1] = -60
+W1[27:600:60, 1] = -80
+W1[33:600:60, 1] = -100
+W1[39:600:60, 1] = -120
+W1[45:600:60, 1] = -140
+W1[51:600:60, 1] = -160
+W1[57:600:60, 1] = -170
+W1[483:543:6, 1] = -400
+W1[4:600:60, 1] = 0
+W1[10:600:60, 1] = 10
+W1[16:600:60, 1] = 20
+W1[22:600:60, 1] = 30
+W1[28:600:60, 1] = 40
+W1[34:600:60, 1] = 50
+W1[40:600:60, 1] = 60
+W1[46:600:60, 1] = 70
+W1[52:600:60, 1] = 80
+W1[58:600:60, 1] = 90
+W1[540:600:6, 1] = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+b1[1] = -5
+# Layer 1, Unit 2: Right detector for y_b == 8 (f(x_b) + x_b - x_last - 2*x_p &gt;= 2)
+W1[3:600:6, 2] = -200
+W1[483:543:6, 2] = [10, 30, 60, 90, 120, 150, 180, 210, 240, 260]
+W1[4:600:60, 2] = 0
+W1[10:600:60, 2] = -10
+W1[16:600:60, 2] = -20
+W1[22:600:60, 2] = -30
+W1[28:600:60, 2] = -40
+W1[34:600:60, 2] = -50
+W1[40:600:60, 2] = -60
+W1[46:600:60, 2] = -70
+W1[52:600:60, 2] = -80
+W1[58:600:60, 2] = -90
+W1[540:600:6, 2] = [0, -20, -40, -60, -80, -100, -120, -140, -160, -180]
+b1[2] = -15
+# Layer 1, Unit 3: Left detector for y_b == 8 (f(x_b) + x_b - x_last - 2*x_p &lt;= -2)
+W1[3:600:6, 3] = -400
+W1[483:543:6, 3] = [-10, -30, -60, -90, -120, -150, -180, -210, -240, -260]
+W1[4:600:60, 3] = 0
+W1[10:600:60, 3] = 10
+W1[16:600:60, 3] = 20
+W1[22:600:60, 3] = 30
+W1[28:600:60, 3] = 40
+W1[34:600:60, 3] = 50
+W1[40:600:60, 3] = 60
+W1[46:600:60, 3] = 70
+W1[52:600:60, 3] = 80
+W1[58:600:60, 3] = 90
+W1[540:600:6, 3] = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180]
+b1[3] = -15
+# Layer 2: Combine row-general and row-8 detectors into Right (0), Left (1), and No-Op (2)
+W2[0, 0] = 10
+W2[2, 0] = 10
+b2[0] = 10
+W2[1, 1] = 10
+W2[3, 1] = 10
+b2[1] = 10
+W2[0:4, 2] = -10
+b2[2] = -30
+# Output Layer: Route commands to Action 0 (No-Op), Action 1 (Left), Action 3 (Right)
+W3[2, 0] = 50
+W3[1, 1] = 50
+W3[0, 3] = 50
+b3[0:6] = [0, 0, -50, 0, -50, -50]
+</pre>
+</message-content>

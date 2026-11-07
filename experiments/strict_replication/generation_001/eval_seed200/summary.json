@@ -1,0 +1,33 @@
+{
+  "episodes": 1000,
+  "mean": 57.487,
+  "median": 38.0,
+  "std": 61.964905232562735,
+  "se": 1.9595023553138387,
+  "min": 0.0,
+  "max": 449.0,
+  "mean_length": 866.03,
+  "median_length": 554.0,
+  "std_length": 985.4363621888143,
+  "total_bricks_destroyed": 57487,
+  "action_distribution": {
+    "0": 0.10276202902901747,
+    "1": 0.44825583409350717,
+    "2": 0.0,
+    "3": 0.4489821368774754,
+    "4": 0.0,
+    "5": 0.0
+  },
+  "step_cutoffs_count": 0,
+  "metadata": {
+    "model_id": "gemini_argon_seed200",
+    "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5",
+    "episodes": 1000,
+    "sticky_action_prob": 0.1,
+    "max_steps": 10000,
+    "base_seed": 200,
+    "minatar_version": "1.0.15",
+    "total_eval_time_seconds": 22.82,
+    "timestamp": "2026-11-06T13:36:04.546985"
+  }
+}
