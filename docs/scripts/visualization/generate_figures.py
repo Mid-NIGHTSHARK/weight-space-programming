@@ -124,6 +124,7 @@ plt.rcParams.update(
         "figure.dpi": 120,
         "savefig.dpi": 300,
         "svg.fonttype": "none",
+        "svg.hashsalt": "weight-space-programming",
         "pdf.fonttype": 42,
     }
 )
@@ -172,6 +173,46 @@ def summarize(rows: list[dict[str, str]]) -> dict[str, Any]:
         "cutoff_count": int(cutoffs.sum()),
         "cutoff_rate": float(cutoffs.mean()),
     }
+
+
+def bootstrap_mean_ci(differences: np.ndarray, resamples: int, seed: int, batch_size: int = 256) -> tuple[float, float]:
+    """Independently reproduce the stored percentile paired-bootstrap interval."""
+    rng = np.random.default_rng(seed)
+    n = differences.size
+    bootstrap_means = np.empty(resamples, dtype=np.float64)
+    for start in range(0, resamples, batch_size):
+        stop = min(start + batch_size, resamples)
+        indices = rng.integers(0, n, size=(stop - start, n))
+        bootstrap_means[start:stop] = differences[indices].mean(axis=1)
+    low, high = np.quantile(bootstrap_means, [0.025, 0.975])
+    return float(low), float(high)
+
+
+def paired_sign_flip_p(differences: np.ndarray, resamples: int, seed: int, batch_size: int = 256) -> float:
+    """Independently reproduce the stored two-sided sign-flip p-value."""
+    rng = np.random.default_rng(seed)
+    n = differences.size
+    observed = float(np.mean(differences))
+    extreme = 0
+    for start in range(0, resamples, batch_size):
+        count = min(batch_size, resamples - start)
+        signs = rng.integers(0, 2, size=(count, n), dtype=np.int8) * 2 - 1
+        permuted_means = (signs * differences).mean(axis=1)
+        extreme += int(np.count_nonzero(np.abs(permuted_means) >= abs(observed)))
+    return float((extreme + 1) / (resamples + 1))
+
+
+def holm_adjust(p_values: list[float]) -> list[float]:
+    order = np.argsort(np.asarray(p_values, dtype=np.float64))
+    adjusted_sorted = np.empty(len(p_values), dtype=np.float64)
+    running = 0.0
+    for rank, original_index in enumerate(order):
+        running = max(running, min(1.0, (len(p_values) - rank) * p_values[int(original_index)]))
+        adjusted_sorted[rank] = running
+    adjusted = np.empty(len(p_values), dtype=np.float64)
+    for rank, original_index in enumerate(order):
+        adjusted[int(original_index)] = adjusted_sorted[rank]
+    return [float(value) for value in adjusted]
 
 
 def verified_inputs() -> tuple[dict[str, list[dict[str, str]]], dict[str, Any], dict[str, Any], dict[str, Any]]:
@@ -233,6 +274,16 @@ def verified_inputs() -> tuple[dict[str, list[dict[str, str]]], dict[str, Any], 
         assert math.isclose(paired_sd, float(item["paired_difference_sample_std"]), rel_tol=0.0, abs_tol=1e-10), f"paired SD mismatch: {a} vs {b}"
         if paired_dz is not None:
             assert math.isclose(paired_dz, float(item["effect_size_cohen_dz"]), rel_tol=0.0, abs_tol=1e-10), f"paired dz mismatch: {a} vs {b}"
+        if a in PRIMARY and b in PRIMARY:
+            resamples = item["pairwise_resamples"]
+            ci = bootstrap_mean_ci(differences, int(resamples["bootstrap"]), int(resamples["random_seed"]))
+            for actual, stored in zip(ci, item["paired_difference_ci_95_percentile_bootstrap"]):
+                assert math.isclose(actual, float(stored), rel_tol=0.0, abs_tol=1e-10), f"paired-bootstrap CI mismatch: {a} vs {b}"
+            p_value = paired_sign_flip_p(differences, int(resamples["permutation"]), int(resamples["random_seed"]) + 1)
+            assert math.isclose(p_value, float(item["paired_sign_flip_p_value"]), rel_tol=0.0, abs_tol=1e-12), f"sign-flip p-value mismatch: {a} vs {b}"
+    adjusted = holm_adjust([float(item["paired_sign_flip_p_value"]) for item in paired["pairwise_comparisons"]])
+    for item, value in zip(paired["pairwise_comparisons"], adjusted):
+        assert math.isclose(value, float(item["p_value_holm_adjusted_all_pairwise_conditions"]), rel_tol=0.0, abs_tol=1e-12), f"Holm adjustment mismatch: {item['condition_a_id']} vs {item['condition_b_id']}"
     return source_rows, phase2_raw, iterative_raw, {"paired": paired, "iterative_rows": iterative_rows, "phase2_rows": source_rows, "iterative_analysis": iterative_analysis}
 
 

@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "generated_by": "docs/scripts/gameplay/generate_media_manifest.py",
+  "note": "Browser Arena media are independent demonstrations and do not reproduce the NumPy benchmark RNG streams; same seed labels do not assert synchronized trajectories.",
+  "assets": [
+    {
+      "file": "docs/assets/gameplay/screenshots/arena-active-gemini-argon-medium-seed42.jpg",
+      "description": "Browser screenshot of the actual deployed Arena with Gemini Argon 4 Medium selected, seed 42.",
+      "source": "Screenshot of the live GitHub Pages Arena in a browser.",
+      "format": "jpg",
+      "bytes": 75658,
+      "sha256": "43b9148c666aba40910890307cae7d4445d7d3b955bbd76b117c37e36e766872",
+      "resolution": {
+        "width": 865,
+        "height": 967
+      },
+      "model_label": "Gemini Argon 4 Medium",
+      "seed": 42
+    },
+    {
+      "file": "docs/assets/gameplay/screenshots/arena-frame-gemini-argon-4-medium-seed42.png",
+      "description": "Arena-generated PNG of the actual game frame and current policy inspector, Gemini Argon 4 Medium, seed 42.",
+      "source": "PNG downloaded from the Arena capture control; game state, observation and inference readouts are from the live browser implementation.",
+      "format": "png",
+      "bytes": 178503,
+      "sha256": "0fefae4df7301856b019a1bf34446bcfe83bb8a81cb7408631ba8b3293eba250",
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "model_label": "Gemini Argon 4 Medium",
+      "seed": 42
+    },
+    {
+      "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Gemini Argon 4 Medium, seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2794369,
+      "sha256": "f4e3bb1773cf487c00fe7aab23881d1b3dc394465164ffd39da5a4432839be77",
+      "model_label": "Gemini Argon 4 Medium",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "0/0",
+        "frame_count": 617,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 20.64,
+        "frames_per_timestamp_span_estimate": 29.893
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Gemini Argon 4 Medium seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 900790,
+      "sha256": "d2e982b3432d4e64c3b82663c7819c989de68fd707a7b2591fd8f227be78a567",
+      "model_label": "Gemini Argon 4 Medium",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 620,
+        "file_duration_seconds": 20.666016
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Claude Sonnet 5.5, seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2154697,
+      "sha256": "4f3f1def51fa2865d2d0881d48e555aea5d8c1e9e533fe471b264400e05548c7",
+      "model_label": "Claude Sonnet 5.5",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30000/1001",
+        "frame_count": 571,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 19.008,
+        "frames_per_timestamp_span_estimate": 30.04
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Claude Sonnet 5.5 seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 773981,
+      "sha256": "361ff8eac2e93d16d4e077b9564ffed82fe5ea56ae89197c934c630aa62db3a9",
+      "model_label": "Claude Sonnet 5.5",
+      "policy_classification": "Recorded primary zero-shot condition label; provider/model provenance limitations remain as documented.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 571,
+        "file_duration_seconds": 19.033008
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/astra_reference_seed42_demo.webm",
+      "description": "Original Canvas MediaRecorder gameplay with the Arena decision inspector, Astra reference (local reevaluation), seed 42.",
+      "source": "Captured from the deployed browser Arena at 1x playback; MediaRecorder canvas capture configured for 30 fps. No audio. Separate run; no synchronized or RNG-matched comparison is claimed.",
+      "format": "webm",
+      "bytes": 2143864,
+      "sha256": "6a3d96379311cdd10def3f2446d8fed1c958224b3b323aa7a64e0aa565785463",
+      "model_label": "Astra reference (local reevaluation)",
+      "policy_classification": "Local reference controller; not an LLM-generated zero-shot policy.",
+      "seed": 42,
+      "audio": false,
+      "capture_rate_fps": 30,
+      "measured": {
+        "codec": "vp9",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30000/1001",
+        "frame_count": 463,
+        "file_duration_seconds": null,
+        "packet_timestamp_span_seconds": 15.406,
+        "frames_per_timestamp_span_estimate": 30.053
+      },
+      "benchmark_equivalent": false
+    },
+    {
+      "file": "docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4",
+      "description": "H.264 browser gameplay copy of the Astra reference (local reevaluation) seed 42 Arena capture.",
+      "source": "Transcoded from the retained WebM using ffmpeg libx264, CRF 18, yuv420p, faststart, constant 30 fps; no audio, trimming, or playback-speed increase.",
+      "format": "mp4",
+      "bytes": 778776,
+      "sha256": "7f0270b56603eea68ac8396a8d31de4c6bfe6fad478824234eab3c6a9d1ab72a",
+      "model_label": "Astra reference (local reevaluation)",
+      "policy_classification": "Local reference controller; not an LLM-generated zero-shot policy.",
+      "seed": 42,
+      "audio": false,
+      "derived_from": "docs/assets/gameplay/videos/astra_reference_seed42_demo.webm",
+      "conversion_command": "ffmpeg -i input.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 output.mp4",
+      "measured": {
+        "codec": "h264",
+        "resolution": {
+          "width": 1920,
+          "height": 1080
+        },
+        "reported_frame_rate": "30/1",
+        "frame_count": 464,
+        "file_duration_seconds": 15.466016
+      },
+      "benchmark_equivalent": false
+    }
+  ]
+}

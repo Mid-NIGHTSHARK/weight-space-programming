@@ -6,7 +6,7 @@ Run this command from the repository root after installing the project dependenc
 .venv/bin/python docs/scripts/visualization/generate_figures.py
 ```
 
-The script reads the nine corrected Phase 2 episode CSVs, the three separate Argon High iterative-development CSVs, their checked condition-analysis JSON, the Phase 2 paired-comparisons JSON, and the preserved diagnostic trace JSON. It independently recomputes the reported means, standard errors, medians, score extrema, episode-length means/medians, cutoff counts, action totals, matched episode means, paired standard deviations, and paired Cohen's *dz* before plotting. A mismatch stops figure generation.
+The script reads the nine corrected Phase 2 episode CSVs, the three separate Argon High iterative-development CSVs, their checked condition-analysis JSON, the Phase 2 paired-comparisons JSON, and the preserved diagnostic trace JSON. It independently recomputes the reported means, standard errors, medians, score extrema, episode-length means/medians, cutoff counts, action totals, matched episode means, paired standard deviations, and paired Cohen's *dz* from raw records. For the ten primary-model pairs it also repeats the stored paired-bootstrap confidence intervals and two-sided sign-flip p-values; it recomputes the Holm step-down adjustment over all 36 recorded p-values. A mismatch stops figure generation.
 
 It writes nine figure families under `docs/assets/figures/`, each as SVG, 300-DPI PNG, and PDF. It writes `media_manifest.json` with input hashes and output file hashes, formats, resolutions, source paths, and figure descriptions. The command never writes to the experiment data or analysis directories.
 

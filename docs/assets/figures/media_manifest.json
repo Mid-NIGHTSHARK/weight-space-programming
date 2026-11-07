@@ -90,7 +90,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 26904,
-      "sha256": "a453f7c621013de8a489ec4e85d4f0fee03a24a751852aab6f8135ba0ea3bf7f",
+      "sha256": "5f161edce3c056e6166312215728cc1d51fc303b0dd18787de9d5dd2e2d64f19",
       "resolution": "vector",
       "figure_size_inches": [
         12.5,
@@ -162,7 +162,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 17156,
-      "sha256": "3dc7930dc6f73f14f8ce2ae820c16f89e0a57808281a1f78b532967925975ce9",
+      "sha256": "35c31ca6d50c42636c1bd49ba7fcf7dc30eb8e1f1b3af24147b713d4573be81c",
       "resolution": "vector",
       "figure_size_inches": [
         9.2,
@@ -234,7 +234,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 73571,
-      "sha256": "db4b5904ffbdd1e93585021788ab0098ef56b566369b8503b20d4aa2ff93fd83",
+      "sha256": "6904a291f9a31a493ba96c99d976e58cc66ff5082f4d93114caf176eb7a85b58",
       "resolution": "vector",
       "figure_size_inches": [
         12.2,
@@ -306,7 +306,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 37731,
-      "sha256": "2b6fc291b89a33cc985cdb6c52b99a3ecbfa0369eeede8c92e8a211613609839",
+      "sha256": "bcd22a78c82ef2742f89431c201a2c4870bd08d1b6207d792209b57d1eb5c015",
       "resolution": "vector",
       "figure_size_inches": [
         9.6,
@@ -372,7 +372,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 12233,
-      "sha256": "66f2d3a3e5512bab18f043604ebc3f909c85ca5aeea9a93ba582449973f3c9f4",
+      "sha256": "d41db75ede59d0c3d22fa5962636825d46a5f6ae6a9ffc769eb6a442951d07ec",
       "resolution": "vector",
       "figure_size_inches": [
         9.2,
@@ -433,7 +433,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 24939,
-      "sha256": "f7c78e31e4cc1217d88b36be6a1ac64c1a35127460951f1a71de3a7cc9b04e10",
+      "sha256": "98b5939e35b0e3ba1a037dac8705f929079a7c6f3c6373fb9f7859f4b74d6f49",
       "resolution": "vector",
       "figure_size_inches": [
         15.2,
@@ -507,7 +507,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 20596,
-      "sha256": "0b290395da310e0813fe203ccde02fbc4d212b23b71081c4d4d2c75404643d55",
+      "sha256": "af298d319c244fe0fdc2081d573c3e31a25756312fcf3f118b8d513659816eb5",
       "resolution": "vector",
       "figure_size_inches": [
         10.5,
@@ -579,7 +579,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 94990,
-      "sha256": "58d6162af2a871d794a027b9e1be4ae9424453be530476c14a6093917cc6395c",
+      "sha256": "274ca2dcff96407e11d5fcb414c747503671e90b618af4d31b2ab2fc4740bd35",
       "resolution": "vector",
       "figure_size_inches": [
         16.0,
@@ -652,7 +652,7 @@
       "generation_script": "docs/scripts/visualization/generate_figures.py",
       "format": "svg",
       "file_size_bytes": 430484,
-      "sha256": "04cc617351dbd9995922c6d3928473331a7c3449eade15f6572507b0f3e779aa",
+      "sha256": "6930065aa0b4e33c9813d6240f3fc2c522c3bc1b94415139ff66ed96684b43ad",
       "resolution": "vector",
       "figure_size_inches": [
         11.0,

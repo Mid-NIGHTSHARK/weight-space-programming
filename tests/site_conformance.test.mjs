@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { ACTION_CHARS, advanceState, channelGrid, createInitialState, encodeNativeState, encodeObservation, makeDemoStreams, resetEpisode } from "../docs/assets/minatar.js";
 import { forward, sampleAction, stableSoftmax } from "../docs/assets/network.js";
 import { renderIterativeComparisonRows, renderIterativeHistograms, renderIterativeMeanChart, renderIterativeProfiles, renderIterativeResultRows } from "../docs/assets/iterative.js";
@@ -157,6 +157,29 @@ test("Arena media recorder reports an unsupported browser without changing Arena
   assert.equal(capture.isRecording(), false);
   assert.match(status[0][0], /Recording is unavailable/);
   assert.equal(status[0][1], false);
+});
+
+test("published gameplay media are playable local assets with distinct policy labels", () => {
+  const html = readFileSync(new URL("../docs/index.html", import.meta.url), "utf8");
+  const videos = [...html.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
+  assert.equal(videos.length, 3);
+  const sourcePaths = [];
+  for (const [, attributes, content] of videos) {
+    assert.match(attributes, /\bcontrols\b/);
+    assert.match(attributes, /\bplaysinline\b/);
+    assert.doesNotMatch(attributes, /\bautoplay\b/);
+    const sources = [...content.matchAll(/<source\b[^>]*\bsrc="([^"]+)"/g)];
+    assert.equal(sources.length, 2);
+    sourcePaths.push(...sources.map(([, src]) => src));
+  }
+  for (const source of sourcePaths) {
+    assert.ok(existsSync(new URL(`../docs/${source}`, import.meta.url)), `missing gameplay media: ${source}`);
+  }
+  assert.match(html, /Gemini Argon 4 Medium · zero-shot/);
+  assert.match(html, /Claude Sonnet 5\.5 · zero-shot/);
+  assert.match(html, /Astra · handcrafted\/reference controller/);
+  assert.match(html, /not a synchronized model-comparison recording/);
+  assert.match(html, /gameplay\/media_manifest\.json/);
 });
 
 test("iterative-development views render three source-backed versions separately from the primary model set", () => {

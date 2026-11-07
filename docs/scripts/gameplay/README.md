@@ -14,10 +14,10 @@ The model and seed cannot be changed while recording. Recording does not alter t
 
 ## Optional H.264 MP4 conversion
 
-If a platform needs MP4, convert the captured WebM without changing its playback rate or trimming the episode:
+If a platform needs MP4, normalize the captured WebM to constant 30 fps without trimming the episode. The source stream has variable presentation timestamps; confirm the resulting frame count and duration rather than assuming the output matches the capture exactly:
 
 ```sh
-ffmpeg -i arena-capture.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart arena-capture.mp4
+ffmpeg -i arena-capture.webm -map 0:v:0 -an -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart -fps_mode cfr -r 30 arena-capture.mp4
 ```
 
 Then inspect the actual file metadata:
@@ -28,8 +28,14 @@ ffprobe -v error -select_streams v:0 \
   -show_entries format=duration -of default=noprint_wrappers=1 arena-capture.mp4
 ```
 
-Put reviewed public clips in `docs/assets/gameplay/videos/` and stills in `docs/assets/gameplay/screenshots/`. Add each published item to a gameplay media manifest with a description, selected model and seed where known, source (Arena capture), generation/conversion details, actual dimensions and frame rate, duration for video, format, and SHA-256. Keep the original browser WebM when an MP4 conversion is published; record both hashes and the conversion command. Never label a browser recording as benchmark-equivalent or describe different seeds as matched stochastic trajectories.
+Put reviewed public clips in `docs/assets/gameplay/videos/` and stills in `docs/assets/gameplay/screenshots/`. Rebuild the manifest after adding or replacing media:
+
+```sh
+python3 docs/scripts/gameplay/generate_media_manifest.py
+```
+
+The script records each media file's size and SHA-256, reads PNG/JPEG dimensions, and queries video dimensions, frame count, frame rate, and duration with `ffprobe`. It also records the capture source and any conversion. The three H.264 copies were normalized to 30 fps from their retained browser WebM sources; original timestamp spans and converted clip durations are recorded separately. Both formats are kept so the source captures remain inspectable. Never label a browser recording as benchmark-equivalent or describe separate runs as matched stochastic trajectories.
 
 ## Current capture limitations
 
-The browser recorder writes WebM through the browser's MediaRecorder implementation. H.264 MP4 is not captured directly. A clip must be captured, inspected, and verified before it is shown as a published video. The repository's native Python visualizer screenshots require a functioning Tk/Cocoa display and fail in environments where Tk cannot initialize; that failure does not affect the browser Arena's PNG frame control.
+The browser recorder writes WebM through the browser's MediaRecorder implementation. H.264 MP4 is not captured directly. Three separate captures are preserved: Gemini Argon 4 Medium, Claude Sonnet 5.5 and the Astra reference controller, all started with seed 42. They are not synchronized model comparisons, and no project-introduction narration is available. The repository's native Python visualizer screenshots require a functioning Tk/Cocoa display and fail in environments where Tk cannot initialize; that failure does not affect the browser Arena's PNG frame control.
