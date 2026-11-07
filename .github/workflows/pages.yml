@@ -45,7 +45,7 @@ jobs:
         with:
           node-version: "20"
       - name: Install test dependencies
-        run: python -m pip install -e .
+        run: python -m pip install numpy minatar==1.0.15 pytest 'torch>=2.2.0'
       - name: Verify generated data against source hashes
         run: python scripts/export_research_site_data.py --check
       - name: Compare browser mechanics and inference with Python references
