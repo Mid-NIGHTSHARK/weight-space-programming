@@ -14,8 +14,35 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 SCREENSHOTS = (
-    "docs/assets/gameplay/screenshots/arena-active-gemini-argon-medium-seed42.jpg",
-    "docs/assets/gameplay/screenshots/arena-frame-gemini-argon-4-medium-seed42.png",
+    {
+        "file": "docs/assets/gameplay/screenshots/arena-active-gemini-argon-medium-seed42.jpg",
+        "description": "Browser screenshot of the actual deployed Arena with Gemini Argon 4 Medium selected, seed 42.",
+        "source": "Screenshot of the live GitHub Pages Arena in a browser.",
+        "model_label": "Gemini Argon 4 Medium",
+        "seed": 42,
+    },
+    {
+        "file": "docs/assets/gameplay/screenshots/arena-frame-gemini-argon-4-medium-seed42.png",
+        "description": "Arena-generated PNG of the actual game frame and current policy inspector, Gemini Argon 4 Medium, seed 42.",
+        "source": "PNG downloaded from the Arena capture control; game state, observation and inference readouts are from the live browser implementation.",
+        "model_label": "Gemini Argon 4 Medium",
+        "seed": 42,
+    },
+    {
+        "file": "docs/assets/gameplay/screenshots/website-corrected-results-viewport.jpg",
+        "description": "Screenshot of the deployed Results section showing the corrected nine-condition episode summary.",
+        "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+    },
+    {
+        "file": "docs/assets/gameplay/screenshots/website-visual-results-gallery.jpg",
+        "description": "Screenshot of the deployed Visual Results & Gameplay gallery with scientific figures and native video players.",
+        "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+    },
+    {
+        "file": "docs/assets/gameplay/screenshots/website-methodology-viewport.jpg",
+        "description": "Screenshot of the deployed Methodology section describing the research question and MinAtar Breakout implementation.",
+        "source": "Screenshot of the published GitHub Pages site in the in-app browser; viewport dimensions are recorded below.",
+    },
 )
 VIDEO_PAIRS = (
     {
@@ -35,6 +62,35 @@ VIDEO_PAIRS = (
         "classification": "Local reference controller; not an LLM-generated zero-shot policy.",
         "webm": "docs/assets/gameplay/videos/astra_reference_seed42_demo.webm",
         "mp4": "docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4",
+    },
+)
+PRESENTATION_VIDEOS = (
+    {
+        "file": "docs/assets/gameplay/videos/weight_space_programming_intro.mp4",
+        "description": "Thirty-second unvoiced introduction combining methodology title cards with actual Gemini Argon 4 Medium Arena gameplay and live inference readouts.",
+        "source_files": ["docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4"],
+        "policy_classification": "Uses a captured browser demonstration of the recorded Gemini Argon 4 Medium zero-shot condition label; provider identity is not independently authenticated.",
+        "derivation": "Four 5/5/15/5-second segments; title cards and documented facts are composed with the first 15 seconds of the retained Arena capture at 1x and 30 fps.",
+    },
+    {
+        "file": "docs/assets/gameplay/videos/zero_shot_side_by_side_comparison.mp4",
+        "description": "Side-by-side view of Gemini Argon 4 Medium and Claude Sonnet 5.5 browser Arena captures, aligned from the beginning and trimmed to 571 frames at native 30 fps.",
+        "source_files": [
+            "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+            "docs/assets/gameplay/videos/claude_sonnet_55_seed42_demo.mp4",
+        ],
+        "policy_classification": "Two recorded primary zero-shot condition labels; provider/model identity is not independently authenticated.",
+        "derivation": "The two preserved 30 fps captures are placed side by side at native playback speed and trimmed to their common frame count; same seed 42 was selected, but stochastic stream matching was not verified.",
+    },
+    {
+        "file": "docs/assets/gameplay/videos/gemini_vs_astra_reference_comparison.mp4",
+        "description": "Side-by-side view of the Gemini Argon 4 Medium browser capture and the Astra handcrafted/reference-controller browser capture, aligned from the beginning and trimmed to 464 frames at native 30 fps.",
+        "source_files": [
+            "docs/assets/gameplay/videos/gemini_argon_4_medium_seed42_demo.mp4",
+            "docs/assets/gameplay/videos/astra_reference_seed42_demo.mp4",
+        ],
+        "policy_classification": "Gemini uses a recorded zero-shot condition label; Astra is a handcrafted/reference controller, not an LLM-generated policy.",
+        "derivation": "The two preserved 30 fps captures are placed side by side at native playback speed and trimmed to their common frame count; same seed 42 was selected, but stochastic stream matching was not verified.",
     },
 )
 OUTPUT = ROOT / "docs/assets/gameplay/media_manifest.json"
@@ -143,15 +199,14 @@ def entry(relative: str, description: str, source: str, **metadata: Any) -> dict
 def main() -> None:
     assets: list[dict[str, Any]] = []
     for screenshot in SCREENSHOTS:
-        image_path = ROOT / screenshot
+        relative = screenshot["file"]
+        image_path = ROOT / relative
         width, height = jpeg_dimensions(image_path) if image_path.suffix.lower() in {".jpg", ".jpeg"} else png_dimensions(image_path)
-        if "arena-active" in screenshot:
-            description = "Browser screenshot of the actual deployed Arena with Gemini Argon 4 Medium selected, seed 42."
-            source = "Screenshot of the live GitHub Pages Arena in a browser."
-        else:
-            description = "Arena-generated PNG of the actual game frame and current policy inspector, Gemini Argon 4 Medium, seed 42."
-            source = "PNG downloaded from the Arena capture control; game state, observation and inference readouts are from the live browser implementation."
-        assets.append(entry(screenshot, description, source, resolution={"width": width, "height": height}, model_label="Gemini Argon 4 Medium", seed=42))
+        metadata = {"resolution": {"width": width, "height": height}}
+        for key in ("model_label", "seed"):
+            if key in screenshot:
+                metadata[key] = screenshot[key]
+        assets.append(entry(relative, screenshot["description"], screenshot["source"], **metadata))
 
     for version in VIDEO_PAIRS:
         webm, mp4 = version["webm"], version["mp4"]
@@ -188,10 +243,34 @@ def main() -> None:
             )
         )
 
+    for video in PRESENTATION_VIDEOS:
+        derived_from = [
+            {
+                "file": relative,
+                "bytes": (ROOT / relative).stat().st_size,
+                "sha256": sha256(ROOT / relative),
+            }
+            for relative in video["source_files"]
+        ]
+        assets.append(
+            entry(
+                video["file"],
+                video["description"],
+                f"Generated by docs/scripts/gameplay/compose_showcase_videos.py from preserved source capture(s): {', '.join(video['source_files'])}.",
+                policy_classification=video["policy_classification"],
+                derived_from=derived_from,
+                derivation=video["derivation"],
+                composition_script="docs/scripts/gameplay/compose_showcase_videos.py",
+                audio=False,
+                measured=probe(ROOT / video["file"]),
+                benchmark_equivalent=False,
+            )
+        )
+
     manifest = {
         "schema_version": 1,
         "generated_by": "docs/scripts/gameplay/generate_media_manifest.py",
-        "note": "Browser Arena media are independent demonstrations and do not reproduce the NumPy benchmark RNG streams; same seed labels do not assert synchronized trajectories.",
+        "note": "Gameplay recordings and deployed-site screenshots are recorded separately. Browser Arena media are demonstrations and do not reproduce the NumPy benchmark RNG streams; same seed labels do not assert synchronized trajectories.",
         "assets": assets,
     }
     OUTPUT.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")

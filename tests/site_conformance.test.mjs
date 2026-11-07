@@ -162,14 +162,14 @@ test("Arena media recorder reports an unsupported browser without changing Arena
 test("published gameplay media are playable local assets with distinct policy labels", () => {
   const html = readFileSync(new URL("../docs/index.html", import.meta.url), "utf8");
   const videos = [...html.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
-  assert.equal(videos.length, 3);
+  assert.equal(videos.length, 6);
   const sourcePaths = [];
   for (const [, attributes, content] of videos) {
     assert.match(attributes, /\bcontrols\b/);
     assert.match(attributes, /\bplaysinline\b/);
     assert.doesNotMatch(attributes, /\bautoplay\b/);
     const sources = [...content.matchAll(/<source\b[^>]*\bsrc="([^"]+)"/g)];
-    assert.equal(sources.length, 2);
+    assert.ok(sources.length >= 1 && sources.length <= 2);
     sourcePaths.push(...sources.map(([, src]) => src));
   }
   for (const source of sourcePaths) {
@@ -178,7 +178,11 @@ test("published gameplay media are playable local assets with distinct policy la
   assert.match(html, /Gemini Argon 4 Medium · zero-shot/);
   assert.match(html, /Claude Sonnet 5\.5 · zero-shot/);
   assert.match(html, /Astra · handcrafted\/reference controller/);
-  assert.match(html, /not a synchronized model-comparison recording/);
+  assert.match(html, /Project introduction · unvoiced/);
+  assert.match(html, /Two primary zero-shot condition labels/);
+  assert.match(html, /Gemini and Astra are separate browser captures/);
+  assert.match(html, /hidden-unit activity counts, output logits and action probabilities/);
+  assert.match(html, /stochastic stream matching was not verified/);
   assert.match(html, /gameplay\/media_manifest\.json/);
 });
 
