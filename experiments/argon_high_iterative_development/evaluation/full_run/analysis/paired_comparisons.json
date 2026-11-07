@@ -1,0 +1,68 @@
+[
+  {
+    "condition_a_id": "argon_high_original",
+    "condition_a_label": "Argon High \u2014 Original first-prompt assignments",
+    "condition_b_id": "argon_high_followup_1",
+    "condition_b_label": "Argon High \u2014 First follow-up",
+    "difference_definition": "Argon High \u2014 Original first-prompt assignments minus Argon High \u2014 First follow-up",
+    "effect_size_cohen_dz": -0.11224949285107101,
+    "matched_episode_pairs": 3000,
+    "mean_paired_difference": -2.3693333333333335,
+    "p_value_holm_adjusted_all_pairwise_conditions": 0.00015000000000000001,
+    "paired_difference_ci_95_percentile_bootstrap": [
+      -3.1466833333333333,
+      -1.6466333333333338
+    ],
+    "paired_difference_sample_std": 21.107741987546333,
+    "paired_sign_flip_p_value": 5e-05,
+    "pairwise_resamples": {
+      "bootstrap": 9999,
+      "permutation": 19999,
+      "random_seed": 20261107
+    }
+  },
+  {
+    "condition_a_id": "argon_high_original",
+    "condition_a_label": "Argon High \u2014 Original first-prompt assignments",
+    "condition_b_id": "argon_high_followup_2",
+    "condition_b_label": "Argon High \u2014 Second follow-up",
+    "difference_definition": "Argon High \u2014 Original first-prompt assignments minus Argon High \u2014 Second follow-up",
+    "effect_size_cohen_dz": -0.06372543036771686,
+    "matched_episode_pairs": 3000,
+    "mean_paired_difference": -2.1896666666666667,
+    "p_value_holm_adjusted_all_pairwise_conditions": 0.0009,
+    "paired_difference_ci_95_percentile_bootstrap": [
+      -3.4360166666666667,
+      -1.0003000000000004
+    ],
+    "paired_difference_sample_std": 34.3609553365362,
+    "paired_sign_flip_p_value": 0.00045,
+    "pairwise_resamples": {
+      "bootstrap": 9999,
+      "permutation": 19999,
+      "random_seed": 20261109
+    }
+  },
+  {
+    "condition_a_id": "argon_high_followup_1",
+    "condition_a_label": "Argon High \u2014 First follow-up",
+    "condition_b_id": "argon_high_followup_2",
+    "condition_b_label": "Argon High \u2014 Second follow-up",
+    "difference_definition": "Argon High \u2014 First follow-up minus Argon High \u2014 Second follow-up",
+    "effect_size_cohen_dz": 0.006462736326960453,
+    "matched_episode_pairs": 3000,
+    "mean_paired_difference": 0.17966666666666667,
+    "p_value_holm_adjusted_all_pairwise_conditions": 0.72455,
+    "paired_difference_ci_95_percentile_bootstrap": [
+      -0.81335,
+      1.1994166666666655
+    ],
+    "paired_difference_sample_std": 27.800401807691774,
+    "paired_sign_flip_p_value": 0.72455,
+    "pairwise_resamples": {
+      "bootstrap": 9999,
+      "permutation": 19999,
+      "random_seed": 20261111
+    }
+  }
+]

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "group_id": "gemini_argon_high_iterative_development",
+  "group_label": "Gemini Argon High — Iterative Development",
+  "not_part_of_primary_zero_shot_ranking": true,
+  "evaluation_status": "full_3000_episode_run_and_analysis_complete",
+  "evaluation_dataset": "evaluation/full_run",
+  "researcher_contribution": "Directed the initial prompt and subsequent follow-up requests, supplied the resulting text/code, and coordinated evaluation. The mathematical network should not be represented as solely researcher-designed.",
+  "recorded_ai_contribution": "The supplied outputs are attributed by the user to Gemini Argon High; provider/model identity is not independently authenticated from repository evidence.",
+  "development_summary": [
+    "Original: four position/comparator units plus one detector for a single left-start state.",
+    "Follow-up 1: adds exact detectors for three early left-start states and changes the left-command combination bias.",
+    "Follow-up 2: adds further left-start hold states and right-start opening-state detectors, then increases the left-command inhibition bias."
+  ],
+  "conditions": [
+    {
+      "id": "argon_high_original",
+      "label": "Argon High — Original first-prompt assignments",
+      "stage": "first_prompt_original_as_user_identified",
+      "condition_class": "user_supplied_original_generation_excerpt",
+      "source_file": "source/argon_high_original_inline_v1.py",
+      "source_sha256": "153ee5b9867e947e397b30ea688dd220562ebe014318a34d9f6e311b461ddf93",
+      "weight_path": "weights/argon_high_original.npz",
+      "weight_sha256": "53c65f6ba95090ef88999ebe0dcc23339390c8579e62ec50eaaffc008c1d90f9",
+      "evaluation_metrics_id": "argon_high_original",
+      "evaluation_csv_path": "evaluation/full_run/conditions/argon_high_original/episode_scores.csv",
+      "recorded_model_attribution": "Gemini Argon High, as identified by the user",
+      "provider_identity_status": "not independently authenticated",
+      "generation_provenance_limit": "Only the tensor assignment block was supplied inline; no provider response receipt or generation metadata was supplied for this exact tensor set."
+    },
+    {
+      "id": "argon_high_followup_1",
+      "label": "Argon High — First follow-up",
+      "stage": "researcher_directed_followup_1",
+      "condition_class": "iterative_development_intervention",
+      "source_file": "source/argon_high_followup_1.py",
+      "source_sha256": "1460dcf411d31912a7de5286ee6b6b643230b7be4ba83c7dff045055ca8be317",
+      "weight_path": "weights/argon_high_followup_1.npz",
+      "weight_sha256": "9dbce900145f681fac6e081fa9cad927205a0ecbe7dfd181285eb0bc5209527f",
+      "evaluation_metrics_id": "argon_high_followup_1",
+      "evaluation_csv_path": "evaluation/full_run/conditions/argon_high_followup_1/episode_scores.csv",
+      "recorded_model_attribution": "Gemini Argon High follow-up, as identified by the user",
+      "provider_identity_status": "not independently authenticated",
+      "generation_provenance_limit": "The supplied follow-up code is preserved exactly; the provider conversation/session is not independently verifiable from this repository."
+    },
+    {
+      "id": "argon_high_followup_2",
+      "label": "Argon High — Second follow-up",
+      "stage": "researcher_directed_followup_2",
+      "condition_class": "iterative_development_intervention",
+      "source_file": "source/argon_high_followup_2.py",
+      "source_sha256": "bfb27cdde52250e720c83de02127a3c5e1782bd5d17b389ba127b553c6351639",
+      "weight_path": "weights/argon_high_followup_2.npz",
+      "weight_sha256": "a88ee43463374fc79ea38c1ecfeb55da736930c5b3d4f5e201eca066c8041205",
+      "evaluation_metrics_id": "argon_high_followup_2",
+      "evaluation_csv_path": "evaluation/full_run/conditions/argon_high_followup_2/episode_scores.csv",
+      "recorded_model_attribution": "Gemini Argon High follow-up, as identified by the user",
+      "provider_identity_status": "not independently authenticated",
+      "generation_provenance_limit": "The complete supplied follow-up document is preserved byte-for-byte; the provider conversation/session is not independently verifiable from this repository."
+    }
+  ],
+  "separate_archived_repository_run": {
+    "path": "../../gemini/response_raw.txt",
+    "metadata_path": "../../gemini/metadata.json",
+    "metadata_identifier": "gemini-argon",
+    "metadata_reasoning_effort": "high",
+    "response_sha256": "6e593d588c827afd4f1ab2d81ae1a5c65585210e0345920fb887a76b24e248ac",
+    "weight_sha256": "455722b09750deb693093c823c13dd37b99eb470c957ce472262b1419014abb5",
+    "nonzero_parameters": 817,
+    "relationship_to_this_group": "kept separate; its tensors differ from the supplied first-prompt assignments and it is not substituted for argon_high_original"
+  }
+}

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="An independently checked research project on language models writing neural network weights for MinAtar Breakout.">
+  <title>Weight-Space Programming — Research</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/site.css?v=20261107-6">
+  <script type="module" src="assets/app.js?v=20261107-6"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="#overview" aria-label="Weight-Space Programming home">Weight-Space Programming</a>
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+    <nav class="primary-nav" id="primary-nav" aria-label="Main navigation">
+      <a href="#overview" data-route="overview">Overview</a>
+      <a href="#arena" data-route="arena">Live Arena</a>
+      <a href="#models" data-route="models">Models</a>
+      <a href="#results" data-route="results">Results</a>
+      <a href="#methodology" data-route="methodology">Methodology</a>
+    </nav>
+    <a class="source-link" href="https://github.com/Mid-NIGHTSHARK/weight-space-programming" target="_blank" rel="noreferrer">
+      <span aria-hidden="true">↗</span> GitHub
+    </a>
+  </header>
+
+  <main id="main">
+    <div class="data-status" id="data-status" role="status" aria-live="polite">Loading verified research data…</div>
+
+    <section class="page" data-page="overview" aria-labelledby="overview-title">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Experiment 5 · MinAtar Breakout</p>
+          <h1 id="overview-title">Can a language model write a useful neural network?</h1>
+          <p class="hero-lede">We tested whether language models could produce the numerical weights for a small game-playing network directly, without training feedback.</p>
+          <p class="hero-copy">The networks controlled Breakout in MinAtar. Their scores were measured over thousands of episodes, then checked against the preserved experiment files and raw evaluation data.</p>
+          <div class="button-row">
+            <a class="button button-primary" href="#arena">Watch a policy play <span aria-hidden="true">→</span></a>
+            <a class="button button-secondary" href="#results">Explore corrected results</a>
+          </div>
+        </div>
+        <div class="hero-game" aria-label="Illustration of the MinAtar Breakout board">
+          <div class="mini-bricks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <span class="mini-ball" aria-hidden="true"></span><span class="mini-paddle" aria-hidden="true"></span>
+          <p>10 × 10 game board</p>
+        </div>
+      </div>
+      <div class="stat-grid" id="overview-stats" aria-label="Experiment at a glance"></div>
+      <div class="overview-columns">
+        <section class="panel process-panel" aria-labelledby="process-title">
+          <p class="eyebrow">From text to play</p>
+          <h2 id="process-title">How the experiment works</h2>
+          <ol class="process-list">
+            <li><span class="step-number">1</span><div><h3>Give the task</h3><p>The prompt describes Breakout, the network, and the weight format.</p></div></li>
+            <li><span class="step-number">2</span><div><h3>Generate weights</h3><p>A model returns numerical values for the network’s connections.</p></div></li>
+            <li><span class="step-number">3</span><div><h3>Run the policy</h3><p>The fixed network chooses actions from the board it observes.</p></div></li>
+            <li><span class="step-number">4</span><div><h3>Measure performance</h3><p>Thousands of episodes show how many bricks each policy breaks.</p></div></li>
+          </ol>
+        </section>
+        <section class="panel overview-results" aria-labelledby="overview-results-title">
+          <div class="section-heading compact-heading"><div><p class="eyebrow">Corrected local evaluation</p><h2 id="overview-results-title">Mean score by condition</h2></div><a href="#results">Full results →</a></div>
+          <div id="overview-ranking" class="ranking-list"><p class="muted">Research data are loading.</p></div>
+          <p class="small-note">The Astra reference and trained PPO baseline are shown in separate categories from the five zero-shot model generations.</p>
+        </section>
+      </div>
+      <section class="iterative-callout" aria-labelledby="iterative-overview-title"><div><p class="eyebrow">Separate experiment</p><h2 id="iterative-overview-title">Argon High — iterative development</h2><p>Two researcher-directed follow-ups were evaluated as separate versions. Their results are not part of the original five-model zero-shot ranking.</p></div><a class="button button-secondary" href="#results">See the iterative results</a></section>
+      <div class="link-grid" aria-label="Explore the project">
+        <a class="link-card" href="#arena"><span class="link-icon" aria-hidden="true">▶</span><span><strong>Live Arena</strong><small>Watch a browser demonstration and inspect a policy.</small></span><b aria-hidden="true">→</b></a>
+        <a class="link-card" href="#models"><span class="link-icon" aria-hidden="true">◇</span><span><strong>Models</strong><small>See each original generation and its archived weights.</small></span><b aria-hidden="true">→</b></a>
+        <a class="link-card" href="#results"><span class="link-icon" aria-hidden="true">▤</span><span><strong>Results</strong><small>Explore distributions, comparisons, and downloadable data.</small></span><b aria-hidden="true">→</b></a>
+        <a class="link-card" href="#methodology"><span class="link-icon" aria-hidden="true">⌘</span><span><strong>Methodology</strong><small>Read how the evaluation and independent audit were done.</small></span><b aria-hidden="true">→</b></a>
+      </div>
+    </section>
+
+    <section class="page" data-page="arena" aria-labelledby="arena-title" hidden>
+      <div class="page-intro"><p class="eyebrow">Browser demonstration</p><h1 id="arena-title">Live Arena</h1><p>Watch one fixed network play a browser implementation of MinAtar Breakout. The seed makes this demo repeatable in this browser; it does not reproduce the evaluation’s NumPy random streams.</p></div>
+      <div class="arena-layout">
+        <section class="panel arena-game-panel" aria-label="Breakout game">
+          <div class="game-status-bar"><span>Score <strong id="arena-score">0</strong></span><span>Step <strong id="arena-step">0</strong></span><span id="arena-state" class="state-pill">Ready</span></div>
+          <canvas id="game-canvas" width="600" height="600" role="img" aria-label="MinAtar Breakout game board. Start play to animate the ball and paddle."></canvas>
+          <p class="canvas-caption" id="game-caption">The game uses the 10 × 10 MinAtar board and one-cell paddle.</p>
+        </section>
+        <aside class="arena-side">
+          <section class="panel control-panel" aria-labelledby="arena-controls-title">
+            <h2 id="arena-controls-title">Controls</h2>
+            <label for="arena-model">Policy</label><select id="arena-model"></select>
+            <label for="arena-seed">Demo seed</label><div class="seed-row"><input id="arena-seed" type="number" min="0" max="2147483647" step="1" value="42"><button class="button" id="arena-random-seed" type="button" aria-label="Choose a random demo seed">Randomize</button></div>
+            <div class="button-row control-buttons"><button class="button button-primary" id="arena-start" type="button">▶ Start</button><button class="button" id="arena-pause" type="button" disabled>Ⅱ Pause</button><button class="button" id="arena-reset" type="button">↻ Reset</button></div>
+            <div class="control-row"><button class="button" id="arena-step-button" type="button">› Single step</button><label class="speed-control" for="arena-speed">Speed<select id="arena-speed"><option value="1">1×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label></div>
+            <p class="caveat-note">Browser demo only. The Python evaluation remains the source for benchmark scores.</p>
+          </section>
+          <section class="panel selected-model-panel" aria-labelledby="selected-model-title"><h2 id="selected-model-title">Selected policy</h2><div id="arena-model-summary" class="model-summary muted">Choose a policy to inspect its archived network.</div></section>
+        </aside>
+      </div>
+      <div class="arena-detail-grid">
+        <section class="panel observation-panel" aria-labelledby="observation-title"><div class="section-heading compact-heading"><div><p class="eyebrow">Current network input</p><h2 id="observation-title">Observation</h2></div><label class="inline-select" for="observation-channel">Channel<select id="observation-channel"><option value="0">Paddle</option><option value="1">Danger (empty)</option><option value="2">Bricks</option><option value="3">Ball</option><option value="4">Trail</option><option value="5">Gauge (empty)</option></select></label></div><div class="observation-layout"><div id="observation-grid" class="observation-grid" role="img" aria-label="10 by 10 selected observation channel"></div><p class="small-note" id="observation-description">Each cell maps one board position and one input channel. The network receives all six channels flattened into 600 values.</p></div></section>
+        <details class="panel inspector-panel" id="network-inspector"><summary>Network decision inspector <span class="summary-hint">Closed by default</span></summary><p class="small-note">The network turns the 600 binary inputs into hidden activations and six action scores (logits). Softmax converts those scores into action probabilities. This describes the computation; it does not assign a causal meaning to individual neurons.</p><div id="decision-inspector" class="decision-inspector"><p class="muted">Reset or step the arena to inspect a decision.</p></div></details>
+      </div>
+      <section class="panel episode-summary" aria-labelledby="episode-summary-title"><p class="eyebrow">This demonstration episode</p><h2 id="episode-summary-title">Episode summary</h2><div id="episode-summary-content" class="summary-grid"></div></section>
+    </section>
+
+    <section class="page" data-page="models" aria-labelledby="models-title" hidden>
+      <div class="page-intro"><p class="eyebrow">Five original zero-shot generations</p><h1 id="models-title">Models</h1><p>Each profile describes the recorded generation condition and the exact weight archive evaluated. The project records model labels and some settings locally; the audit did not independently authenticate them with provider records.</p></div>
+      <div class="model-group-heading"><div><h2>Primary zero-shot conditions</h2><p>One archived generation per recorded model condition.</p></div><span class="badge badge-blue">5 conditions</span></div>
+      <div id="model-profiles" class="model-profiles"><p class="muted">Model records are loading.</p></div>
+      <section class="iterative-section" aria-labelledby="iterative-models-title">
+        <div class="model-group-heading"><div><p class="eyebrow">Separate iterative-development experiment</p><h2 id="iterative-models-title">Gemini Argon High — three development stages</h2><p>Original supplied assignments and two researcher-directed follow-ups, preserved and evaluated as distinct artifacts.</p></div><span class="badge badge-neutral">3 versions · not zero-shot</span></div>
+        <div id="iterative-model-profiles" class="iterative-profile-grid"><p class="muted">Iterative-development records are loading.</p></div>
+        <p class="small-note">The first stage is the inline v1 assignment excerpt. Each follow-up is a separate supplied script and weight archive. Attribution to Gemini Argon High is recorded from the user's description; provider identity and the complete original provider response are not independently authenticated. The repository's other archived Gemini run is a separate artifact.</p>
+      </section>
+      <section class="panel intervention-card"><p class="eyebrow">Separate post-hoc work</p><h2>DeepSeek Corrected</h2><p>This is a researcher-modified intervention created after the original DeepSeek response. It is not an original zero-shot generation and is excluded from the five-model ranking.</p><div id="intervention-summary" class="intervention-summary"></div></section>
+      <div class="model-group-heading secondary-group"><div><h2>Reference, trained baseline, and controls</h2><p>These conditions are useful comparisons, not extra zero-shot model generations.</p></div></div>
+      <div id="comparison-profiles" class="comparison-profiles"></div>
+    </section>
+
+    <section class="page" data-page="results" aria-labelledby="results-title" hidden>
+      <div class="page-intro"><p class="eyebrow">Phase 2 corrected evaluation</p><h1 id="results-title">Results</h1><p>All nine conditions have 3,000 matched episodes under the corrected local protocol. Scores count bricks destroyed; the maximum episode length is 10,000 steps.</p></div>
+      <div class="results-notice"><strong>Read the categories separately.</strong> Five conditions are original zero-shot weight generations. Astra is a local reference policy, PPO is trained, and the remaining two are controls.</div>
+      <section class="panel results-table-panel"><div class="section-heading"><div><p class="eyebrow">All corrected conditions</p><h2>Episode-level summary</h2></div><span class="small-note">Mean ± standard error; 95% t interval</span></div><div class="table-wrap"><table id="results-table"><caption class="sr-only">Corrected evaluation metrics for all nine conditions</caption><thead><tr><th scope="col">Condition</th><th scope="col">Class</th><th scope="col">Episodes</th><th scope="col">Mean ± SE</th><th scope="col">95% mean CI</th><th scope="col">Median</th><th scope="col">Min–max</th><th scope="col">Mean length</th><th scope="col">Median length</th><th scope="col">10,000-step cutoffs</th><th scope="col">Data</th></tr></thead><tbody></tbody></table></div><p class="small-note">The mean is the average score. Standard error and the 95% t interval describe uncertainty in that average; they are not the range of individual episode scores. The median is the middle score when episodes are ordered.</p></section>
+      <div class="results-two-col">
+        <section class="panel chart-panel"><div class="section-heading compact-heading"><div><p class="eyebrow">Distribution</p><h2>Episode scores</h2></div><label class="inline-select" for="distribution-model">Condition<select id="distribution-model"></select></label></div><canvas id="distribution-chart" width="720" height="330" role="img" aria-label="Histogram of episode scores for selected condition"></canvas><p class="small-note" id="distribution-caption"></p></section>
+        <section class="panel chart-panel"><div class="section-heading compact-heading"><div><p class="eyebrow">Mean score</p><h2>Category-aware comparison</h2></div></div><div id="mean-chart" class="mean-chart" role="img" aria-label="Mean score chart with separate category labels"></div><p class="small-note">Bars share a linear score scale. The reference is much higher than the zero-shot model results, so inspect the numeric labels and uncertainty in the table.</p></section>
+      </div>
+      <section class="panel action-panel"><p class="eyebrow">What policies did</p><h2>Selected action counts</h2><p class="small-note">These are actions proposed by the policy. Sticky-action handling may cause MinAtar to execute the previous action instead.</p><div id="action-table" class="table-wrap"></div></section>
+      <section class="panel comparisons-panel"><div class="section-heading"><div><p class="eyebrow">Matched episodes</p><h2>Statistical comparisons</h2></div><label class="search-control" for="comparison-search">Filter comparisons<input id="comparison-search" type="search" placeholder="Condition name"></label></div><p class="small-note">Each comparison subtracts scores from episodes with the same base seed. The bootstrap interval shows uncertainty by resampling those matched pairs. The two-sided sign-flip test checks whether paired differences are centered around zero. Cohen’s <em>dz</em> scales the average difference by the spread of paired differences. The p-value indicates how unusual the result would be under no average difference; smaller values are less compatible with that assumption. Holm correction adjusts the 36 p-values to limit false positives across the full set. A nonsignificant result is not evidence of equivalence.</p><div class="table-wrap"><table id="comparison-table"><caption class="sr-only">Matched pairwise statistical comparisons</caption><thead><tr><th scope="col">Condition A − B</th><th scope="col">Mean difference</th><th scope="col">95% paired bootstrap CI</th><th scope="col">Cohen’s dz</th><th scope="col">Two-sided p</th><th scope="col">Holm p</th></tr></thead><tbody></tbody></table></div></section>
+      <section class="iterative-section" aria-labelledby="iterative-results-title">
+        <div class="page-intro"><p class="eyebrow">Different protocol category</p><h2 id="iterative-results-title">Argon High — iterative development</h2><p>These three versions are not directly interchangeable with original zero-shot conditions: each follow-up was a researcher-directed change after the preceding output.</p></div>
+        <p class="data-integrity-note" id="iterative-data-note">Loading the iterative source-record integrity note.</p>
+        <div class="results-two-col iterative-results-grid">
+          <section class="panel chart-panel"><p class="eyebrow">Mean score ± SE</p><h3>Three separate versions</h3><div id="iterative-mean-chart" class="iterative-mean-chart" role="group" aria-label="Mean score chart for three Argon High iterative-development versions"></div><p class="small-note">Bars show mean score; the numeric labels show mean ± standard error. The episodes are paired by seed identifiers.</p></section>
+          <section class="panel chart-panel"><p class="eyebrow">Episode score distributions</p><h3>Score ranges by version</h3><div id="iterative-score-distribution" class="iterative-distribution-chart"></div><p class="small-note">Each row is a 20-bin histogram from that version's raw episode CSV; all rows use the same 0-to-maximum score scale.</p></section>
+        </div>
+        <section class="panel results-table-panel"><div class="section-heading"><div><p class="eyebrow">Full-run summaries</p><h3>Episode-level results</h3></div><span class="small-note">3,000 episodes per version</span></div><div class="table-wrap"><table id="iterative-results-table"><caption class="sr-only">Evaluation summaries for the three Argon High iterative-development versions</caption><thead><tr><th scope="col">Version</th><th scope="col">Episodes</th><th scope="col">Mean ± SE</th><th scope="col">Median</th><th scope="col">Min–max</th><th scope="col">Ball loss</th><th scope="col">10,000-step cutoffs</th><th scope="col">Data</th></tr></thead><tbody></tbody></table></div><p class="small-note">All 9,000 episodes ended by ball loss. There were no time-limit cutoffs. Mean score is bricks destroyed; standard error describes uncertainty in the average, not the spread of individual scores.</p></section>
+        <section class="panel comparisons-panel"><p class="eyebrow">Matched episode comparisons</p><h3>Paired differences and effect sizes</h3><p class="small-note" id="iterative-comparison-note">Loading paired difference interpretation.</p><p class="small-note">Differences are condition A minus condition B, paired by seed group and episode index. Confidence intervals use the project's paired bootstrap; p-values are two-sided sign-flip tests with Holm correction over these three comparisons. A nonsignificant result does not establish equivalence.</p><div class="table-wrap"><table id="iterative-comparison-table"><caption class="sr-only">Matched paired statistical comparisons among Argon High iterative-development stages</caption><thead><tr><th scope="col">A − B</th><th scope="col">Mean paired difference</th><th scope="col">95% bootstrap CI</th><th scope="col">Cohen's dz</th><th scope="col">Two-sided p</th><th scope="col">Holm p</th></tr></thead><tbody></tbody></table></div></section>
+        <section class="panel iterative-audit-note"><p class="eyebrow">Provenance and validation limits</p><h3>What the preserved evidence says</h3><ul><li>The original is a user-supplied inline assignment excerpt; the exact original provider response, provider identity, and generation settings remain unauthenticated.</li><li>The separate archived Gemini run was not substituted for these versions. Its recorded metadata conflicts with the Phase 2 Argon 4 Medium label.</li><li>The supplied Follow-up 2 verifier fails at a float64 assertion that requires a probability to exceed 1.0. Its source is preserved unchanged. A separate comparison against its own oracle found no action mismatches across 7,280 enumerated states; that does not prove the oracle captures every game behavior.</li><li>The experiment report records 77 relevant project tests passing, while explicitly excluding GUI validation. The graphical-interface test failures remain a separate unresolved Phase 3 limitation.</li></ul><div id="iterative-download-links" class="download-list"></div><a class="button button-secondary" href="data/iterative_development.json" download>Download iterative-development data JSON</a></section>
+      </section>
+      <section class="panel historical-panel"><p class="eyebrow">Protocol comparison</p><h2>Corrected versus historical evaluation</h2><p>These are descriptive changes across two evaluation protocols. Different environment and policy draws changed with the separated-stream protocol, so the change cannot be attributed to RNG separation alone.</p><div class="table-wrap"><table id="historical-table"><caption class="sr-only">Mean score changes from the historical to corrected evaluation</caption><thead><tr><th scope="col">Condition</th><th scope="col">Matched episodes</th><th scope="col">Mean change</th><th scope="col">95% paired bootstrap CI</th></tr></thead><tbody></tbody></table></div></section>
+      <section class="panel downloads-panel"><p class="eyebrow">Download source data</p><h2>Episode CSVs and analysis bundle</h2><p>The CSVs below are byte-identical copies of the hash-checked corrected episode files used by the exporter. Source hashes are shown in the model profiles and research JSON.</p><div id="download-links" class="download-list"></div><a class="button button-secondary" href="data/research.json" download>Download analysis JSON</a></section>
+    </section>
+
+    <section class="page" data-page="methodology" aria-labelledby="method-title" hidden>
+      <div class="page-intro"><p class="eyebrow">How it was done</p><h1 id="method-title">Methodology</h1><p>The site presents the preserved Experiment 5 project and Phase 2 corrected local evaluation, with the Phase 3 independent audit limitations kept visible.</p></div>
+      <div class="method-layout"><nav class="method-nav" aria-label="Methodology sections"><a href="#method-overview">Overview</a><a href="#method-environment">Environment</a><a href="#method-network">Network</a><a href="#method-generation">Generation</a><a href="#method-evaluation">Evaluation</a><a href="#method-iterative">Iterative development</a><a href="#method-verification">Verification</a><a href="#method-contributions">Contributions</a><a href="#method-limitations">Limitations</a></nav>
+        <div class="method-content">
+          <section class="panel method-section" id="method-overview"><p class="eyebrow">Research question</p><h2>Can a model write useful weights directly?</h2><p>Experiment 5 asks whether a language model can specify the numbers in a neural network policy that plays MinAtar Breakout, without training that policy through rewards or gradient updates. This repository evaluates fixed weight files after they have been generated.</p></section>
+          <section class="panel method-section" id="method-environment"><p class="eyebrow">Game environment</p><h2>MinAtar Breakout</h2><p>The board is 10 × 10. The paddle occupies one cell on the bottom row. A ball moves diagonally; bricks fill rows 1–3 and each destroyed brick adds one point. A missed ball ends an episode. The environment uses sticky actions with probability 0.1 and a 10,000-step cutoff.</p><h3>What the network sees</h3><p>MinAtar’s native state has paddle, ball, trail, and brick channels. The experiment maps these into six channels in a 10 × 10 × 6 observation: paddle, empty danger, bricks, ball, trail, empty gauge. Row-major flattening uses <code>(row × 10 + column) × 6 + channel</code>, giving 600 binary inputs. The six actions are no-op, left, up, right, down, and fire; only left and right move the paddle.</p></section>
+          <section class="panel method-section" id="method-network"><p class="eyebrow">Policy architecture</p><h2>600 → 32 → 32 → 6</h2><p>Each fixed network has two hidden layers with 32 units each. The hidden layers use the <code>tanh</code> function; the final layer outputs six action scores. That is 20,486 parameters including biases. A stable softmax turns scores into probabilities, and an action is sampled from that distribution.</p></section>
+          <section class="panel method-section" id="method-generation"><p class="eyebrow">Original generations</p><h2>Recorded model conditions</h2><p>The five primary conditions are Gemini Argon 4 Medium, Claude Sonnet 5.5, GPT-6 Original, GPT-6 Luna Extra High, and DeepSeek Original. Their original prompt copies, captured responses, parsed weight archives, and local metadata are preserved in the repository. The prompt is available <a href="data/experiment_5_prompt.txt" download>here</a>.</p><p>Provider names, model identifiers, one-shot status, tool settings, and reasoning effort are shown as recorded metadata. The independent audit found no provider-side attestations that authenticate those labels.</p><p>The Astra file is a reference controller. PPO is a trained reinforcement-learning baseline. Random-action and zero-weight policies are controls. DeepSeek Corrected is a later researcher intervention and must not be merged with original zero-shot generations.</p></section>
+          <section class="panel method-section" id="method-evaluation"><p class="eyebrow">Corrected local protocol</p><h2>27,000 evaluation episodes</h2><p>Nine conditions were evaluated for 3,000 episodes each, using seed groups 42, 100, and 200 with 1,000 episodes per group. The same base seeds and derived seed triplets were used across conditions. The evaluator creates separate environment and policy streams with <code>numpy.random.SeedSequence(base_seed).spawn(2)</code>; MinAtar and categorical policy sampling each receive their own <code>RandomState</code>.</p><p>For each condition, the report includes mean, sample standard error, median, range, episode length, cutoff frequency, and selected/executed action counts. Paired comparisons use matched episode seeds, percentile bootstrap confidence intervals, two-sided sign-flip permutation tests, paired Cohen’s <em>dz</em>, and Holm correction over 36 comparisons. Nonsignificant comparisons are not equivalence evidence.</p><p>The corrected local evaluation is not the original paper’s sample: it uses 3,000 episodes rather than the reported 1,000, and uses a separated RNG protocol. Historical and corrected score differences combine that protocol change with different random draws.</p></section>
+          <section class="panel method-section" id="method-iterative"><p class="eyebrow">Separate development experiment</p><h2>Argon High — iterative development</h2><p>The experiment evaluates the inline original assignments and two separate researcher-directed follow-up scripts, 3,000 matched episodes per version. The follow-up versions are interventions during development; they are not independent zero-shot generations and do not replace Gemini Argon 4 Medium in the five-condition primary set. The network has the same 600 → 32 → 32 → 6 architecture. The paired analysis reports small effect sizes; the nonsignificant Follow-up 1 vs Follow-up 2 result does not establish equivalence.</p><p>All 9,000 episodes ended by ball loss with no time-limit cutoffs. The original provider response and identity remain unauthenticated, and the repository's separate archived Gemini run has metadata that conflicts with the Phase 2 Argon 4 Medium label. The supplied Follow-up 2 verifier contains an impossible float64 probability assertion; a separate 7,280-state comparison agreed with its own oracle, but this is not a proof about all MinAtar states. The full report and raw episode files are linked from Results.</p></section>
+          <section class="panel method-section audit-section" id="method-verification"><p class="eyebrow">Independent check</p><h2>Phase 3 verdict: Verified with limitations</h2><p>The audit independently checked the Phase 2 repository state, protected artifact hashes, corrected CSV summaries, matched-seed calculations, selected replay traces, and RNG separation. The raw metrics reproduced from the episode CSVs.</p><ul><li>Model/provider identity and some generation settings remain recorded metadata without independent authentication.</li><li>The GUI test failures remained unresolved: six failed and three errored during Tk startup, before the GUI assertions ran.</li><li>One generation per model and one environment do not support broad capability or reliability claims.</li><li>The browser arena is a new educational port and is not benchmark-equivalent unless its conformance checks pass.</li></ul><p>See the Phase 2 report and registry in the <a href="https://github.com/Mid-NIGHTSHARK/weight-space-programming/tree/phase-2-corrected-evaluation" target="_blank" rel="noreferrer">research repository</a> for source artifacts.</p></section>
+          <section class="panel method-section" id="method-contributions"><p class="eyebrow">People and tools</p><h2>Recorded contributions</h2><p>The repository describes the work as a human-led research effort supported by AI coding and model-generation tools. It preserves the task prompt, captured model responses, parsed weights, evaluator, and later audit changes. The model outputs are the experimental objects; they are not trained during evaluation.</p><p>Project documents identify some model/tool roles, but they do not independently establish provider identity or give a verified, line-by-line attribution of who implemented each component. This site therefore reports contributions at the level supported by those records and does not claim that a researcher personally implemented or understood every technical component.</p></section>
+          <section class="panel method-section" id="method-limitations"><p class="eyebrow">Limits of the evidence</p><h2>What these results can and cannot show</h2><p>The evidence concerns five fixed generations, one small architecture, one game, and one corrected local evaluation. It can describe how these particular archived networks performed under this protocol. It cannot establish model-wide capability, reliable repeatability across independent generations, or performance in other tasks.</p><p>The Astra policy is handcrafted/reference, PPO is trained, and random/zero-weight conditions are controls. DeepSeek Corrected is a post-hoc intervention. Keep each category distinct when interpreting the ranking.</p></section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="wordmark" href="#overview">Weight-Space Programming</a><p>Experiment 5 · MinAtar Breakout · Corrected local evaluation</p><p class="footer-caveat">Verified with limitations. Provider provenance and interactive GUI validation remain incomplete.</p></footer>
+</body>
+</html>

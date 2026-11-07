@@ -1,0 +1,73 @@
+name: Validate and deploy research site
+
+on:
+  push:
+    branches: [main, phase-2-corrected-evaluation]
+    paths:
+      - "docs/**"
+      - "scripts/export_research_site_data.py"
+      - "environment/**"
+      - "network/**"
+      - "evaluation/**"
+      - "experiments/corrected_evaluation/**"
+      - "experiments/argon_high_iterative_development/**"
+      - "experiments/strict_replication/**"
+      - "experiments/reference/hand.npz"
+      - "experiments/trained_baseline/trained_actor_weights.npz"
+      - "tests/site_conformance.test.mjs"
+      - "docs/assets/iterative.js"
+      - "tests/test_browser_conformance.py"
+      - "tests/test_site_export.py"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install test dependencies
+        run: python -m pip install numpy minatar==1.0.15 pytest
+      - name: Verify generated data against source hashes
+        run: python scripts/export_research_site_data.py --check
+      - name: Compare browser mechanics and inference with Python references
+        run: pytest -q tests/test_site_export.py tests/test_browser_conformance.py
+      - name: Run browser module tests
+        run: node --test tests/site_conformance.test.mjs
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+      - name: Check out published site
+        uses: actions/checkout@v4
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

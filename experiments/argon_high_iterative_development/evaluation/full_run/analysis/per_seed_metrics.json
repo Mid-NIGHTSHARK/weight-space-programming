@@ -1,0 +1,764 @@
+{
+  "argon_high_followup_1": {
+    "100": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "4776b116d7bb660e31335d38aa4e6fb2c348f09790dce93d3bf34459b6c47df0",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 90740,
+          "name": "no_op",
+          "proportion": 0.10483580268594087
+        },
+        "1": {
+          "count": 387176,
+          "name": "left",
+          "proportion": 0.44732099119166674
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 387628,
+          "name": "right",
+          "proportion": 0.44784320612239237
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7178,
+      "maximum_score": 465.0,
+      "mean_episode_length": 865.544,
+      "mean_score": 57.867,
+      "median_episode_length": 528.0,
+      "median_score": 37.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 61.9541413194197,
+      "score_mean_ci_95": [
+        54.02245523622537,
+        61.711544763774626
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 90549,
+          "name": "no_op",
+          "proportion": 0.10461513221742627
+        },
+        "1": {
+          "count": 387282,
+          "name": "left",
+          "proportion": 0.4474434575249785
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 387713,
+          "name": "right",
+          "proportion": 0.4479414102575952
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 1.9591619704931564
+    },
+    "200": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "bcfedfeef4b5cca91e4aa55588bf07b8d8033b032e2369da9a3b8aa5440aa9bc",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 102572,
+          "name": "no_op",
+          "proportion": 0.10441513598032469
+        },
+        "1": {
+          "count": 439639,
+          "name": "left",
+          "proportion": 0.44753895768098473
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 440137,
+          "name": "right",
+          "proportion": 0.44804590633869057
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 9024,
+      "maximum_score": 626.0,
+      "mean_episode_length": 982.348,
+      "mean_score": 65.292,
+      "median_episode_length": 628.0,
+      "median_score": 43.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 69.03879410223712,
+      "score_mean_ci_95": [
+        61.00781933490743,
+        69.57618066509256
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 102541,
+          "name": "no_op",
+          "proportion": 0.1043835789353671
+        },
+        "1": {
+          "count": 439721,
+          "name": "left",
+          "proportion": 0.44762243115474354
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 440086,
+          "name": "right",
+          "proportion": 0.44799398990988937
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.183198362744689
+    },
+    "42": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "5bfe8d8a28891f20694020aab497a69aa6967ab4b7d22fe7871c28329e98f8e0",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 100810,
+          "name": "no_op",
+          "proportion": 0.10423473650252703
+        },
+        "1": {
+          "count": 432971,
+          "name": "left",
+          "proportion": 0.4476799731994408
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 433363,
+          "name": "right",
+          "proportion": 0.4480852902980321
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7128,
+      "maximum_score": 427.0,
+      "mean_episode_length": 967.144,
+      "mean_score": 63.944,
+      "median_episode_length": 614.0,
+      "median_score": 41.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 66.29390428799428,
+      "score_mean_ci_95": [
+        59.830152609451225,
+        68.05784739054877
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 100956,
+          "name": "no_op",
+          "proportion": 0.10438569644230848
+        },
+        "1": {
+          "count": 432883,
+          "name": "left",
+          "proportion": 0.44758898364669586
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 433305,
+          "name": "right",
+          "proportion": 0.4480253199109957
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.0963973253526507
+    }
+  },
+  "argon_high_followup_2": {
+    "100": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "742ad1375fc622fc8d4b0b38ef61bd8ec1079fbcef27781fcbb51d097a1c4ef2",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 92835,
+          "name": "no_op",
+          "proportion": 0.10701811013637359
+        },
+        "1": {
+          "count": 387034,
+          "name": "left",
+          "proportion": 0.4461641324772038
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 387601,
+          "name": "right",
+          "proportion": 0.4468177573864226
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7178,
+      "maximum_score": 465.0,
+      "mean_episode_length": 867.47,
+      "mean_score": 57.888,
+      "median_episode_length": 531.0,
+      "median_score": 37.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 61.439435709162076,
+      "score_mean_ci_95": [
+        54.0753951310679,
+        61.700604868932096
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 92704,
+          "name": "no_op",
+          "proportion": 0.10686709626845885
+        },
+        "1": {
+          "count": 387082,
+          "name": "left",
+          "proportion": 0.446219465802852
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 387684,
+          "name": "right",
+          "proportion": 0.44691343792868915
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 1.9428855499643463
+    },
+    "200": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "24ebecf4ea125a66f2cfb6b5dc591697842d4d19a106d00ce9bbe6fc0d4ea0f4",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 104730,
+          "name": "no_op",
+          "proportion": 0.1063514339621875
+        },
+        "1": {
+          "count": 439758,
+          "name": "left",
+          "proportion": 0.4465663505809573
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 440266,
+          "name": "right",
+          "proportion": 0.4470822154568552
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 9024,
+      "maximum_score": 626.0,
+      "mean_episode_length": 984.754,
+      "mean_score": 65.342,
+      "median_episode_length": 624.0,
+      "median_score": 43.0,
+      "metadata": {},
+      "minimum_score": 1.0,
+      "sample_std_score": 69.15388127426613,
+      "score_mean_ci_95": [
+        61.050677636625785,
+        69.63332236337422
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 104728,
+          "name": "no_op",
+          "proportion": 0.10634940299810917
+        },
+        "1": {
+          "count": 439793,
+          "name": "left",
+          "proportion": 0.4466018924523282
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 440233,
+          "name": "right",
+          "proportion": 0.44704870454956264
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.186837738675482
+    },
+    "42": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "0af47e28d1f39c5495b6683def8b08a22a07ba3ef8b0de5723cd04e6644326cd",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 102279,
+          "name": "no_op",
+          "proportion": 0.1063527351678701
+        },
+        "1": {
+          "count": 429534,
+          "name": "left",
+          "proportion": 0.4466421821448774
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 429883,
+          "name": "right",
+          "proportion": 0.44700508268725253
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7128,
+      "maximum_score": 418.0,
+      "mean_episode_length": 961.696,
+      "mean_score": 63.334,
+      "median_episode_length": 645.0,
+      "median_score": 42.0,
+      "metadata": {},
+      "minimum_score": 1.0,
+      "sample_std_score": 63.24910191372596,
+      "score_mean_ci_95": [
+        59.40909686362738,
+        67.25890313637262
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 102362,
+          "name": "no_op",
+          "proportion": 0.10643904102751806
+        },
+        "1": {
+          "count": 429444,
+          "name": "left",
+          "proportion": 0.44654859747778924
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 429890,
+          "name": "right",
+          "proportion": 0.4470123614946927
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.000112220074887
+    }
+  },
+  "argon_high_original": {
+    "100": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "2c649b65d1dec3c6d3c1f6e30cd2e0689de895d3c592376e668c37cab4b50b9e",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 85458,
+          "name": "no_op",
+          "proportion": 0.10265101920697649
+        },
+        "1": {
+          "count": 373319,
+          "name": "left",
+          "proportion": 0.4484258447345978
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 373733,
+          "name": "right",
+          "proportion": 0.4489231360584257
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7172,
+      "maximum_score": 458.0,
+      "mean_episode_length": 832.51,
+      "mean_score": 55.672,
+      "median_episode_length": 498.0,
+      "median_score": 34.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 60.954670763509895,
+      "score_mean_ci_95": [
+        51.88947706738043,
+        59.45452293261956
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 85250,
+          "name": "no_op",
+          "proportion": 0.10240117235829
+        },
+        "1": {
+          "count": 373376,
+          "name": "left",
+          "proportion": 0.4484943123806321
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 373884,
+          "name": "right",
+          "proportion": 0.4491045152610779
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 1.92755593638366
+    },
+    "200": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "957810b2d636bc22cc5fb43f27c84fac49c185a322865215380ce97a8c5849eb",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 97471,
+          "name": "no_op",
+          "proportion": 0.10232230513086454
+        },
+        "1": {
+          "count": 427344,
+          "name": "left",
+          "proportion": 0.4486136713878403
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 427773,
+          "name": "right",
+          "proportion": 0.44906402348129515
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 9024,
+      "maximum_score": 626.0,
+      "mean_episode_length": 952.588,
+      "mean_score": 63.26,
+      "median_episode_length": 590.0,
+      "median_score": 42.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 69.31424719972703,
+      "score_mean_ci_95": [
+        58.95872617953368,
+        67.56127382046633
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 97475,
+          "name": "no_op",
+          "proportion": 0.102326504217983
+        },
+        "1": {
+          "count": 427418,
+          "name": "left",
+          "proportion": 0.4486913544995318
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 427695,
+          "name": "right",
+          "proportion": 0.4489821412824852
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.1919089545108545
+    },
+    "42": {
+      "cutoff_count": 0,
+      "cutoff_percentage": 0.0,
+      "episode_trajectory_set_sha256": "475e1e811e1a5b002d215fea017f712e7c6574a8ca687dd7028a77dc60fad8d9",
+      "episodes": 1000,
+      "executed_action_distribution_after_sticky_handling": {
+        "0": {
+          "count": 94355,
+          "name": "no_op",
+          "proportion": 0.10236306749637653
+        },
+        "1": {
+          "count": 413530,
+          "name": "left",
+          "proportion": 0.4486269864000486
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 413883,
+          "name": "right",
+          "proportion": 0.44900994610357486
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "maximum_episode_length": 7128,
+      "maximum_score": 427.0,
+      "mean_episode_length": 921.768,
+      "mean_score": 61.063,
+      "median_episode_length": 579.0,
+      "median_score": 39.0,
+      "metadata": {},
+      "minimum_score": 0.0,
+      "sample_std_score": 65.70609044313413,
+      "score_mean_ci_95": [
+        56.98562921280983,
+        65.14037078719018
+      ],
+      "selected_action_distribution": {
+        "0": {
+          "count": 94437,
+          "name": "no_op",
+          "proportion": 0.10245202697424949
+        },
+        "1": {
+          "count": 413440,
+          "name": "left",
+          "proportion": 0.4485293479487246
+        },
+        "2": {
+          "count": 0,
+          "name": "up",
+          "proportion": 0.0
+        },
+        "3": {
+          "count": 413891,
+          "name": "right",
+          "proportion": 0.4490186250770259
+        },
+        "4": {
+          "count": 0,
+          "name": "down",
+          "proportion": 0.0
+        },
+        "5": {
+          "count": 0,
+          "name": "fire",
+          "proportion": 0.0
+        }
+      },
+      "standard_error_score": 2.077809019453261
+    }
+  }
+}
